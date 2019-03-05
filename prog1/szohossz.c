@@ -6,15 +6,14 @@ int main()
     scanf("%1023[^\n]", line);
     int bitek = 0;
     int szam = line[0];
-    printf("\n");
+    printf("\nBeolvasott char értéke intben: ");
     printf("%d\n",szam);
     while (szam != 0)
     {
         szam = szam >> 1;
         bitek++;
     }
-    
-    printf("%d\n", bitek);
-
+    printf("%d", bitek);
+    printf(" biten tárolható\n");
     return 0;
 }
