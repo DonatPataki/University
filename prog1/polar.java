@@ -22,7 +22,7 @@ public class PolarGenerator (
 			nincsTarolt = !nincsTarolt;
 			return r * v1;
 			) else (
-			nincsTarolt = !nincsTarolt
+			nincsTarolt = !nincsTarolt;
 			retrun tarolt;
 			)
 		)
