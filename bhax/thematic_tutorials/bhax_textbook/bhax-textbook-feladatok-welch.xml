@@ -1,0 +1,457 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Welch!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Első osztályom</title>
+        <para>
+            Valósítsd meg C++-ban és Java-ban az módosított polártranszformációs algoritmust! A matek háttér 
+            teljesen irreleváns, csak annyiban érdekes, hogy az algoritmus egy számítása során két normálist
+            számol ki, az egyiket elspájzolod és egy további logikai taggal az osztályban jelzed, hogy van vagy
+            nincs eltéve kiszámolt szám.
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/polar.java">https://github.com/DonatPataki/University/blob/master/prog1/polar.java</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/polar.cpp">https://github.com/DonatPataki/University/blob/master/prog1/polar.cpp</link>               
+        </para>
+<para>
+A program lényege az lenne, hogy a polár transzformációs algoritmussal számol, de mivel a feladatban leírtak szerint ez teljesen lényegtelen, ezért ezt nem kell elmagyarázni. Így a programhoz még annyit tudok hozzáfűzni, hogy tízszer fogja kiszámolni és annak megfelelően, hogy van-e tárolt tag visszatérítésnél azt is figyelembe veszi.
+</para>
+<para>
+A java valósítássasl kezdve. Létrehoz egy példányt a PolarGenerator osztályból és tízszer meghívja a kovetkezo nevű függvényét és kiírja a standard outputra az eredményét.
+</para>
+<programlisting language = 'java'>
+<![CDATA[	public static void main(String[] args) (
+		PolarGenerator g = new PolarGenerator();
+		for (int i = 0; i < 10; ++i) (
+			System.out.println(g.kovetkezo());
+			)
+)]]>
+</programlisting>
+<para>
+A program lelke ebben a példában maga a kovetkezo függvény, de mivel a matek része felesleges (legalábbis ez lett írva) így a forrást csak itt hagyom.
+</para>
+<programlisting language = 'java'>
+<![CDATA[	public double kovetkezo() (
+		if (nincsTarolt) (
+			double u1, u2, v1, v2, w;
+			do (
+				u1 = Math.random();
+				u2 = Math.random();
+				v1 = 2 * u1 - 1;
+				v2 = 2 * u2 - 1;
+				w = v1 * v1 + v2 * v2;
+				) while (w > 1);
+			double r = Math.sqrt((-2 * Math.log(w)) / w);
+			tarolt = r * v2;
+			nincsTarolt = !nincsTarolt; //ez egy szép egyszerű megoldás
+
+			return r * v1;
+			) else (
+			nincsTarolt = !nincsTarolt; // ami csak boolal működik
+			retrun tarolt;
+			)
+)]]>
+</programlisting>
+<para>
+A c++ forrást nem mutatom be mert teljesen ugyanaz és most tényleg.
+</para>
+<para>
+A feladat lényege amúgy az lett volna, hogy a sun programozók (akiket nyílván csak én nem ismerek) is így oldották meg. Feltéve hogy ők minden bizonnyal nagyon tapasztalt programozók és ezzel a megoldással álltak ők is elő, így nyílván nekünk is lazán fog menni a programozás.
+</para>                
+    </section>        
+
+    <section>
+        <title>LZW</title>
+        <para>
+            Valósítsd meg C-ben az LZW algoritmus fa-építését!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/z3a7.cpp">https://github.com/DonatPataki/University/blob/master/prog1/z3a7.cpp</link>                
+        </para>
+<para>
+A binfa egy olyan adatszerkezet, aminek csomópontjainak legfeljebb két gyereke lehet. Ezeket jobb és bal gyermekként szokás hívni. Valamint a gyerekek is csomópontként működnek. Azaz a gyerekeknek is lehetnek további gyerekei, így elég komplex fákat lehet kapni végeredményül. Ezért a binfákat érdemes rekurziv módon bejárni. Továbbá attól függően, hogy milyen a gyerekek elolszlása lehet egy binfa kiegyensúlyozott, tökéletesn kiegyensúsolyzott stb. Ezek a tulajdonságog többnyire csak a jobb és bal oldal viszonyát nézik egymáshoz. A program nem csinál mást mint a megfelelő bemenet megkapása után egy fájlba felépít egy binfát.
+</para>
+<programlisting language = 'c++'>
+<![CDATA[    if (argc != 4) //megnézi van-e ellég argumentum
+    {
+        usage ();
+        return -1;
+    }
+
+    char *inFile = *++argv; //lementi a bemenet nevét
+
+    if (*((*++argv) + 1) != 'o') //mi a kapcsoló
+    {
+        usage ();
+        return -2;
+    }
+
+    std::fstream beFile (inFile, std::ios_base::in); //fájl beolvasása
+
+    if (!beFile) //ha nincs szól hogy gáz van
+    {
+        std::cout << inFile << " nem letezik..." << std::endl;
+        usage ();
+        return -3;
+    }
+
+    std::fstream kiFile (*++argv, std::ios_base::out); //létrehoza a kimenetet
+
+    unsigned char b;		// ide olvassik majd a bejövő fájl bájtjait
+    LZWBinFa binFa;		// s nyomjuk majd be az LZW fa objektumunkba
+
+    while (beFile.read ((char *) &b, sizeof (unsigned char)))
+        if (b == 0x0a)
+            break;
+
+    bool kommentben = false;
+
+    while (beFile.read ((char *) &b, sizeof (unsigned char))) //maga az építést végző loop
+    {
+
+        if (b == 0x3e) //ezek itt most lényegtelenek
+        {			// > karakter
+            kommentben = true;
+            continue;
+        }
+
+        if (b == 0x0a)
+        {			// újsor
+            kommentben = false;
+            continue;
+        }
+
+        if (kommentben)
+            continue;
+
+        if (b == 0x4e)		// N betű
+            continue;
+
+        for (int i = 0; i < 8; ++i) //a char 8 bite alapján eldönti milyet rak a fába
+        {
+            if (b & 0x80)
+                binFa << '1'; 
+            else
+                binFa << '0';
+            b <<= 1;
+        }
+
+}]]>
+</programlisting>
+<para>
+A &lt;&lt; operátor túl van terhelve ezért tudjuk annak használatával belepakolni a fába. Ez így van implementálva
+</para>
+<programlisting language = 'c++'>
+<![CDATA[    void operator<< (char b)
+    {
+        if (b == '0')
+        {
+            if (!fa->nullasGyermek ())	
+            {
+                Csomopont *uj = new Csomopont ('0');
+                fa->ujNullasGyermek (uj);
+                fa = &gyoker;
+            }
+            else			
+            {
+                fa = fa->nullasGyermek ();
+            }
+        }
+        else
+        {
+            if (!fa->egyesGyermek ())
+            {
+                Csomopont *uj = new Csomopont ('1');
+                fa->ujEgyesGyermek (uj);
+                fa = &gyoker;
+            }
+            else
+            {
+                fa = fa->egyesGyermek ();
+            }
+        }
+}]]>
+</programlisting>
+<para>
+A fenti kódcsipetből jól látszik, hogy igazából úgy működik, hogy ha nincs olyan gyerek amit keres akkor csinnál egyet, ha pedig van akkor rálép.
+</para>
+    </section>        
+        
+    <section>
+        <title>Fabejárás</title>
+        <para>
+            Járd be az előző (inorder bejárású) fát pre- és posztorder is!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/tree/master/prog1/bejaras">https://github.com/DonatPataki/University/tree/master/prog1/bejaras</link>               
+        </para>
+<para>
+A binfáknak három féle bejárási módja van. Ezek az inorder, preorder és postorder nevet viselik. A preorder fabejárás során a gyökérből indulunk ki és előbb azok bal majd jobb oldali gyerekeit iratjuk ki. Inorder és postorder során az utolsó bal oldali gyerekből indulunk ki és ha inorder kiiratás szeretnénk akkor azután a gyökeret, majd a jobb oldali gyereket írjuk ki. Ha pedig ezt a sorrendet felcseréljük, azaz a bal gyerek után a jobbat majd a gyökeret írjuk ki, akkor postorder bejárást kapunk. De igazából a legegyszerűbb úgy megjegyezni, hogy a gyökérrel mikor foglalkozunk a két gyerekhez képest. Ezeket a bejárásokat célszerű rekurzívan kezelni, mivel ezek a bejárások ugyanazt csinálják és így elég egyszer megírni és csak újra meghívni a binfa egy részfájára.
+</para>
+<para>
+Szóval a hároomféle bejárás között csak annyi lesz a különbség, hogy milyen sorrendben kérjük le a 3 komponenst
+</para>
+<programlisting language = 'c++'>
+<![CDATA[void LZWBinaryTree::PreOrder(BinaryTreeNode<char> *node) {
+	if (node == nullptr) {
+		return;
+	}
+
+	traverse_function(node, traverse_depth);
+
+	++traverse_depth;
+	PreOrder(node->get_right_child());
+	PreOrder(node->get_left_child());
+	--traverse_depth;
+}
+
+void LZWBinaryTree::InOrder(BinaryTreeNode<char> *node) {
+	if (node == nullptr) {
+		return;
+	}
+
+	++traverse_depth;
+	InOrder(node->get_right_child());
+
+	traverse_function(node, traverse_depth);
+
+	InOrder(node->get_left_child());
+	--traverse_depth;
+}
+
+void LZWBinaryTree::PostOrder(BinaryTreeNode<char> *node) {
+	if (node == nullptr) {
+		return;
+	}
+
+	++traverse_depth;
+	PostOrder(node->get_right_child());
+	PostOrder(node->get_left_child());
+	--traverse_depth;
+
+	traverse_function(node, traverse_depth);
+}]]>
+</programlisting>
+    </section>        
+                        
+    <section>
+        <title>Tag a gyökér</title>
+        <para>
+            Az LZW algoritmust ültesd át egy C++ osztályba, legyen egy Tree és egy beágyazott Node
+            osztálya. A gyökér csomópont legyen kompozícióban a fával!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/z3a7.cpp">https://github.com/DonatPataki/University/blob/master/prog1/z3a7.cpp</link>               
+        </para>
+<para>
+Mivel ez már alapból c++ kód volt, ezért az elején el van magyarázva az építős része. Most pedig megnézzük, hogy hogyan van beágyazva a gyökérbe.
+</para>
+<programlisting language = 'c++'>
+<![CDATA[class LZWBinFa
+{
+public:
+    LZWBinFa ():fa (&gyoker)
+    {
+    }
+    ~LZWBinFa ()
+    {
+        szabadit (gyoker.egyesGyermek ());
+        szabadit (gyoker.nullasGyermek ());
+    }
+
+
+
+    friend std::ostream & operator<< (std::ostream & os, LZWBinFa & bf)
+    {
+        bf.kiir (os);
+        return os;
+    }
+    void kiir (std::ostream & os)
+    {
+        melyseg = 0;
+        kiir (&gyoker, os);
+    }
+
+private: //ez itt a lényeg
+    class Csomopont
+    {
+    public:
+        Csomopont (char b = '/'):betu (b), balNulla (0), jobbEgy (0)
+        {
+        };
+        ~Csomopont ()
+        {
+        };
+        Csomopont *nullasGyermek () const
+        {
+            return balNulla;
+        }
+        Csomopont *egyesGyermek () const
+        {
+            return jobbEgy;
+        }
+        void ujNullasGyermek (Csomopont * gy)
+        {
+            balNulla = gy;
+        }
+        void ujEgyesGyermek (Csomopont * gy)
+        {
+            jobbEgy = gy;
+        }
+        char getBetu () const
+        {
+            return betu;
+        }
+
+    private:
+        char betu;
+        Csomopont *balNulla;
+        Csomopont *jobbEgy;
+        Csomopont (const Csomopont &); //másoló konstruktor és egyebek de ezek nem fognak működni mert nincsenek implemetálva + private részben vannak
+        Csomopont & operator= (const Csomopont &);
+    };
+
+    Csomopont *fa;
+    LZWBinFa (const LZWBinFa &);
+    LZWBinFa & operator= (const LZWBinFa &);]]>
+</programlisting>
+<para>
+Így hogy a gyökér és a gyerek egy classon belűl van teljesen normálisan el lehet érni a gyereket és a gyökeret is. Nem kell olyan csúnya megoldásokhoz folyamodni majd, mint mutatók használata csak ezért az egyszerű feladatért.
+</para>
+    </section>        
+                
+    <section>
+        <title>Mutató a gyökér</title>
+        <para>
+            Írd át az előző forrást, hogy a gyökér csomópont ne kompozícióban, csak aggregációban legyen a 
+            fával!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/bintree.cpp">https://github.com/DonatPataki/University/blob/master/prog1/bintree.cpp</link> 
+        </para>
+<para>
+A node és a tree osztályok teljesen el vannak választva egymástól, így a fa működését úgy tudjuk, hogy megvalósítani, hogy a gyökér tagod mutatóként továbbadjuk a csomópontnak és így épitjük fel a fát minden egyes új csomóponttal, aminek az a nehézsége vagy különbsége, hogy ha a gyökeret akarjuk elérni, azt csak a mutatón keresztűl tudjuk megtenni.
+</para>
+<para>
+Később valószínűleg nem ezt a kódot fogom használni, csak tetszett, hogy milyen élesen látszik, hogy két külön osztályról van szó.
+</para>
+<programlisting language = 'c++'>
+<![CDATA[class Node{
+    public:
+    char content;
+    Node *child0, *child1;
+    Node(char c):content(c), child0(0), child1(0){}
+    Node(const Node& node):content(node.content){
+        if(node.child0!=0) child0=new Node(*(node.child0)); else this->child0=0;
+        if(node.child1!=0) child1=new Node(*(node.child1)); else this->child1=0;}
+    void makeChild(char type){
+        if(type=='0') child0=new Node(type);
+        else child1=new Node(type);}
+};
+
+class Tree{
+    public:
+    Node *root, *actual; //ezeket használva tudjuk majd bejárni a fát
+    int maxdepth, avg_c, avg_sum;
+    double avg, deviation, deviation_sum;
+    Tree (){
+        root = new Node('/');
+        actual = root;
+        maxdepth =  avg_c = avg_sum = 0;
+        avg = deviation = deviation_sum = 0.0;}
+    Tree(const Tree& t): maxdepth(t.maxdepth), avg_c(t.avg_c), avg_sum(t.avg_sum), avg(t.avg), deviation(t.deviation), deviation_sum(t.deviation_sum) {
+        root = new Node(*(t.root));
+        actual = root;}
+    Tree(Tree&& t): maxdepth(t.maxdepth), avg_c(t.avg_c), avg_sum(t.avg_sum), avg(t.avg), deviation(t.deviation), deviation_sum(t.deviation_sum) {
+        actual = root = t.root;
+        t.root = 0;}
+    Tree& operator= (Tree&& t){
+        avg_c=(t.avg_c); avg_sum=(t.avg_sum); avg=(t.avg); deviation=(t.deviation); deviation_sum=(t.deviation_sum);
+        freeNodesFrom(root);
+        root = t.root;
+        actual = t.actual;
+        t.root=0;}
+    Tree& operator= (const Tree& t) {
+        avg_c=(t.avg_c); avg_sum=(t.avg_sum); avg=(t.avg); deviation=(t.deviation); deviation_sum=(t.deviation_sum);
+        freeNodesFrom(root);
+        root = new Node(*(t.root));
+        actual = t.actual;}
+    ~Tree(){freeNodesFrom(root);}
+    void freeNodesFrom(Node *node){
+      if(node!=0){
+        freeNodesFrom(node->child0);
+        freeNodesFrom(node->child1);
+        delete node;}}
+}
+};]]>
+</programlisting>
+<para>
+A fenti kódból ki lett törölve pár rész, hogy ne legyen zavaró annyira a sűrű blokk, de jól látszik hogy teljesen el vannak szeparálva és pointerek segítségével meg lehet oldani gond nélkűl így is.
+</para>
+<para>
+Egyelőre marad ez a kód, de majd ahogy lesz időm lecserélem egy jobban olvashatóra.
+</para>
+    </section>                     
+
+    <section>
+        <title>Mozgató szemantika</title>
+        <para>
+            Írj az előző programhoz mozgató konstruktort és értékadást, a mozgató konstruktor legyen a mozgató
+            értékadásra alapozva!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/tree/master/prog1/mozgato">https://github.com/DonatPataki/University/tree/master/prog1/mozgato</link> 
+        </para>
+<para>
+A mozgató konstruktor lehetővé teszi, hogy egy object érétkeit egy másikba helyezük át. Azaz jelen esetben ha binfás példára nézzük, akkor a mozgató konstruktor segítségével lehetséges, hogy egy már kész binfát egy másikba tegyünk, azonban így az amiből mozgattuk az értékeket üresen marad, mivel nem történik más mint, hogy a az értékeket más helyre pakoljuk. Előnye a másolással szenben azonban az, hogy a mozgatás kevesebb erőforrást vesz igénybe mint egy teljes másolatot készíteni az egészről. A c++11 óta van alapértelmezett mozgató konstruktor is, ami hasonlóan a másolóhoz nem mindig működik tökéletesen, ezért lehetőség van annak működését deklarálni is. A mozgató értékadás hasonló a mozgató konsteruktorhoz, azzal a különbséggel, hogy az utóbbi akkor kerűl meghívásra, ha deklarációkor adjuk meg az értéket, míg a mozgató értékadás akkor, ha már egy object létrejött és annak értékét később akarjuk egy másikból áthelyezni.
+</para>
+<programlisting language = 'c++'>
+<![CDATA[BT::BT(BT&& moved) :
+  root(moved.root),
+  currentNode(moved.root),
+  treeHeight(moved.treeHeight) //mozgató konstruktor
+{
+  moved.root = nullptr;
+
+BT& BT::operator= (BT&& moved) //mozgató értékadás
+{
+  if (this == &moved)
+    return *this;
+
+  delete root;
+
+  root = moved.root;
+  currentNode = moved.root;
+  treeHeight = moved.treeHeight;
+
+  moved.root = nullptr;
+
+  return *this;
+}
+
+]]>
+</programlisting>
+    </section>                     
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                

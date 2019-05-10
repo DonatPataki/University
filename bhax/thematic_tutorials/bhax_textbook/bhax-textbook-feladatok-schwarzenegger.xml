@@ -1,0 +1,288 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Schwarzenegger!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Szoftmax Py MNIST</title>
+        <para>
+            Python
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/j7f9SkJR3oc">https://youtu.be/j7f9SkJR3oc</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/szoftmax.py">https://github.com/DonatPataki/University/blob/master/prog1/szoftmax.py</link>  
+        </para>
+<para>
+A MNIST egy tenserflow alapú könyvtár, ezért futatásához előbb telepíteni kell a tenserflowt. Ennek az lenne a lényege, hogy egy nagy adatbázis segítségével, ami biztosítva van ezáltal a tenserflow könyvtárait használva, különböző AI-okat lehet rajtauk edzeni. Viszont ez egy elléggé erőforrás igénylő feladat, szóval érdemes gpu gyorsítást használni. Ez a program edzését befejezően képes számokat felismerni a MNIST adatbázisból és remélhetőleg azon kívűl is. Érdemes azonban megjegyezni, hogy ezek az AI-ok csak bizonyos pontossággal működnek, így előfordúlhat viszonylag kis eséllyel, hogy téves megoldást ad. Minél tovább vannak edzve és minél nagyobb mintán elvileg annál pontosabbnak kell lenniük.
+</para>
+<para>
+Először beimportálunk egy rakat dolgot, többek között az adatokat is. Azután elég sok minden fogad minket, ami talá nem néz ki olyan túl jól. Ez a rész végzi a hálózat tanítását, ahol 10 százalékonként jelzi, hogy hogy haladunk.
+</para>
+<programlisting language = 'python'>
+<![CDATA[  tf.initialize_all_variables().run(session=sess)
+  print("-- A halozat tanitasa")  
+  for i in range(1000):
+    batch_xs, batch_ys = mnist.train.next_batch(100)
+    sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
+    if i % 100 == 0:
+      print(i/10, "%")
+print("----------------------------------------------------------")]]>
+</programlisting>
+<para>
+Ezután teszteljük, hogy mennyire lett pontos maga az AI. Ami innen érdekesebb lehet, hogy készít egy kisebb statiszkikát.
+</para>
+<programlisting language = 'python'>
+<![CDATA[  matplotlib.pyplot.imshow(image.reshape(28,28), cmap=matplotlib.pyplot.cm.binary)
+  matplotlib.pyplot.savefig("8.png")  
+  matplotlib.pyplot.show()
+
+classification = sess.run(tf.argmax(y, 1), feed_dict={x: [image]})]]>
+</programlisting>
+<para>
+Végül pedig ha ezt a python programot futattuk és nem másikból hívtuk akkor még lefut a lenti kód is. 
+</para>
+<programlisting language = 'python'>
+<![CDATA[if __name__ == '__main__':
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/mnist/input_data',
+                      help='Directory for storing input data')
+  FLAGS = parser.parse_args()
+tf.app.run()]]>
+</programlisting>
+    </section>        
+
+<!--
+    <section>
+        <title>Szoftmax R MNIST</title>
+        <para>
+            R            
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:                
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>
+    </section>        
+-->
+    
+    <section>
+        <title>Mély MNIST</title>
+        <para>
+            Python            
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/deep_mnist.py">https://github.com/DonatPataki/University/blob/master/prog1/deep_mnist.py</link>               
+        </para>
+<para>
+Hasonlóan az előző feladathoz, ez is igényli a tenserflow telepítését. És hasonlóan ez előző feladathoz, ez is számokat ismer fel, azzal a különbséggel, hogy most több réteget kapott az AI, így lehetővé teszi a még komplexebb programok létrehozását, ahol több réteg döntései által kapjuk meg a végeredményt. És itt egy kis vizualizáció mert most lusta vagyok magyarázni <link xlink:href="http://scs.ryerson.ca/~aharley/vis/conv/">http://scs.ryerson.ca/~aharley/vis/conv/</link>
+</para>
+<para>
+Egy többrétegű neurális hálót használva 90% környékéről 99%-ra lehet emelni a pontosságát. A program elején ugyanúgy beimportéljuk a megfelelő dolgokat. Létrehozunk pár függvényt. És utána elkezdhetjük építeni.
+</para>
+<programlisting language = 'python'>
+<![CDATA[# Input layer
+x  = tf.placeholder(tf.float32, [None, 784], name='x')
+y_ = tf.placeholder(tf.float32, [None, 10],  name='y_')
+x_image = tf.reshape(x, [-1, 28, 28, 1])
+
+# Convolutional layer 1
+W_conv1 = weight_variable([5, 5, 1, 32])
+b_conv1 = bias_variable([32])
+
+h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
+h_pool1 = max_pool_2x2(h_conv1)
+
+# Convolutional layer 2
+W_conv2 = weight_variable([5, 5, 32, 64])
+b_conv2 = bias_variable([64])
+
+h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
+h_pool2 = max_pool_2x2(h_conv2)
+
+# Fully connected layer 1
+h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])
+
+W_fc1 = weight_variable([7 * 7 * 64, 1024])
+b_fc1 = bias_variable([1024])
+
+h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
+
+# Dropout
+keep_prob  = tf.placeholder(tf.float32)
+h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+
+# Fully connected layer 2 (Output layer)
+W_fc2 = weight_variable([1024, 10])
+b_fc2 = bias_variable([10])
+
+y = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2, name='y')
+
+# Evaluation functions
+cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
+
+correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32), name='accuracy')
+
+# Training algorithm
+train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+
+# Training steps
+with tf.Session() as sess:
+  sess.run(tf.initialize_all_variables())
+
+  max_steps = 1000
+  for step in range(max_steps):
+    batch_xs, batch_ys = mnist.train.next_batch(50)
+    if (step % 100) == 0:
+      print(step, sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
+    sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys, keep_prob: 0.5})
+print(max_steps, sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))]]>
+</programlisting>
+    </section>        
+<!--
+    <section>
+        <title>Deep dream</title>
+        <para>
+            Keras            
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:                
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>
+    </section>        
+-->                  
+    <section>
+        <title>Minecraft-MALMÖ</title>
+        <para>
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/bAPSu3Rndi8">https://youtu.be/bAPSu3Rndi8</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/Microsoft/malmo">https://github.com/Microsoft/malmo</link>               
+        </para>
+<para>
+MALMÖ egy open source projekt, amit Microsoft kezdeményezett egy pár évvel ezelőtt. A célja az, hogy kicsit máshogyan közelítse meg az AI kutatásokat, amit új problémákkal és egyedi környezettel próbál megvalósítani. Ezt úgy éri el, hogy a minecraft környezetére építetettek rá egy AI-t, amivel lehet kisérletezni. A projekt több programázási nyelvet is támogat ezek python, c++, c#, java és atari, azaz nincs probléma azzal, hogy platformfüggő lenne. Továbbá minden nyelvhez található minték, amiket futattni/módosítani lehet.
+</para>
+<para>
+Kicsit elszámoltam magam és végül nem sikerűlt magamtól írni. De hogy mégis legyen itt valami ezért megnézunk egy minta AI-t.
+</para>
+<programlisting language = 'c++'>
+<![CDATA[// Malmo:
+#include <AgentHost.h>
+#include <ClientPool.h>
+using namespace malmo;
+
+// STL:
+#include <cstdlib>
+#include <exception>
+#include <iostream>
+using namespace std;
+
+int main(int argc, const char **argv)
+{
+    AgentHost agent_host;
+
+    try //ha esetleg valami hiba lene akkor az it el lesz kapva
+    {
+        agent_host.parseArgs(argc, argv);
+    }
+    catch( const exception& e )
+    {
+        cout << "ERROR: " << e.what() << endl;
+        cout << agent_host.getUsage() << endl;
+        return EXIT_SUCCESS;
+    }
+    if( agent_host.receivedArgument("help") ) //lelehet kérni a használatot
+    {
+        cout << agent_host.getUsage() << endl;
+        return EXIT_SUCCESS;
+    }
+
+    MissionSpec my_mission; //missio specifikációi
+    my_mission.timeLimitInSeconds(10);
+    my_mission.requestVideo( 320, 240 );
+    my_mission.rewardForReachingPosition(19.5f,0.0f,19.5f,100.0f,1.1f);
+
+    MissionRecordSpec my_mission_record("./saved_data.tgz"); //hova menti hogyan stb
+    my_mission_record.recordCommands();
+    my_mission_record.recordMP4(20, 400000);
+    my_mission_record.recordRewards();
+    my_mission_record.recordObservations();
+
+    int attempts = 0; //kísérletek száma
+    bool connected = false;
+    do {
+        try { //megpróbálunk csatlakozni
+            agent_host.startMission(my_mission, my_mission_record);
+            connected = true;
+        }
+        catch (exception& e) {
+            cout << "Error starting mission: " << e.what() << endl;
+            attempts += 1;
+            if (attempts >= 3)
+                return EXIT_FAILURE;    // ha már háromszor nem jött össze akkor nem is fog
+            else
+                boost::this_thread::sleep(boost::posix_time::milliseconds(1000));   // ha még nem akkor újrapróbáljuk
+        }
+    } while (!connected);
+
+    WorldState world_state;
+
+    cout << "Waiting for the mission to start" << flush;
+    do {
+        cout << "." << flush;
+        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+        world_state = agent_host.getWorldState();
+        for( boost::shared_ptr<TimestampedString> error : world_state.errors )
+            cout << "Error: " << error->text << endl;
+    } while (!world_state.has_mission_begun);
+    cout << endl;
+
+    // ez a lényegi rész
+    do {
+        agent_host.sendCommand("move 1");
+        {
+            ostringstream oss;
+            oss << "turn " << rand() / float(RAND_MAX);
+            agent_host.sendCommand(oss.str());
+        }
+        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+        world_state = agent_host.getWorldState();
+        cout << "video,observations,rewards received: "
+             << world_state.number_of_video_frames_since_last_state << ","
+             << world_state.number_of_observations_since_last_state << ","
+             << world_state.number_of_rewards_since_last_state << endl;
+        for( boost::shared_ptr<TimestampedReward> reward : world_state.rewards )
+            cout << "Summed reward: " << reward->getValue() << endl;
+        for( boost::shared_ptr<TimestampedString> error : world_state.errors )
+            cout << "Error: " << error->text << endl;
+    } while (world_state.is_mission_running);
+
+    cout << "Mission has stopped." << endl;
+
+    return EXIT_SUCCESS;
+}]]>
+</programlisting>
+<para>
+Igazából itt nem történt semmi extra, csak memondtuk az agentnek hogy fusson és random fokokban forduljon el. A célja pedig 10 sec alatt elérni a megadott pontra.
+</para>
+    </section>        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+</chapter>                

@@ -1,0 +1,11 @@
+<dedication xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <para>
+
+    </para>
+<blockquote>
+    <attribution>Edsger Wybe Dijkstra<citetitle></citetitle> <citation></citation></attribution>
+    <para>
+        &#x201E;If debugging is the way to remove bugs, programming must be the way to put them in.&#x201D;
+    </para>
+</blockquote>
+</dedication>
