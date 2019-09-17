@@ -1,0 +1,109 @@
+<revhistory xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <revision>
+        <revnumber>0.0.1</revnumber>
+        <date>2019-02-12</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            Az iniciális dokumentum szerkezetének kialakítása.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.0.2</revnumber>
+        <date>2019-02-14</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            Inciális feladatlisták összeállítása.
+        </revremark>
+    </revision>    
+    <revision>
+        <revnumber>0.0.3</revnumber>
+        <date>2019-02-16</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            Feladatlisták folytatása.
+            Feltöltés a BHAX csatorna 
+            <link xlink:href="https://gitlab.com/nbatfai/bhax">https://gitlab.com/nbatfai/bhax</link>
+            repójába.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.0.4</revnumber>
+        <date>2019-02-19</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            A Brun tételes feladat kidolgozása.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.2.0</revnumber>
+        <date>2019-03-11</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Első csokor kidolgozva.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.3.0</revnumber>
+        <date>2019-03-18</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Második csokor kidolgozva.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.4.0</revnumber>
+        <date>2019-03-25</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Harmadik csokor, frissítés, olvasónapló.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.5.0</revnumber>
+        <date>2019-04-01</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Negyedik csokor, olvasónapló.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.6.0</revnumber>
+        <date>2019-04-08</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Ötödik csokor, olvasónapló, firssítés.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.7.0</revnumber>
+        <date>2019-04-15</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Feladatok további kidolgozása.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.8.0</revnumber>
+        <date>2019-04-22</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Feladatok további kidolgozása.
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.9.0</revnumber>
+        <date>2019-04-29</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Kilencedik csokor, néhány firssítés
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>1.0.0</revnumber>
+        <date>2019-05-10</date>
+        <authorinitials>Donát</authorinitials>
+        <revremark>
+            Véglegesítés
+        </revremark>
+    </revision>
+</revhistory>

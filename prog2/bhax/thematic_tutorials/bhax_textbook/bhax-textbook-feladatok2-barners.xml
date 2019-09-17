@@ -1,0 +1,60 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Berners-Lee!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+        <cover>
+            <para>
+                Programozás tankönyvek rövid olvasónaplói.
+            </para>
+        </cover>
+    </info>
+    <section>
+        <title>Szoftverfejlesztés C++ nyelven</title>
+
+<!-- 1-16 -->
+<para>
+C-ben ha a nem adunk meg függvényparamétert, akkor az azt jelenti, hogy neki tetszőleges lehet , míg c++ ez azt jelenti, hogy nincs neki. Ha mégis tetszőleges számú paraméterrel akarunk természetesen az is megoldható. További különbség, hogy c-ben nincs logikai változó, hanem ott int értékkként kezeli, míg c++-ban van külön logikai változó. C++ lehetőség van függévnyek túlterhelésére is, ezt úgy érhetjük el, hogy azonos néven, de különböző paraméterszámmal deklarálunk függvényeket. Így igazából a forráskódban ugyanaz a nevük de a linker majd megváltoztatja azt. Adhatunka függvényeknek alapértelmezett értéket is. Paraméterátadást végezhetünk referencia szerint, ez azt jelenti, hogy ilyenkor nem készül a híváson belűl egy másolat az átadott paraméterről, hanem azt a címet kapja meg, ahol a változó van tárolva.
+</para>
+<!-- 17-59 -->
+<para>
+Az objektumorientált programozás, hasonló a való élethez, mivel megengedi az osztályok használatát. Eze lényege az, hogy létrehozhatunk egy mintát. Példáúl egy osztályba leírjuk, hogy milyen egy banszámla és ezt az osztályt példányosíthatjuk, akár különböző értékekkel. Az osztályok továbbá lehetőségetadnak, az adatok elrejtéséreí így kívűlről nem lehet eldönteni, hogy mi van az osztály belsejében, ha szeretnénk. Az osztályok örökölhetnek egymástól. Példáúl ha B osztály örököl A osztálytól, akkor B-nek lesznke olyan részei, ami teljesen A-tól származik és, ehhez még hozzájön, hogy B-t hogyan szeretnénk még pontosabbá tenni. Igazából az osztályok olyanok mint egy továbbgondolt struktúra, mert példáúl, ha stuktúrában létrehozunk egy koordináta rendszert, akkor csak a struktúrán kívűl lehet létrehozni függvényt, ami használja azon értékeit. De az osztály használatával ez a probléma megszűnik, mivel függvénykeket is deklarálhatunk benne. Ha adatookat szeretnénk elrejteni, akkor azt a private szóval thetjük meg, ez annyit tesz, hogy az osztályon kívűl nem lehet elérni a változókat/függvényket. Ha azt szeretnénk, hogy elérhető legyen akkor a public  kulcsszót kell használnunk. Az osztályokat a konstruktor hozza létre, amit mi is deklarálhatunk magunktól. Ehhez nem kell mást tennünk, mint az osztály nevével létrehozunk egy függvényt. A konstruktor akkor fut le, amikor az osztályból készül egy példány és itt lehet megadni, hogy hogyan mit csináljon az osztály létrehozáskor. Példáúl milyen értékei legyenek, írjon-e ki vaalmit esetleg az osztályon kívűl csináljon valamit vagy hívjon-e meg függvényt stb. A destruktor hasonló a konstruktorhoz, de ez akkor fut le, amikor az adott példány befejezte életét. Ezt is meg lehet adni ugyanúgy mint a konstruktort, de előtte használni kell a ~ jelet. Létezik még másoló konstruktor is, amit arra használunk, hogy osztályok értékeit másoljuk át egy új osztályba. Ezt magunk is megadhatjuk, de ha az osztályban nincs mutató felesleges, hacsak nem akarunk még valami plusz feladatot adni a másoláson kívűl. Mivel a beépített másoló konstruktor addig működik jól, ameddig nem használunk mutatuókat. Korábban említettem, hogy a private szóval lehet adatokat elrejteni, ezzel viszont az a baj, hogy ilyenkor az osztály nem örökli a private-ként megjelölt részeket. Ha mégis szeretnénk, hogy valamennyire legyeenk elrejtve az adatok és mégis tudjanak örökölni, akkor azt a friend kulcsszóval tehetjük meg. Továbbá lehetőség van static kulcsszóval olyan változót deklarálni, ami minden osztályban ugynaaz lesz és nem tagváltozóként fog létrejönni, hanem egy közös memóriacímen. Viszont ezt tagfüggvényekkel nem oldhatjuk meg. Végül ha nagyon szeretnénk, használhatunk beágyazott definíciót, ami nem tesz mást mint hogy más névvel tudunk adott dolgokra hivatkozni.
+</para>
+<!-- 93-96 -->
+<para>
+Az operátor túlterhelés annyit tesz, hogy a már létező operátorok működését megváltoztathatjuk. Ezt a legegyszerűbben talán másoló értékadással lehet elmagyarázni. Ha már létrehoztunk egy osztályon belűl egy másoló konstruktort, akkor az akkor fog lefutni, ha példányosítjuk és akkor adjuk meg az értékét. De ha már van egy példányunk és azt szeretnénk egy egyenlővé tenni egy másik osztály értékeivel ezt is megoldható. Ehhez nem kell mást tenni mint kiválasztani egy operátort és túlterhelés során hozzáírni a másoló konstruktor lépésit. Példáúl alapesetben az = jel osztályok esetén nem jelent sok mindent, de ha az előbb leírtak alapján túlterhejük akkor működni fog.
+</para>
+<!-- 73-90 I/O -->
+<para>
+A c++ több féle adatfolyamot különböztet meg. Létezik standard bemenet, standard kimenet, hiba kimenet és log kimenet. Ezek szerintem maguktól értetődnek, hogy melyik micsoda. Persze ezeket lehet variálni, hogy hogyan hogyan működjenek. Fájlműveleteket az fstream segítségével tudunk elvégezni. Itt van egy pár lehetőség, hogy hogyan nyissuk meg vagy hogy egyáltalán mit akarunk a fájllal.
+</para>
+<!-- 187-197 -->
+<para>
+Előfordulhat, hogy a program futása során hibakezeléssel kell foglalkoznunk, mert azt akarjuk, hogy valami bizonyos értékkel fusson le vagy csak mert a kódban van olyan rész, ami hibát eredményezhet. Ez lehet példáúl egy számológép esetén 0-val való osztás, ami kifog a cpu-n. Ezen problémák kezelésére tökéletes a try catch blokkok. Ez úgy működik hogy egy try blokkba belerakjuk, azt a kódot, ami hibához vezethet és ha valóban hibát okoz, akkor rögtön ugrik a catch részre, már amennyiben úgy adtuk meg, hogy mindent kapjon el vagy bizonyos kivételeket. Végrehajtja ami ott van és fut tovább a program mintha misem történt volna. Ha példáúl azt akarjuk, hogy beolvasás folyamán bozonyos értéket ne lehessen ezt úgy thejük meg, hogy után throw-al dobunk egy hibát és így ismét a catch rész fog lefutni.
+</para>
+<!-- 190 197 211 példák -->
+    </section>        
+    <section>
+        <title>Java útikalauz programozóknak 5.0</title>
+<para>
+           
+</para>
+
+    </section>        
+    <section>
+        <title>Bevezetés a mobilprogramozásba</title>
+<para>
+Kedves naplóm elolvastam a könyv pythonra vonatkozó részét, ami azért volt csodás, mert rengeteg új tudásra tettem szert ezzel a viszonylag új programozási nyelvvel kapcsolatban. Python egy magasszintű programozási nyelv, amit előszerettel használnak prototípúkészítésre, mivel elképesztően gyorsan lehet benne kódokat írni. Valamint maga a nyelv szintaxisa is egyszerű, ami azt eredményezi, hogy a tanulási fázisa meglepően rövid. Valószínűleg ez okból és azért mert gyorsan lehet látványos szintre jutni rengeteg függvénykönyvtár található hozzá. A programoozási nyelv amúgy egy interpreteres nyelv, ami annyit tesz, hogy nincs meg a szokásos forráskód fordítás ciklus mint más nyelveknél és így erre nem is kell várni mivel az interpreter egyből tudja olvasni a python "szkriptet". Python egy igazán hasznos jellemzője továbbá még az is, hogy jól lehet vele használni más nyelven írt modulokat így megnövelve a produktivítást. Ez allat az értendő, hogy a programunknak van egy része, ami elég erősen erőforrás igényes azt például megírhatjuk c++-ban és optimalizálva azt a részt. A c++ modult pedig pythonnal együtt tudjuk használni. Rengeted AI kutatás használja ezt a módszert, ahol maga a az AI core funkciói c++-t használva vannak megírva viszont pythont használva fel lehet gyorsítani a fejlesztést, mivel gyorsan lehet kódokat írni és ez kárpótol a gyengébb teljesítményért.
+</para>
+<para>
+A python nyelv szintaxisa meglehetősen egyszerű/könnyen olvasható. Példáúl nincs sorok végén ; mint java vagy c/c++ esetén helyette az új ugyanezt a funkciót tölti be. Ha mindenesetben egy sorban szeretnénk két statement-et akkor az új sor helett tabot is használhatunk. Jelentős különbség még az is, hogy példáúl egy függvény esetén, ha azt szeretnénk, hogy maga a függvény törzse több sorból/utasításból álljon, akkor { } közé kellet írnunk a kódokat számos más programozási nyelv esetén. Ez python esetén annyiból áll hogy ezt a kódblokkot elég ha csak beljebb kezdjük. Ezt megtehetjük tab használatával vagy szóközökkel. Ez eleinte szokatlan lehet, de igazából ennek és az előző tulajdonságnak köszönhetően a python forráskód olvasása hatalmasat nő.
+</para>
+<para>
+Egy másik sajátossága magának a nyelvnek, hogy habár létezik több változótípus magában a nyelvben azokat automatikusan osztja ki mondhatni kitalálja, hogy milyen változónak amúgy mi is a típusa. Továbbá a változótípusok közötti konverziót is automatikusan kezeli, ami kezdő programozóbaráttá teszi. Maga nyelv olyan téren, hogy milyen típusokat ismer nem mútat semmi újat. Ez alatt azt értem, hogy javaban példáúl megtalálható a pythonban jelenlévő összes típus. Ezek a számok, karakter/karakterlánc, tömbök stb... Hasonlóan javahoz python esetén is a már nem használt szemetet a garbage collector rendezi, így a memóriakezeléssel sem kell foglalkozni. Python esetén is léteznek globális és lokális változók. Függvényen belűl a változók lokalásik, de ha globálissá szerertnénk tenni, akkor azt a global kulcsszóval megtehetjük.
+</para>
+<para>
+For ciklus python esetén a java féle enhanced for loopnak felel meg vagy C# esetén for each-nek. Ennek igazából csak annyi jelentőssége van, hogy az itt lévő for loopokkal tömbökön tudunk iterálni egyesével. Ha viszont minden esetben szeretnénk mondjuk 1-től 100-ig eljutni egytől eltérő lépéközzel, akkor előbb egy olyan tömböt kell létrehoznunk, ami azokat a számokat tartalmaza, hogy később azon egyesével végig tudjunk menni. Szerencsére range() használatával az összes ilyen jellegű problémát könnyen lehet orvosolni. Mivel python is OOP szemléletet követi, így lehetőség van függvények és classok definiálására a megfelelő kulcsszó használatával. Nem meglepő módon itt is lehetőségünk van hibakezelésre, amit a try except kulcsárossal tudunk elérni. Ez igazából nem szorúl sok magyarázatra, mivel mondhatni ugyanúgy működik mint a try catch java/C++ esetén. Amit érdemes megemlítenni hogy a finally kulcszóval lehetőség van egy kódot lefuttatni mindenképpen, attól függen hogy volt-e kivétel. Ha volt akkor előbb az except blokk fut le majd a finally. Ez akkor lehet lényeges, ha egy fájlba akarunk írni vagy onnan olvasni és közben valamiféle hiba történik, így a finally részben kérhetjük, hogy csuklya be a fájlt.
+</para>
+    </section>        
+</chapter>                

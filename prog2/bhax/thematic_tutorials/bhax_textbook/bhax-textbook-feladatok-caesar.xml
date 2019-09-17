@@ -1,0 +1,300 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Caesar!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title><type>double **</type> háromszögmátrix</title>
+        <para>
+           
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/tm.c">https://github.com/DonatPataki/University/blob/master/prog1/tm.c</link>               
+        </para>
+<figure>
+<title>A <type>double **</type> háromszögmátrix a memóriában</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/doublecscs.png" scale="50" />
+</imageobject>
+<textobject>
+<phrase>A <type>double **</type> háromszögmátrix a memóriában</phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Egy alsó háromszög mátrix úgy néz ki, hogy az első sorban van egy használható érétke, majd minden azt követő sorban eggyel több, így egy háromszöget hoz létre, mivel a mátrix főátlój alatt helyezkednek eel értékek. Ennek megfelelően először érdemes tudni, hogy hány soros lesz a mátrix és ezt rögötön az elején meg is adjuk.
+</para>
+<para>
+Ezután a malloc függvényt meghíva lefoglaljuk a megfelelő memóriamértet és megkapjuk a rájuk mutató mutatót, amit a double **-al tudunk használni mivel ez egy mutató egy mutatóra. Ezután for ciklus segítségével kiírjuk a megfelelő sorokba a megfelelő mennyiségű változót, hogy egy alsó mátrixot kapjunk.
+</para>
+<programlisting language='c'>
+<![CDATA[
+#include <stdio.h>
+#include <stdlib.h>
+int
+main ()
+{
+    int nr = 5; //number of rows
+    double **tm; //főszereplő
+    
+    printf("%p\n", &tm); //kiírjuk 
+    
+    if ((tm = (double **) malloc (nr * sizeof (double *))) == NULL) //malloc-al foglalunk de ha null érték lenne, nr miatt azaz 0 sorost akarnánk létrehozni akkor hibás
+    {
+        return -1;
+    }
+
+    printf("%p\n", tm); //kiírjuk
+    
+    for (int i = 0; i < nr; ++i)
+    {
+        if ((tm[i] = (double *) malloc ((i + 1) * sizeof (double))) == NULL) //megint foglalunk
+        {
+            return -1;
+        }
+
+    }
+
+    printf("%p\n", tm[0]);    //ismét
+    
+    for (int i = 0; i < nr; ++i) //feltöltjük értékekkel háromszögalakban
+        for (int j = 0; j < i + 1; ++j)
+            tm[i][j] = i * (i + 1) / 2 + j;
+
+    for (int i = 0; i < nr; ++i) //kiírjuk háromszög alakba
+    {
+        for (int j = 0; j < i + 1; ++j)
+            printf ("%f, ", tm[i][j]);
+        printf ("\n");
+    }
+
+    tm[3][0] = 42.0;
+    (*(tm + 3))[1] = 43.0;	// mi van, ha itt hiányzik a külső ()
+    *(tm[3] + 2) = 44.0;
+    *(*(tm + 3) + 3) = 45.0;
+
+    for (int i = 0; i < nr; ++i)
+    {
+        for (int j = 0; j < i + 1; ++j)
+            printf ("%f, ", tm[i][j]);
+        printf ("\n");
+    }
+
+    for (int i = 0; i < nr; ++i) //szabadítunk
+        free (tm[i]);
+
+    free (tm);
+
+    return 0;
+}]]>
+</programlisting>            
+    </section>        
+    <section>
+        <title>C EXOR titkosító</title>
+        <para>
+            Írj egy EXOR titkosítót C-ben!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/titkosito.c">https://github.com/DonatPataki/University/blob/master/prog1/titkosito.c</link>               
+        </para>
+<para>
+Ez a titosítás az exor logikai műveleten alapszik, ami lényegében nem csinál mást mint a kapott kulcs alapján és a beolvasott szöveg karaktereit bitenként összefésüli ott, ahol mindkét esetben a karakter bitsorozatában 1-es szerepel és az így kapott új bitsorozatnak megfelelő karakterek valamilyen olvashatatlan szöveget kell visszaadniuk.
+</para>
+<para>
+Használata fordítás után ./titkosito [kulcs] &lt;[bemenet] &gt;[kimenet].
+</para>
+<para>
+A kulcs maximális hossza 100 karakter lehet és az exor művelet 256-os karakterhosszokra van bontva.            
+</para>
+<programlisting language='c'>
+<![CDATA[#define MAX_KULCS 100 //program elején ezeket definiáltuk
+#define BUFFER_MERET 256
+
+
+while ((olvasott_bajtok = read (0, (void *) buffer, BUFFER_MERET))) //titkosítás ciklusa]]>
+</programlisting>
+<para>
+Maga a titkosítás pedig itt található. A buffer tartalmát a for ciklussal változtatuk, míg a  kulcs méretet kicsit megfontotltan mert csak azt tudjuk, hogy 100-nál kisebb. Ezért vesszük az eredeti értékét és hozzáadunk egyet. És ennek vesszük a modulóját a kulcs hosszával. Így akármilyen hosszú kulccsal működni fog.
+</para>
+<programlisting language='c'>
+<![CDATA[buffer[i] = buffer[i] ^ kulcs[kulcs_index]; //xor művelettel olvashatatlanná tesszük
+kulcs_index = (kulcs_index + 1) % kulcs_meret; //léptetjük az indexet]]>
+</programlisting>
+<para>
+Ezután a while ciklusban használjuk a write rendszerhívást és kiírjuk a buffert, majd ha tud még olvasni akkor folytatódik a ciklus.
+</para>
+    </section>        
+    <section>
+        <title>Java EXOR titkosító</title>
+        <para>
+            Írj egy EXOR titkosítót Java-ban!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/javatitkosito.java">https://github.com/DonatPataki/University/blob/master/prog1/javatitkosito.java</link>               
+        </para>
+<para>
+Az előző c verzió java megvalósítása, bár van pár lényegi eltérés. Ugyanúgy exoron alapszik.
+</para>
+<para>
+A buffer ugyanúgy 256 bájt, azaz 256-os karakterszakaszonként fog végrehajtódni, ugyanúgy mint az előbb, viszont itt nincs megadva a kulcsnak limit.
+</para>
+<programlisting language='java'>
+<![CDATA[byte [] buffer = new byte[256];]]>
+</programlisting>
+<para>
+Valamint itt a titkosító algoritmus egy külön osztályban található, amit a main function-ből hívunk meg egy try catch között, ha esetleg valami rosszúl sülne el. Ami semmi extra csak dobunk egy hibát ha rosszúl adnánk meg a paramétert, ami az IOException
+</para>
+<programlisting language='java'>
+<![CDATA[try {
+            
+	new ExorTitkosító(args[0], System.in, System.out);
+            
+} catch(java.io.IOException e) {
+            
+	e.printStackTrace();
+}]]>
+</programlisting>
+<para>
+Olvasni a standard inputról olvasunk és oda is írunk. Maga a ciklus ami pedig a titkosítást, olvaást és írést végzi ugyanaz.
+</para>	      
+<programlisting language='java'>
+<![CDATA[        while((olvasottBájtok =
+                bejövőCsatorna.read(buffer)) != -1) {
+            
+            for(int i=0; i<olvasottBájtok; ++i) {
+                
+                buffer[i] = (byte)(buffer[i] ^ kulcs[kulcsIndex]);
+                kulcsIndex = (kulcsIndex+1) % kulcs.length;
+                
+            }
+            
+            kimenőCsatorna.write(buffer, 0, olvasottBájtok);
+            
+}]]>
+</programlisting>      
+    </section>        
+    <section>
+        <title>C EXOR törő</title>
+        <para>
+            Írj egy olyan C programot, amely megtöri az első feladatban előállított titkos szövegeket!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/exortoro.c">https://github.com/DonatPataki/University/blob/master/prog1/exortoro.c</link>               
+        </para>
+<para>
+Az exor törő müködése arra alapszik, hogy ha a már titkosított szöveget ugyanazzal a kulccsal mégegyszer exorozuk, akkor visszakapjuk az eredeti szöveget. Ez mind szép és jó csak annyi a baj, hogy nem tudjuk mi a kulcs és ezért minden lehetséges variációt létre kell hozni. Erre a célra egymásba ágyazot for ciklusokat használunk. Ebben a példában csak a-z-ig nézi a karaktereket ezért ha mást is szeretnénk hogy használjon a kulcsok előállítása alatt érdemes egy vektorba összeszedni azokat a karakterket és a for ciklusokkal csak a vektor elemeit változtani.
+</para>
+<programlisting language='java'>
+<![CDATA[  for (int ii = 'a'; ii <= 'z'; ++ii) //a char típús között konverzió lesz, bár így az ékezetes karakterek kimaradnak
+    for (int ji = 'a'; ji <= 'z'; ++ji)
+      for (int ki = 'a'; ki <= 'z'; ++ki)
+    for (int li = 'a'; li <= 'z'; ++li)
+      for (int mi = 'a'; mi <= 'z'; ++mi)
+          {
+            kulcs[0] = ii;
+            kulcs[1] = ji;
+            kulcs[2] = ki;
+            kulcs[3] = li;
+            kulcs[4] = mi;
+
+            if (exor_tores (kulcs, KULCS_MERET, titkos, p - titkos))
+              printf
+            ("Kulcs: [%c%c%c%c%c]\nTiszta szoveg: [%s]\n",
+             ii, ji, ki, li, mi, titkos);
+
+            // ujra EXOR-ozunk, igy nem kell egy masodik buffer  
+            exor (kulcs, KULCS_MERET, titkos, p - titkos);
+}]]>
+</programlisting>
+<para>
+Most hogy minden lehetséges kulcsot előállítottunk egy "biztos" a megfelelő kulcs (ami csak 5 karakter hosszú és csak a-z-ig tartalmaz karakterket) így valahogy el kell tudnunk dönteni, hogy melyik az. Ezt úgy oldjuk meg, hogy előállítás közben mindig exorozunk és ha az áltag szóhossz 6 és 9 között találtható és tartalmaz hogy, nem, az, ha szavakat, akkor az eredeti szöveget kaptuk vissza.
+</para>
+<programlisting language='java'>
+<![CDATA[double szohossz = atlagos_szohossz (titkos, titkos_meret);
+
+return szohossz > 6.0 && szohossz < 9.0
+&& strcasestr (titkos, "hogy") && strcasestr (titkos, "nem")
+&& strcasestr (titkos, "az") && strcasestr (titkos, "ha");]]>
+</programlisting>
+<para>
+Amúgy itt egy hivási lánc is megtekinthető, de gondolom ezt nem nehéz köveetni úgyhogy be se rakom.
+</para>
+<para>
+Használata fordítás után ./exortoro &lt;[bemenet].            
+</para>            
+    </section>        
+    <section>
+        <title>Neurális OR, AND és EXOR kapu</title>
+        <para>
+            R
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/Koyw6IH5ScQ">https://youtu.be/Koyw6IH5ScQ</link>
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/nn.r">https://github.com/DonatPataki/University/blob/master/prog1/nn.r</link>               
+        </para>
+<para>
+Neurális háló ahol and, or és exor kapuk vannak implementálva. Az and és or mőködése magától értetődő. Az előbbinél ha mindkettő 1 akkor lesz az eredményük 1. Az utóbbinál pedig ha az egyik 1 akkor lesz az eredményük 1. Az exor pedig nem jelent mást minthogy a két érték nem egyezik meg, tehát 0 és 1 esetén lesz az eredmény 1 és ez fordított esetben is igaz.
+</para>
+<para>
+Az összes kaput az alábbi mintára fel lehet építeni.
+</para>
+<programlisting language='R'>
+<![CDATA[a1    <- c(0,1,0,1)
+a2    <- c(0,0,1,1)
+OR    <- c(0,1,1,1)
+
+or.data <- data.frame(a1, a2, OR) # a fentni értékeket ebbe belerakjuk
+
+nn.or <- neuralnet(OR~a1+a2, # formula
+		   or.data, # adatok amin dolgozik
+		   hidden=0, # hány rejtett réteg legyen
+		   linear.output=FALSE, # akarjuk-e használni act.fct-t itt most igen
+ 		   stepmax = 1e+07, # max lépésszám
+		   threshold = 0.000001) # treshold
+
+plot(nn.or) # nurális háló plotolása
+
+compute(nn.or, or.data[,1:2]]]>
+</programlisting>
+<para>
+<link xlink:href="https://cran.r-project.org/web/packages/neuralnet/neuralnet.pdf">Itt</link> megtalálható amúgy egy angol nyelvű dokumentáció, ami alapján készült is a fenti kommentelgetés, de valahogy magyarúl furán hangzottak ezért csak a lényeget írtam ki kommentben.
+</para>
+<para>
+A neurális hálóról még érdemes annyit megjegyezni, hogy 3 részre lehet osztani. Van az input layer, ahol megkapja az adatokat. Ezt követi egy vagy több hidden layer, ahol a varázslat történik. Majd végül jön az output layer, ahol ha minden jól működik a megfelelő érétket kapjuk vissza.
+</para>            
+    </section>        
+    <section>
+        <title>Hiba-visszaterjesztéses perceptron</title>
+        <para>
+            C++
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/ql.hpp">https://github.com/DonatPataki/University/blob/master/prog1/ql.hpp</link>               
+        </para>
+<para>
+A perceptron nem más mint egy algoritmus model, ami az emberi agy működését próbálja utánozni. Hasonló a neurális hálóhoz azonban van pár különbség. Ugyanúgy input után elkezd varázsolni és jobb esetben megfelelő mintavétel után helyes eredményt ad vissza. Azonban a közbelső értékeknek van súlya amit még adott konstansokkal is ki lehet egészíteni. Az így kapott súlyokat összeadja és ha ez elér egy bizonyos szintet, akkor a program adott része aktiválódik. És egy a lineáris folyamat ismétlődik amíg el nem jut a válaszig. Valamint ez egy egyréteges megvalósítás.
+</para>            
+    </section>        
+        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                

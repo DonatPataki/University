@@ -1,0 +1,216 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Gutenberg!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+        <cover>
+            <para>
+                Programozás tankönyvek rövid olvasónaplói.
+            </para>
+        </cover>
+    </info>
+    <section>
+        <title>Programozási alapfogalmak</title>
+
+<!-- 11-15/alapfogalmak -->
+<para>
+A programozási nyelveket, több csoportba lehet sorolni. Megkülönböztetünk gépi, assembly és magas szintű nyelveket. Minden processzorhoz tartozik egy saját gépi nyelv, ami alapján végre tudja hajtani az utasításokat. Ezért valamilyen fordítóprogramra van szükség, ami a magasabb szintű nyelvekből gépi kódot formál. Erre az egyik lehetséges megoldás fordítóprogram használata, ami több szempontból is elemzi a forráskódot, majd abból tárgykódot generál. Ez a tárgy kód még nem futattható, mivel a kapcsolatszerkesztő még nem rakta össze teljesen. Miután ez is megvan megkaptuk a futattható kódot. A mások módszer az interpeteres megvalósítás, ami ugyanúgy több szempontból elemzi a forráskódot, de abból nem készít tárgykódot, hanem egységenként értelmezi.
+</para>
+<para>
+Programozási nyelvek tulajdonságaik alapján több féle kategóriába sorolhatók. Léteznek imperatív nyelvek, amik algoritmusosan gondolkodnak, utasításokkal és változókkal dolgoznak. Ez tovább bontható eljárásorientált és objektumorientált nyelvekre. A következő nagy csoport a deklaratív nyelvek, amik nem kötődnek annyira szorosan a Neumann-architektúrához. Ide tartoznak a logikai és funkcionális nyelvek. Valamint léteznek  más elvű nyelvek, amiket nem lehet besorolni az előbbi két kategóriába.
+</para>
+<!-- 28/adattípusok -->
+<para>
+Megkülönböztetünk típusos és ne típusos programozási nyelveket. Az adattípus jellemzői közé tartozik, hogy mettől meddig vehet fel értéket, milyen műveleteket lehet elvégezni és hogyan van tárolva. Programozási nyelvtól függően akár lehetőségünk is van saját típust definiálni a tulajdonságait megadva. Megkülönböztetünk egyszerű és összetett adatszerkezeteket. Az előbbí nem bontható tovább, míg az utóbbi több fajta adattípusból tevődik össze.
+</para>
+<para>
+Az egyszerű típushoz tartoznak a numerikus típusok, amik lehetnek egészek vagy valós számok. Akár lehetőség van előjel nélküli típusra is. Továbbá léteznek karakteres típusok, logikai típusok és felsorolás típusok.
+</para>
+<para>
+Összetett típusokból a két legfontosabb a tömb és a rekord. A tömb egy adott adattípus láncolata, ahol az elemekre lehet hivatkozni. Programozási nyelvtől függően akár többdimenziós tömbök megadása is lehetséges. Azt hogy a tömb milyen típust taratalmaz, hogyan indexelhető és hogyan adható meg az elemszámok határa minden nyelv magának dönti el. A rekord adattípus különböző adattípusokat fog egy kupacba mint egy mezőt és lehetőséget ad a rekord mezőinek hivatközéséra.
+</para>
+<para>
+Létezik még mutató típus is, ami egy egyszerű típus azzal a tulajdonsággal, hogy memóriacímeket lehet benne tárolni, és elérni. Ha nem mutat sehova, akkor null  értéket vesz fel.
+</para>
+<!-- 34/nevesített konstansok -->
+<para>
+Konstansok használata során, ha egyszer megadtuk az értékét, azt később a program futása során már nem lehet módosítani. Ennek annyi értelme van, hogy jól ismert értékeket például névvel lehet ellátni vagy pedig ha valami többször is előfordúl és szeretnénk az értékét megváltoztanti, akkor elég ezt egyhelyen megtenni.
+</para>
+<!-- 35/változók -->
+<para>
+A változóknak négy komponense van. Név, attribútum, cím és érték. Név alapján tudjuk azonosítani. Az atríbútum álltalában a típusát jelöli. Az értéke attól függ, hogy deklarációkor adtunk-e neki, ha nem akkor nyelvtől függő, hogy kap-e alapértelmezett értéket vagy sem. Valamint a cím tartalmaza, a memóricímet, ahol található a változó. Ez utóbbi is akár lehet programozó álltal meghatározott. Az értékadó utasítás bal oldalán található a változó és jobb oldalon, hogy mit szeretnénk hozzárendelni. Vannak olyan nyelvek, ahol nem lehet használni a változót, ameddig nem rendeltünk hozzá értéket.
+</para>
+<!-- 46-55/kifejezések -->
+<para>
+Kifejezések segítségével új értékeket határozhatunk meg. Az operandusok száma szerint különböztetjük meg őket. Azaz léteznek egyoperandusú, kétoperandosú stb operátorok. Az operandus helye változhat. Valamnt a művelet végrehajtásának sorrendje is különböző lehet. De az adott precedencia szerint hajtódnak végre. Ha a kifejezés logikai operátorokat is tartalmaz, akkor előfordúlhat nem kell teljesen elvégezni a kiértékelést, ahhoz, hogy végeredményt kapjunk mert a logikai összekötésnek köszönhetően egyértelművé válik. Nyelvtől függően lehet konverzió két különböző típúsu érték összehasonlítása során és az is lehet, hogy két különböző típús hasonlítása nem megengedett. Előbbi persze csak akkor lehetséges, ha a két típús között van konverzió. Azonban lehetséges, hogy kerektés forg történni konverzió során.
+</para>
+<!-- 56-71 -->
+<para>
+Megkülönboztetünk deklarációs és végrehajtható utasításokat. Előbbi a fordítóprogramnak szól, míg utóbbiból tárgykód is készül. Ami ezek közül izgalmasabb az az elágazó utasítsok, ami lehet két vagy többirányú. Kétirányú az if, ahol adott feltétel szerinti kódrész kerül lefutásra. Többirányú a switch case, ami szintén a megadott feltételnek megfelelő kódrészt futatt le, de itt lehetőség van default rész használatára, ami akkor fut le ha egyik case sem egyezett meg. Továbbá vannak ciklusok, amik jellemzője, hogy állnak egy fejből, magból és egy végből. Az hogy meddig kell ismételni, vagy a fejben, vagy a végben találtható és a mag utasításait hajtaja végre. A ciklusoknak több fajtája van, ezt mindenkinek magának kell eldöntenie, hogy a program során milyet érdemes használni. Van belőlük feltételhez szaabott, előírt lépésszámú stb. Végezetűl aóvan még három vezérlő utasítás. A continue segítségével ki lehet hagyni az adott iterációban az utáni kódokat. Break megtöri a ciklust. A return pedig megtöri és visszaad egy értéket.
+</para>
+<!-- 72-78 -->
+<para>
+Az eljárás orientált programozási nyelvek programegységekre bonthatók és az adott programozási nyelven múlik, hogy az adott részeket, hogyan kezeli. Az egyik ilyen programegység, az alprogram, aminek előnye, hogy nem kell többször ugyanazt megírni, hanem meghívhatjuk ugyanazt az alprogramot többször is. Szintén tulajdonságuk, hogy lehet paraméterezni őket, azaza nem teljesen statikusak. Attól függően, hogy az alprogram értéket ad vissza vagy csak elvégez pá műleteket, megkülöböztetünk eljárást és függvényt. Ez utóbbi lesz aminek célja, hogy egy értéket adjon vissza. Persze itt figyelni, kell hogy legyen mit visszaadnia. Továbbá midig van egy főprogram, ami mindig lefut, ha a programot elindítjuk. A programegységek meghívása során az is lehetséges, hogy a meghívott programegység hívjon meg további programegységeket. Ez lehet akár saját maga is vagy már korábban hívott programegység. Így kialakítva hívási láncokat vagy rekurziót.
+</para>
+<!-- 78-82 -->
+<para>
+Paraméterátadás segítségével lehet az alprogram hívása során megadni, hogy milyen információkkal dolgozzon. Ez a paraméterátadás történhet többféleképpen is. Ha érték szerint adjuk át, akkor az értékét adjuk át és azt az alprogramon belűl letárolja. Lehet cím szerint is. Ilyenkor az alprogramon belűl nem készűl másolat, hanem az eredeti változóval dolgozik. Eredmény szerinti átadás az előző kettő keveréke, ahol készül másolat, de a végén átmásolja az eredményt. Lehet még név és szöveg szerint is átadni, de persze ezeket programozási nyelv válogatja, hogy melyiket támogatja.
+</para>
+<!-- 82-85 -->
+<para>
+A programon belűl lehetnek blokkok, amiknek szorosan kapcsolódik példáúl egy változó hatásköre. Ez alatt azt kell érteni, hogy az adott változó csak a blokkon belűl érhető el. Az ilyen változót szokás lokális változónak is hívni. Valamint globális változónak, azt amit a program bármely részén el lehet érni. 
+</para>
+<!-- 96-97/98/121 -->
+<para>
+A blokkokon belűl is létre lehet hozni blokkokat. A függvények alapértelmezetten int típust adnak vissza c-ben. A c lehetőséget ad más fordítási egységek eszközeinek használatára is.
+</para>
+<para>
+A generikus programozás alapgondolata, hogy újra felhasználható legyen a kód. Ennek paraméterei fixek.
+</para>
+<!-- 134-138 -->
+<para>
+A perifériákkal történő kommunikáció vagy más néven I/O műveleteket az operációs rendszer írja le. Az állományokon a következő műveleteket leht végrehajtani deklaráció, összerendelés, állomány megnyitása, feldolgozás, lezárás. C-ben a standard könyvtár része az I/O műveletek.
+</para>
+<!-- 112 kivétel -->
+<para>
+A kivételkezelést használva maszkolni lehet az operációs rendszerek álltal dobot kivételeket. Ennek oka lehet maga a hibás algoritmus vagy egyszerűen olyan dolog is amit nem lehet értelmezni pl nullával való osztás.
+</para>
+<!-- 113 kérdések -->
+<para>
+Ezeket most meg kéne válaszolnom és ha igen akkor c-re vagy melyik nyelvre?
+</para>
+<para>
+Milyen beépített kivételek vannak a nyelvben?
+</para>
+<para>
+Fogalmam sincs. A standard libraryn belűl van egy pár.
+</para>
+<para>
+Definiálható-e a programozó saját kivételt?
+</para>
+<para>
+Igen.
+</para>
+<para>
+Milyenek a kiételkezelő hatásköri szabályai?
+</para>
+<para>
+
+</para>
+<para>
+A kivételkezelő köthető-e programelemekhez?
+</para>
+<para>
+Odarakja az ember ahova akarja szóval gondolom igen.
+</para>
+<para>
+Hogyan folytatódik a program a kivételkezelés után?
+</para>
+<para>
+Fut tovább.
+</para>
+<para>
+Mi történik, ha kivételkezelőben következik be kivétel?
+</para>
+<para>
+Ha a trí blokkon belűl van megy a catchre, feltéve ha úgy van megadva a catch és ha van olyan amelyikre mehet. ha a catchben van a gond az szívás.
+</para>
+<para>
+Van-e a nyelvben beépített kivételkezelő?
+</para>
+<para>
+Try catch?
+</para>
+<para>
+Van-e lehetőség arra, hogy bármely kivételt kezelő kivételkezelőt irjunk?
+</para>
+<para>
+catch(...)
+</para>
+<para>
+Lehet-e parametizálni a kivételkezelőt?
+</para>
+<para>
+Igen
+</para>
+<!-- 124 párhuzamos programozás fogalmai -->
+<para>
+Neumann-architektúra szerint a gépke szekvenciálisak, azaz egyszerre egy feladatot végeznek el egymás után. Viszont lehetőség van párhuzamostítani, mivel manapság többmagos gépek léteznek. De ilyenkor figyelni kell, hogy a folyamatok kommunikáljanak egymással. Hogy egyszerre ne tudjanak módosítani az adatot stb.
+</para>
+    </section>        
+    <section>
+        <title>Programozás bevezetés</title>
+        <para>                
+            <citation>KERNIGHANRITCHIE</citation>
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/zmfT9miB-jY">https://youtu.be/zmfT9miB-jY</link>
+        </para>
+<!-- vezérlési szerkezetek -->
+<para>
+Egy kifejezés akkor válik utasítássá, ha azt ;-vel zárjuk le. {} hsznélatával blokkokat lehet létrehozni, amik lehetővé teszik az összetett utasítások használatát például ciklusoknál.
+</para>
+<para>
+If ustasítás utatsítás utáni blokk akkor hajtódik végre, hogy ha a feltétel igazként értékelődött ki. Továbbá lehetőség van else rész használatára, am hamis érték esetén fut le. Az if utasításba további ifeket lehet beszúrni. Lehet még else helyett else if-t is használni, ami annyit tesz hogy megadhatunk mégegy feltételt és ugyanúgy viselkedik mint az if. Azaz ebbe is lehet további else if-t, else-t használni.
+</para>
+<para>
+A switch case hasonló az if else if kifejezéshez, azonban itt egy kifejezést adunk meg a legelején és a case-nél adunk meg egy állandó értéket. Így a megkeresi azt, ahol egyezik a kifejezés értéke a megadott konstansokkal és az az ág fog lefutni. Lehet persze adni egy default részt is, ami akkor fut le ha nem talált egyező case-t. Valamint a case-et break-kel kell elválasztani.
+</para>
+<para>
+A while egy előtesztelős ciklus, ami annyit jelent, hogy addig hajtódik végre a ciklusmag, amíg a feltétel igaz. A for előírt lépésszémú. Itt a fejben kell megadni három kifejezést. Persze ezek megadása nem feltétlen szükséges. Nem mindet muszáj megadni, de ez végtelen ciklushoz vezethet. A do while hasonló a while-hoz csak ez hátultesztelős ciklus, ami azt jelenti, hogy egyszer mindeképp lefut és utána nézi meg, hogy a feltétel teljesül-e, ha igen akkor ismét lefut. Continue használatával lehet ugrani az ciklusban egy iterációt és break-el lehet megszakítani az egész ciklust.
+</para>
+<!-- függelék/utasítások -->
+<para>
+Az utasításuk sorrendben hajtódnak végre, ahogyan le lettek írva alapértelmezetten, de ezt lehet módosítani.
+</para>
+<para>
+Cimke utasításhoz tartozik a switch-nek a case és default. Ez annyit jelent, hgoy futás során egyszerűen majd csak a megfelelő cimkéhez fog menni a program.
+</para>        
+<para>
+Kifejezésutasítások a lehetnek függvényhívások vagy valamilyen értékadás.
+</para>
+<para>
+Összetett utasításokat úgy tudunk létrehozni, hogy egy blokkba írjuk az utasításainkat, így kijátszva azt, hogy példáúl csak egyetlen utasítást fogadjon el. Mert így a blokk összes utasítása lefut példáúl egy ciklus után. Egy blokkon belűl egy aazonsosítót csak egyszer lehet deklarálni.
+</para>
+<para>
+Kiválasztó utasítás az if és a switch case. Az if után megadunk egy kifejezést és ha az igaznak bizonyosúlt akkor lefut az if utáni blokk vagy utasítás. Lehet hozzá használni else ágat is, ez akkor fut le ha hamis volt az utasítás és persze ifeket lehet egymásba is ágyazni. A switch case igazából hasonlít az ifhez, csak itt a switch elején megadjunk égy értéket, vagy kifejezést és a megfelelő case blokja fog végrehjtódni.Lehetődésg van hozzáadni egy default részt, ami akkor fut le ha egyig case sem egyezett meg.
+</para>
+<para>
+Iterációs utasításhoz tartoznak a ciklusok. Létezik feltételhezt kötött ciklus ez lehet a while és a do while. A kettő között csak annyi a különbség, hogy az első előtesztelős a másik utótesztelős tehát egyszer mindeképpen lefog futni. Valamint van megadott lépésszámú ciklus is ez pedig a for ciklus, ami megadott számig fog lefutni. Ehhez 3 kifejezés tartozik.
+</para>
+<para>
+Végül vannak még vezérlő utasítások, mint példáúl goto continue break és retrunk. Goto-val programon belűl megadott azonosítóhoz lehet menni. A continue a ciklusmagon belűl a követkzető iterációra ugrik, a break pedig megszakítja azt. A return hasonlü a breakhez csak még értéket is ad vissaz.
+</para>
+    </section>        
+    <section>
+        <title>Programozás</title>
+        <para>                
+            <citation>BMECPP</citation>
+        </para>
+<!-- 1-16 -->
+<para>
+C-ben ha a nem adunk meg függvényparamétert, akkor az azt jelenti, hogy neki tetszőleges lehet , míg c++ ez azt jelenti, hogy nincs neki. Ha mégis tetszőleges számú paraméterrel akarunk természetesen az is megoldható. További különbség, hogy c-ben nincs logikai változó, hanem ott int értékkként kezeli, míg c++-ban van külön logikai változó. C++ lehetőség van függévnyek túlterhelésére is, ezt úgy érhetjük el, hogy azonos néven, de különböző paraméterszámmal deklarálunk függvényeket. Így igazából a forráskódban ugyanaz a nevük de a linker majd megváltoztatja azt. Adhatunka függvényeknek alapértelmezett értéket is. Paraméterátadást végezhetünk referencia szerint, ez azt jelenti, hogy ilyenkor nem készül a híváson belűl egy másolat az átadott paraméterről, hanem azt a címet kapja meg, ahol a változó van tárolva.
+</para>
+<!-- 17-59 -->
+<para>
+Az objektumorientált programozás, hasonló a való élethez, mivel megengedi az osztályok használatát. Eze lényege az, hogy létrehozhatunk egy mintát. Példáúl egy osztályba leírjuk, hogy milyen egy banszámla és ezt az osztályt példányosíthatjuk, akár különböző értékekkel. Az osztályok továbbá lehetőségetadnak, az adatok elrejtéséreí így kívűlről nem lehet eldönteni, hogy mi van az osztály belsejében, ha szeretnénk. Az osztályok örökölhetnek egymástól. Példáúl ha B osztály örököl A osztálytól, akkor B-nek lesznke olyan részei, ami teljesen A-tól származik és, ehhez még hozzájön, hogy B-t hogyan szeretnénk még pontosabbá tenni. Igazából az osztályok olyanok mint egy továbbgondolt struktúra, mert példáúl, ha stuktúrában létrehozunk egy koordináta rendszert, akkor csak a struktúrán kívűl lehet létrehozni függvényt, ami használja azon értékeit. De az osztály használatával ez a probléma megszűnik, mivel függvénykeket is deklarálhatunk benne. Ha adatookat szeretnénk elrejteni, akkor azt a private szóval thetjük meg, ez annyit tesz, hogy az osztályon kívűl nem lehet elérni a változókat/függvényket. Ha azt szeretnénk, hogy elérhető legyen akkor a public  kulcsszót kell használnunk. Az osztályokat a konstruktor hozza létre, amit mi is deklarálhatunk magunktól. Ehhez nem kell mást tennünk, mint az osztály nevével létrehozunk egy függvényt. A konstruktor akkor fut le, amikor az osztályból készül egy példány és itt lehet megadni, hogy hogyan mit csináljon az osztály létrehozáskor. Példáúl milyen értékei legyenek, írjon-e ki vaalmit esetleg az osztályon kívűl csináljon valamit vagy hívjon-e meg függvényt stb. A destruktor hasonló a konstruktorhoz, de ez akkor fut le, amikor az adott példány befejezte életét. Ezt is meg lehet adni ugyanúgy mint a konstruktort, de előtte használni kell a ~ jelet. Létezik még másoló konstruktor is, amit arra használunk, hogy osztályok értékeit másoljuk át egy új osztályba. Ezt magunk is megadhatjuk, de ha az osztályban nincs mutató felesleges, hacsak nem akarunk még valami plusz feladatot adni a másoláson kívűl. Mivel a beépített másoló konstruktor addig működik jól, ameddig nem használunk mutatuókat. Korábban említettem, hogy a private szóval lehet adatokat elrejteni, ezzel viszont az a baj, hogy ilyenkor az osztály nem örökli a private-ként megjelölt részeket. Ha mégis szeretnénk, hogy valamennyire legyeenk elrejtve az adatok és mégis tudjanak örökölni, akkor azt a friend kulcsszóval tehetjük meg. Továbbá lehetőség van static kulcsszóval olyan változót deklarálni, ami minden osztályban ugynaaz lesz és nem tagváltozóként fog létrejönni, hanem egy közös memóriacímen. Viszont ezt tagfüggvényekkel nem oldhatjuk meg. Végül ha nagyon szeretnénk, használhatunk beágyazott definíciót, ami nem tesz mást mint hogy más névvel tudunk adott dolgokra hivatkozni.
+</para>
+<!-- 93-96 -->
+<para>
+Az operátor túlterhelés annyit tesz, hogy a már létező operátorok működését megváltoztathatjuk. Ezt a legegyszerűbben talán másoló értékadással lehet elmagyarázni. Ha már létrehoztunk egy osztályon belűl egy másoló konstruktort, akkor az akkor fog lefutni, ha példányosítjuk és akkor adjuk meg az értékét. De ha már van egy példányunk és azt szeretnénk egy egyenlővé tenni egy másik osztály értékeivel ezt is megoldható. Ehhez nem kell mást tenni mint kiválasztani egy operátort és túlterhelés során hozzáírni a másoló konstruktor lépésit. Példáúl alapesetben az = jel osztályok esetén nem jelent sok mindent, de ha az előbb leírtak alapján túlterhejük akkor működni fog.
+</para>
+<!-- 73-90 I/O -->
+<para>
+A c++ több féle adatfolyamot különböztet meg. Létezik standard bemenet, standard kimenet, hiba kimenet és log kimenet. Ezek szerintem maguktól értetődnek, hogy melyik micsoda. Persze ezeket lehet variálni, hogy hogyan hogyan működjenek. Fájlműveleteket az fstream segítségével tudunk elvégezni. Itt van egy pár lehetőség, hogy hogyan nyissuk meg vagy hogy egyáltalán mit akarunk a fájllal.
+</para>
+<!-- 187-197 -->
+<para>
+Előfordulhat, hogy a program futása során hibakezeléssel kell foglalkoznunk, mert azt akarjuk, hogy valami bizonyos értékkel fusson le vagy csak mert a kódban van olyan rész, ami hibát eredményezhet. Ez lehet példáúl egy számológép esetén 0-val való osztás, ami kifog a cpu-n. Ezen problémák kezelésére tökéletes a try catch blokkok. Ez úgy működik hogy egy try blokkba belerakjuk, azt a kódot, ami hibához vezethet és ha valóban hibát okoz, akkor rögtön ugrik a catch részre, már amennyiben úgy adtuk meg, hogy mindent kapjon el vagy bizonyos kivételeket. Végrehajtja ami ott van és fut tovább a program mintha misem történt volna. Ha példáúl azt akarjuk, hogy beolvasás folyamán bozonyos értéket ne lehessen ezt úgy thejük meg, hogy után throw-al dobunk egy hibát és így ismét a catch rész fog lefutni.
+</para>
+<!-- 190 197 211 példák -->
+<para>
+
+</para>
+    </section>        
+</chapter>                

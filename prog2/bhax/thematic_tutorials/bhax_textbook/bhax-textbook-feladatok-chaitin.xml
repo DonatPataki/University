@@ -1,0 +1,244 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Chaitin!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Iteratív és rekurzív faktoriális Lisp-ben</title>
+        <para>
+                
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/z6NJE2a1zIA">https://youtu.be/z6NJE2a1zIA</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/faktorialis.lisp">https://github.com/DonatPataki/University/blob/master/prog1/faktorialis.lisp</link>               
+        </para>
+<para>
+Olyan sok magyarázatot szerintem nem igényel, de itt van pár info róla. Két függvény található benne.
+</para>
+<para>
+Az első rekurzívan hívja magát, addig amíg nullát nem kap. Persze ha minusz értéket kap maga a függvény, akkor azzal szépen el lehet rendezni. 
+</para>
+<programlisting language='lisp'>
+<![CDATA[(defun factorial (n) ; rekurzív
+  (if (= n 0)
+      1
+(* n (factorial (- n 1))) ) )]]>
+</programlisting>
+<para>
+A második függvény pedig addig iterál, ameddig el nem éri az adott számot és közben szoroz.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(defun fact (n) ; iteratív
+    (do
+       ((i 1 (+ 1 i))
+        (prod 1 (* i prod)))
+((equal i (+ n 1)) prod)))]]>
+</programlisting>
+<para>
+Fontos megjegyezni, hogy csak ezt a két függvényt tartalmazza a forrás és sehol nincsenek meghíva, így futattás során nem ír ki értéket. Ha azt szeretnénk, hogy írja is ki egy szám faktoriálisát, akkor azt a következőképpen tehetjük meg.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(factorial i) ; i egy természetes szám]]>
+</programlisting>
+<para> 
+A lisp amúgy egy elég régi magas szintű programozási nyelv, amit az 50-es évek végén fejlesztettek ki, de persze azóta sokat változott. Alapvetően matematikai műveletek végeztek vele akkoriban, de később elég fontos szerepe volt AI kutatásokban.
+</para>
+    </section>        
+<!--        
+    <section>
+        <title>Weizenbaum Eliza programja</title>
+        <para>
+            Éleszd fel Weizenbaum Eliza programját!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:                
+        </para>
+    </section>        
+-->
+    <section>
+        <title>Gimp Scheme Script-fu: króm effekt</title>
+        <para>
+            Írj olyan script-fu kiterjesztést a GIMP programhoz, amely megvalósítja a króm effektet egy 
+            bemenő szövegre!
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/OKdAkI_c7Sc">https://youtu.be/OKdAkI_c7Sc</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/bhax_chrome3.scm">https://github.com/DonatPataki/University/blob/master/prog1/bhax_chrome3.scm</link>               
+        </para>
+<para>
+Ha egyszerűen akarnám elmagyarázni, akkor azt mondanám, hogy Script-Fu segítségével scripteket lehet írni gimphez, a scheme programozási nyelv segítségével, ami hasonló a lisphez. Azaz automatizálni lehet akár egyszerűbb vagy komplikáltabb feladatokat is.
+</para>
+<para>
+A króm effekt lényege, hogy a program kap egy szöveget és azt úgy, alakítja át, hogy azt az illuziót keltse, hogy a szövegnek fémes tulajdonságai vannak. Ez persze megkövetel pár előkészületet mint például maga a színgörbe amit használni szeretnénk, valamit az hogy a szövegből megkapjuk a számonkra fontos pixeleket.
+</para>
+<para>
+Ezek után elkezdhetjük a króm effekt létrehozását, amit egyszerű lépésekre lehet bontani és szerencsékre van is dokumentáció is róla, amit tanár úr is használt. <link xlink:href="http://penguinpetes.com/b2evo/index.php?p=351">http://penguinpetes.com/b2evo/index.php?p=351</link>
+</para>
+<para>
+Az első lépés alapján először létrehozunk egy fekete háteren, a már általunk beírt szöveget fehér betűszínnel. Ezt a scriptben úgy tudjuk megoldani, hogy először létrohozunk egy fekete réteget és mégegyet, ahol maga a szöveg van fehérrel. Majd végül a két réteget egyesítjük.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-image-insert-layer image layer 0 0)
+(gimp-context-set-foreground '(0 0 0))
+(gimp-drawable-fill layer  FILL-FOREGROUND )
+(gimp-context-set-foreground '(255 255 255)) ; feketére layer létrehozásának vége
+   
+(set! textfs (car (gimp-text-layer-new image text font fontsize PIXELS)))
+(gimp-image-insert-layer image textfs 0 0)   
+(gimp-layer-set-offsets textfs (- (/ width 2) (/ text-width 2)) (- (/ height 2) (/ text-height 2))) ; szöveg középre igazításával vége a szöveges rétegnek is
+   
+(set! layer (car(gimp-image-merge-down image textfs CLIP-TO-BOTTOM-LAYER))) ; végül egyesítjük a két régteget]]>
+</programlisting>
+<para>
+Ezután második lépésben elmossuk az egészet, hogy az éles széleket, kissé elsimitsuk.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(plug-in-gauss-iir RUN-INTERACTIVE image layer 15 TRUE TRUE)]]>
+</programlisting>
+<para>
+A második lépés miatt a szövegünk nem csak fehér színből áll, amit a harmadik lépésben korigálunk. Így kapva egy lekerekített szélekkel rendelhező fehér szöveget.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-drawable-levels layer HISTOGRAM-VALUE .11 .42 TRUE 1 0 1 TRUE)]]>
+</programlisting>
+<para>
+A negyedik lépésben ismét haszálunk egy kis elmosást, de ezuttal kisebb mértékben. Ennek jelenleg nem látszik sok értelme, de majd a 8. lépsénél lesz jelentősége.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(plug-in-gauss-iir RUN-INTERACTIVE image layer 2 TRUE TRUE)]]>
+</programlisting>
+<para>
+Az ötödik először kijelöljük a fekete részeket, majd ezt megfordítva megkapjuk magát a szöveget.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-image-select-color image CHANNEL-OP-REPLACE layer '(0 0 0))
+(gimp-selection-invert image)]]>
+</programlisting>
+<para>
+Ezután létrehozunk egy új réteget.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(set! layer2 (car (gimp-layer-new image width height RGB-IMAGE "2" 100 LAYER-MODE-NORMAL-LEGACY)))
+(gimp-image-insert-layer image layer2 0 0)]]>
+</programlisting>
+<para>
+Ezután a hetedik lépésben az új rétegen kijelölt részt felöltjük szürke árnyalatokkal
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-context-set-gradient gradient) 
+(gimp-edit-blend layer2 BLEND-CUSTOM LAYER-MODE-NORMAL-LEGACY GRADIENT-LINEAR 100 0 REPEAT-NONE 
+FALSE TRUE 5 .1 TRUE width (/ height 3) width (- height (/ height 3)))]]>
+</programlisting>
+<para>
+Nyolcadik lépésben az első réteget felhasználva bump mapet használunk az második rétegen.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(plug-in-bump-map RUN-NONINTERACTIVE image layer2 layer 120 25 7 5 5 0 0 TRUE FALSE 2)]]>
+</programlisting>
+<para>
+Végül a a kilencedik lépésben alkalmazzuk a szingörbért, amit a program legelején létrehoztunk és készen is vagyunk.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-curves-spline layer2 HISTOGRAM-VALUE 8 (color-curve)) ; színgörbe alkalmazása
+      
+(gimp-display-new image)
+(gimp-image-clean-all image) ; utóbbi két sor annyira nem fontos, ezzel csak magát a szöveget fogjuk látni]]>
+</programlisting>
+<para> A progrmot pedig zárjuk a register-rel, hogy minden tökéletesen működjön.
+</para>
+    </section>        
+
+    <section>
+        <title>Gimp Scheme Script-fu: név mandala</title>
+        <para>
+            Írj olyan script-fu kiterjesztést a GIMP programhoz, amely név-mandalát készít a
+            bemenő szövegből!               
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2019/01/10/a_gimp_lisp_hackelese_a_scheme_programozasi_nyelv">https://bhaxor.blog.hu/2019/01/10/a_gimp_lisp_hackelese_a_scheme_programozasi_nyelv</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog1/bhax_mandala9.scm">https://github.com/DonatPataki/University/blob/master/prog1/bhax_mandala9.scm</link>               
+        </para>
+<para>
+Röviden a script a megadott névből készít egy mandalát, mert a mandalák nyugtató hatásuak és így a vizsgaidőszak előtt sosem árt egy kis nyugalom. Részletes leírás itt található, amit tanár úr is használt. <link xlink:href="https://gimplearn.net/viewtopic.php?f=10&amp;t=268">https://gimplearn.net/viewtopic.php?f=10&amp;t=268</link> 
+</para>
+<para>
+Hasonlóan az előzöhöz képest itt is pár előkészületet, mint például mely pixeleket hazsnálja, háttérszín babrálása stb. Most viszont nem tervezem teljesen részletesen leírni, mivel nem akarom a végtelenségig írni a lépéseket. Ehelyett inkább csak a lényegesebb részeket kiemelni.
+</para>
+<para>
+Szóval röviden a szöveget ismét beállítjuka a kép közepére, majd egy új rétegre másoljuk, ahol 180 fokkal elforgatjuk és a két réteget egyesítjük. Így megkapva a nevünket kétszer leírva. És ezzel a forgatgatásokkal szeretnénk elérni, hogy valamennyire kör alakban legyen kiírva a nevünk, ami igazából egy tetszőleges szöveg.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(set! text-layer (car (gimp-layer-new-from-drawable textfs image)))
+(gimp-image-insert-layer image text-layer 0 -1)
+(gimp-item-transform-rotate-simple text-layer ROTATE-180 TRUE 0 0)
+(set! textfs (car(gimp-image-merge-down image text-layer CLIP-TO-BOTTOM-LAYER)))]]>
+</programlisting>
+<para>
+A fent leírt lépéseket megismételjük 90, 45 és harminc fokkal is. Azaz folyton létrehozunk egy új réteget, ahova bemásoljuk a szövegtet. Majd elforgatjuk és a két réteget egymásbaillesztjük.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(set! text-layer (car (gimp-layer-new-from-drawable textfs image)))
+(gimp-image-insert-layer image text-layer 0 -1)
+(gimp-item-transform-rotate text-layer (/ *pi* 2) TRUE 0 0) ; ezt az egészet pi/4 és pi/6-al is megcsináljuk
+(set! textfs (car(gimp-image-merge-down image text-layer CLIP-TO-BOTTOM-LAYER)))]]>
+</programlisting>
+<para>
+Ezt köveetően én már azt mondanám, hogy ez elég jó nekem mandalának, de sajnos sem a részletes leírás sem pedig tanár úr nem volt megelégedve ezzel, szóval még hogy mégjobban meglegyen a kör nyugtató hatása hozzá fogunk adni, két különböző fastagságú kört. A körök rajzolása teljsen megegyezik.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-image-select-ellipse image CHANNEL-OP-REPLACE (- (- (/ width 2) (/ textfs-width 2)) 18) 
+(- (- (/ height 2) (/ textfs-height 2)) 18) (+ textfs-width 36) (+ textfs-height 36))
+(plug-in-sel2path RUN-NONINTERACTIVE image textfs)]]>
+</programlisting>
+<para>
+Ez azért van mert az ecsetvastagságot külön változtatjuk, illetve ez igaz a kép méretére is, azaz a körök megrajzolása maradhat változatlanul.
+</para>
+<para>
+Mostmár megkaptuk a kör nyugtató hatásást, már csak annyi baj van vele, hogy kicsit unalmasan egyszínű. Szóval kijelöljük a szövegeket és a köröket és adunk hozzá egy is színátmenetet. Amivel meg is van a végső simitás. És a scriptet zárjuk a register-rel és mindenki boldog.
+</para>
+    </section>        
+
+<!--    
+    <section>
+        <title>Lambda</title>
+        <para>
+            Hasonlítsd össze a következő programokat!
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href=""></link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href=""></link>               
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>            
+    </section>        
+-->    
+
+<!--
+    <section>
+        <title>Omega</title>
+        <para>
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:                
+        </para>
+    </section>        
+-->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+</chapter>  
+
