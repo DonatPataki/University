@@ -1,14 +1,14 @@
 <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
     <info>
-        <title>Helló, Arroway!</title>
+        <title>Helló, Liskov!</title>
         <keywordset>
             <keyword/>
         </keywordset>
     </info>
 
     <section>
-        <title>OO szemlélet</title>
-     
+        <title>Liskov helyettesítés sértése</title>
+
         <para>
             Megoldás forrása:                
         </para>
@@ -18,7 +18,7 @@
     </section>        
 
     <section>
-        <title>Homokozó</title>
+        <title>Szülő-gyerek</title>
 
         <para>
             Megoldás forrása:                
@@ -29,7 +29,7 @@
     </section>        
         
     <section>
-        <title>,,Gagyi''</title>
+        <title>Anti OO</title>
 
         <para>
             Megoldás forrása:                
@@ -40,7 +40,7 @@
     </section>        
 
     <section>
-        <title>Yoda</title>
+        <title>Hello, Android!</title>
 
         <para>
             Megoldás forrása:                
@@ -51,7 +51,7 @@
     </section>        
 
     <section>
-        <title>Kódolás from scratch</title>
+        <title>Ciklomatikus komplexitás</title>
 
         <para>
             Megoldás forrása:                
@@ -60,6 +60,5 @@
             Tanulságok, tapasztalatok, magyarázat...
         </para>
     </section>        
-
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                
