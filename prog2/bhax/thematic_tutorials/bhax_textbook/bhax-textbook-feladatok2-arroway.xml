@@ -364,7 +364,28 @@ Ezek után a változtatások után a lényegesebb részei a programnak így néz
   private double varianceSum;
 }]]>
 </programlisting>
+<para>
+Ezután már csak annyi a dolgunk, hogy hozzáadjuk a serverletes dolgokat és a bongészőből is le tudjuk kérni a binfánkat.
+</para>
+<programlisting language='java'>
+<![CDATA[       out.println("<html>");
+        out.println("<head><title>LZWBinFa</title></head>");
+        out.println("<body>");
+        out.println("<h1>Binfa</h1>");
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File("o")))))
+        {
+            for(String line; (line = br.readLine()) != null; ) 
+            {
+                out.println("<p>" + line + "</p>");
+            }
+        }
+        out.println("</body></html>");
 
+
+        printWriter.flush();
+}
+]]>
+</programlisting>
     </section>        
         
     <section>
