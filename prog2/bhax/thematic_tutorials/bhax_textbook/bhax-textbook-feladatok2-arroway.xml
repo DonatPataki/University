@@ -10,55 +10,519 @@
         <title>OO szemlélet</title>
      
         <para>
-            Megoldás forrása:                
+            Megoldás forrása:<link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/polar.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/polar.cpp</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/PolarGenerator.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/PolarGenerator.java</link>                
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Polártranszformációs program megírsa c++ illetve java nyelven. Mivel a matekos háttér feltételezem most sem annyira releváns mint múlt félévben, ezért én inkább a két forráskód összeasonlítására törekednék. Mivel programozó fejjel azt feltételez, hogy az lett volna a feladat lényege, ha már két nyelven is meg kellet írni.
+</para>
+<para>
+Az első dolog, ami szembetűnő lehet, hogy a c++-os forrás elején egy pár dolgot includolni kellet, ahhoz, hogy a program funkiciói működjenek,
+</para>
+<programlisting language='c++'>
+<![CDATA[#include <iostream>
+#include <cstdlib>	
+#include <cmath>	
+#include <ctime]]>
+</programlisting>            
+<para>
+Ezzel szemben java esetén jelenleg semmi előkészítést nem igényelt a feladat, mivel az itt használt függvények már részei.
+</para>
+<para>
+Tovább haladva igazából csak pár szintaktikai különbségre lehetünk figyelmesek, de ezek sem akkorák, hogy ne lehessen megérteni.
+</para>
+<programlisting language='java'>
+<![CDATA[
+	public static void main(String[] args) {
+		PolarGenerator g = new PolarGenerator();
+		for (int i = 0; i < 10; ++i) {
+			System.out.println(g.kovetkezo());
+}]]>
+</programlisting>
+<para>
+Először létrehozunk egy új objektumát a PolarGenerator osztálynak majd tízszer meghívjuk a kovetkezo függvényét, hogy elkezdje a számítást. És igazából ez c++ nyelven sem néz ki nagyon máshogy.
+</para>
+<programlisting language='c++'>
+<![CDATA[int main() 
+{
+	PolarGenerator polar;
+
+	for (int i = 0; i < 10; ++i) 
+        std::cout << polar.kovetkezo() << std::endl;
+}]]>
+</programlisting>
+<para>
+Ezt követően már csak maga a generátor része marada programnak. Ez lényegében ugynazt a logikát követi mindkét nyelvben, de egyes részei jelentősen eltérnek. A generátor azzal, kezdődik, hogy megadjuk milyenek legyenek a kezdő értékei. Azaz először is nincs tárolt érték majd helyet foglalunk a tároltnak. Ezt követve az algoritmus számolja azt, amit kell és a logikai változó változtatásával egyszer kiírjuk a tartolt értéket és egyszer nem.
+</para>
+<programlisting language='java'>
+<![CDATA[public class PolarGenerator {
+
+	boolean nincsTarolt = true;
+	double tarolt;
+
+	public PolarGenerator() {
+		nincsTarolt = true;
+		}
+
+	public double kovetkezo() {
+		if (nincsTarolt) {
+			double u1, u2, v1, v2, w;
+			do {
+				u1 = Math.random();
+				u2 = Math.random();
+				v1 = 2 * u1 - 1;
+				v2 = 2 * u2 - 1;
+				w = v1 * v1 + v2 * v2;
+				} while (w > 1);
+			double r = Math.sqrt((-2 * Math.log(w)) / w);
+			tarolt = r * v2;
+			nincsTarolt = !nincsTarolt;
+			return r * v1;
+			} else {
+			nincsTarolt = !nincsTarolt;
+			return tarolt;
+			}
+}]]>
+</programlisting>
+<para>
+A c++-os forrás esetén érdemes kitérni, hogy random szám generálása az kicsit másképp működik és annak érdekében, hogy "igazi" random számokat kapjunk az adott másodpercet használjuk mint seed. Így igazából azt érjük el, hogy ha más másodpercben indítjuk el a programot, akkor más számokat generál.
+</para>
+<programlisting language='java'>
+<![CDATA[		PolarGenerator()
+		{
+			bool nincsTarolt = true;
+			std::srand (std::time(NULL));
+}; ]]>
+</programlisting>
     </section>        
 
     <section>
         <title>Homokozó</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/z3a7.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/z3a7.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A feladat röviden nem más mint a c++-os binfa átírása java nyelvre, ami igazából nem kéne, hogy annyira eltérő legyen a az eredeti forráskódtól. Valamint a már átportolt kódot még rakjuk bele egy serverlet-be, és böngészőből csodáljuk meg csodálatos művünket. Ehhez azonban érdemes használni egy tomcat nevezetű "keretrendszert", ami nem kötelező, ha már van létező megoldás minek is szenvedjünk a megírásával.
+</para>
+<para>
+De először foglalkozzunk a kód átírásával c++ nyelvről java-ra. A két nyelv között nincs túl sok jelentős különbség és szerencsére mindkét nyelv objektum orientált, szóval nem kellene olyan nehéznek lennie. Először érdemes átnézni a  kódot, hogy mire lesz szükségünk, hogy tudjuk, miket kell importálni.
+</para>
+<programlisting language='java'>
+<![CDATA[import java.io.FileInputStream;
+import java.io.PrintWriter;
+import java.lang.Exception;]]>
+</programlisting>
+<para>
+Az én megoldásomban csupán az átíráshoz a fenti dolgokat kellet importálni. De későbbiekben még másokat is kellesz a servelet miatt. Ezután a pointerektől is meg kell szabadulnunk, mivel java-ban nincsenek pointerek.
+</para>
+<para>
+Valamint a const kulcszó álltal jelölt konstasok sem úgy működnek java-ban. Ehhez a const kulcszó helyett a final kulcsszót kell használni.
+</para>
+<para>
+Valamint a public, private kulcszók is kicsit eltérően működnek, de itt csak annyi a teendő, hogy ezeket a classok, függvények, változók elő kell odaírni.
+</para>
+<para>
+Ezek után a változtatások után a lényegesebb részei a programnak így néznek ki.
+</para>
+<programlisting language='java'>
+<![CDATA[
+
+ public class z3a7 {
+    public static void main(String[] args) {
+      if ((args.length < 4) || (!args[2].equals("-o")))  {
+        printUsage();
+
+        return;
+      }
+
+      long bytesLimit = -1;
+
+      try {
+        bytesLimit = Long.parseLong(args[1]) * 1024;
+      }
+      catch (NumberFormatException nfe) {
+        System.out.println("Invalid numeric value, will be using the max value instead!");
+      }
+
+      if (bytesLimit < 0) {
+        bytesLimit = Long.MAX_VALUE;
+      }
+
+      LZWBinTree lzwbt = new LZWBinTree();
+
+      try {
+        FileInputStream inputStream = new FileInputStream(args[0]);
+
+        int b;
+        long bytesRead = 0;
+        boolean isComment = false;
+
+        while (((b = inputStream.read()) != -1) && (bytesRead++ < bytesLimit)) {
+          if (b == 0x3e) {
+            isComment = true;
+          }
+
+          if (b == 0x0a) {
+            isComment = false;
+          }
+
+          if ((!isComment) && (b != 0x0a)  && (b != 0x4e)) {
+            for (int i = 0x80; i > 0x00; i >>= 1) {
+              lzwbt.insert((b & i) == 0 ? '0' : '1');
+                   }
+          }
+        }
+      }
+      catch (java.io.IOException ioe) {
+        System.err.println(ioe.getMessage());
+      }
+
+      try {
+        PrintWriter printWriter = new PrintWriter(new java.io.BufferedWriter(
+                                                  new java.io.FileWriter(args[3])));
+
+        lzwbt.printTree(printWriter);
+
+        printWriter.printf("depth = %d%n", lzwbt.getMaxDepth());
+        printWriter.printf("mean = %f%n",  lzwbt.mean());
+        printWriter.printf("var = %f%n",   lzwbt.variance());
+
+        printWriter.flush();
+      }
+      catch (java.io.FileNotFoundException fnfe) {
+        System.err.println(fnfe.getMessage());
+      }
+      catch (java.io.IOException ioe) {
+        System.err.println(ioe.getMessage());
+      }
+    }
+
+    public static void printUsage() {
+      System.out.println("input kilobytes -o output");
+    }
+}]]>
+</programlisting>
+<programlisting language='java'>
+<![CDATA[
+ @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Node)) {
+      return false;
+    }
+    if (obj == this) {
+      return true;
+    }
+
+    Node rhs = (Node)obj;
+
+    return (value == rhs.getValue());
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(value);
+  }
+
+  private final char value;
+
+  private Node leftChild, rightChild;
+}
+
+ final class LZWBinTree {
+  public LZWBinTree() {
+    rootNode = new Node();
+
+    currentNode = rootNode;
+
+    // all other fields will be initialized with the default values (0 and 0.0d)
+    nodeCount = externalNodes = 1;
+  }
+
+  public int getMaxDepth() {
+    return maxDepth;
+  }
+
+  public void insert(char c) {
+    // depending on the parameter, the right or left child is selected
+    Node tempNode =
+      (c == '0') ? currentNode.getRightChild() : currentNode.getLeftChild();
+
+    // we are going deeper in the tree as a new child is inserted or
+    // a step is made
+    ++insertionDepth;
+
+    // go one step deeper
+    if (tempNode != null) {
+      currentNode = tempNode;
+    }
+    else {
+      // a new node is inserted
+      Node newNode = new Node(c);
+
+      // the only scenario when the number of external nodes
+      // would increase
+      if (currentNode.hasChild()) {
+        ++externalNodes;
+
+        // meanSum is calculated at insertion-time
+        meanSum += insertionDepth;
+      }
+      else {
+        ++meanSum;
+      }
+
+      if (c == '0') {
+        currentNode.setRightChild(newNode);
+      }
+      else {
+        currentNode.setLeftChild(newNode);
+      }
+
+      ++nodeCount;
+
+      if (insertionDepth > maxDepth) {
+        maxDepth = insertionDepth;
+      }
+
+      // jump back to root
+      insertionDepth = 0;
+
+      currentNode = rootNode;
+    }
+  }
+
+  public double mean() {
+    return (double)meanSum / externalNodes;
+  }
+
+  public double variance() {
+    traverseDepth = 0;
+
+    varianceSum = 0.0d;
+
+    // start the recursion
+    calculateVariance(rootNode);
+
+    if (externalNodes - 1 > 0) {
+        return Math.sqrt((double)varianceSum / (externalNodes - 1));
+    }
+
+    return Math.sqrt(varianceSum);
+  }
+
+  private void calculateVariance(Node node) {
+    if (node == null) {
+      return;
+    }
+
+    // PostOrder tree traversal
+    ++traverseDepth;
+    calculateVariance(node.getLeftChild());
+
+    calculateVariance(node.getRightChild());
+    --traverseDepth;
+
+    // calls to mean() are quite cheap so these won't cause any performance drop
+    if (!node.hasChild()) {
+      varianceSum += ((double)(traverseDepth - mean()) * (traverseDepth - mean()));
+    }
+  }
+
+  public void printTree(PrintWriter printWriter) {
+    traverseDepth = 0;
+
+    printNode(rootNode, printWriter);
+  }
+
+  private void printNode(Node node, PrintWriter printWriter) {
+    if (node == null) {
+      return;
+    }
+
+    ++traverseDepth;
+    printNode(node.getLeftChild(), printWriter);
+
+    for (int i = 0; i < traverseDepth; ++i) {
+      printWriter.print("---");
+    }
+
+    printWriter.printf("%c(%d)%n", node.getValue(), traverseDepth - 1);
+
+    printNode(node.getRightChild(), printWriter);
+    --traverseDepth;
+  }
+
+  private final Node rootNode;
+
+  private Node currentNode;
+
+  private int insertionDepth, traverseDepth, maxDepth;
+  private int meanSum;
+  private int externalNodes;
+  private int nodeCount;
+
+  private double varianceSum;
+}]]>
+</programlisting>
+
     </section>        
         
     <section>
         <title>,,Gagyi''</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/gagyi.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/gagyi.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A probléma az, hogy létezik valójában ugyanaz a kódunk és a kettő közötti különbség nem más mint, hogy az értékek eltérnek. És ha az egyik verziót futattjuk le akkor nem tapasztalunk semmi eltérést a megszokottól. Viszont ha  a másik értékekre futattjuk le, akkor egy végtelen ciklusba futunk, aminek az elkövetője az alábbi kis while ciklus.
+</para>
+<programlisting language='java'>
+<![CDATA[while (x <= t && x >= t && t != x);]]>
+</programlisting>
+<para>
+Szóval a fenti kódrész egyszer problémát okoz máskor pedig nem. Ami csak azért fura, mert a program során nem csinálunk mást mint integer típúsokat hasonlítunk össze. De nézzük meg először azt a részt, ami nem okoz problémát.
+</para>
+<programlisting language='java'>
+<![CDATA[public class gagyi {
+	public static void main (String[] args) {
+		Integer x = -128;
+		Integer t = -128;
+		System.out.println(x);
+		System.out.println(t);
+		while (x <= t && x >= t && t != x);
+	}
+}]]>
+</programlisting>
+<para>
+A fenti kódban látszólag nincs semmi különleges sem. Van két változónk és azokhoz hozzárendeljük a -128-at. Ami meglepő, hogy ez a kód az, ami nem okoz problémát. Viszont ha kicseréljük a kódot a következőre, akkor végtelen ciklusba futunk.
+</para>
+<programlisting language='java'>
+<![CDATA[public class gagyi {
+	public static void main (String[] args) {
+		Integer x = -129;
+		Integer t = -129;
+		System.out.println(x);
+		System.out.println(t);
+		while (x <= t && x >= t && t != x);
+	}
+}]]>
+</programlisting>
+<para>
+Itt érdemes megjegyezni, hogyha az Integer kulcszót int-re cseréljük, akkor a problémánk meg is oldódik. Ebből tehát az következik, hogy az Integer osztály a ludas a végtelen ciklusért. Ennek viszont még pontos magyarázatát később fogom frissíteni, de valami olyasmiről van szó, hogy arra jöttek rá, hogy 8 bites számokat elég gyakran használnak az emberek. Azaz -128 és 127 közöttieket és az Integer osztályban ezek lekreálódnak és iyenkor csak referenciát kapunk rájuk.
+</para>
     </section>        
 
     <section>
         <title>Yoda</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/yoda.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/yoda.java</link>	               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Yoda kondicíóknak azt a programozási stílust nevezzük, ahol a konstans tagot a kifejezés bal oldalára helyezzük. Ennek csak annyi oka van, hogy, ha használjuk ezt az egyszerű szabályt, akkor kevesebb hibába ütközünk. Mivel előfordúlhat, hogy összehasonlítás helyett véletlen az assign operátort használjuk. Viszont yoda kondicíókkal a kompiler szólni fog. Hasonlóan mint konstansok esetén. Valamint így el lehet kerűlni pár null értékes hibát.
+</para>
+<para>
+A feladat maga amúgy mondhatni nem volt különösebb kihívás. Nem kellet mást tenni mint eldönteni, hogy követni szeretné a felhasználi a yoda kondicókat és ha nem akkor kap egy nullpointer-es hibát.
+</para>
+<programlisting language='java'>
+<![CDATA[import java.util.Scanner;
+
+public class yoda {
+	public static void main(String[] args) {
+		System.out.println("Wish to follow yoda conditions do you, hmm");
+		Scanner input = new Scanner(System.in);
+		String answer = input.nextLine();
+		if(answer.equals("yes") || answer.equals("Yes")) {
+		System.out.println("Yes, hmmm.");
+		} else {
+			Boolean myBoolean = true;
+			if (myBoolean = null) { /* ... */ }
+		}
+	}
+}]]>
+</programlisting>
+<para>
+Ahogy fent látható ez egy igazán egyszerű program. yoda beszédstílusban megkérdezzükű, hogy szeretné-e követni a kondicíókat és ha nem akkor a wikipédiánál megadott példa kerül futásra az if else ágánál, ami megadja nekünk a kívánt hibát. Talán egy prompt jel hiányzik, vagy az, hogy milyen lehetőségei vannak a felhasználónak és egyértelműbb lenne a válasz.
+</para>
+<para>
+Maga a yoda kondicíió onnan származik amúgy, hogy a stars wars nevezetű filmben szereplő Yoda is a nem megszokott sorrendben beszél. És ehhez a fajta beszédhez amúgy létezik is generétor, ami a normális szöveget "yoda beszéddé" alakítja.
+</para>
     </section>        
 
     <section>
         <title>Kódolás from scratch</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/PiBBP.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/arroway/PiBBP.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Valami oknál fogva az emberek szeretnek számolni vagy legalábbis egy részük. És ebből az okból kifolyólag szeretnék mondjuk a pi értékét is kiszámolni minél pontosabban. Erre újabb és újabb módszerek vannak és ez a program egy ilyen matematikai képleten alapszik, ahol a pi értékét lehet meghatározni hexadecimálisban egy adott ponttól számítva.
+</para>
+<para>
+A feladat úgy, ahogy a cím javasolta magamtól kezdtem meg, azonban időhiányában félúton átváltottam a megadott kódra. Habár így is felismerhetően hasonlnó megoldásokkal használtam, ami kissé meglepett. Habár a hexadecimális modulo implementálását kihagytam, mivel hírtelen nem vettem figyelembe. :( De azt hiszem ezt kizárva is sikeresnek könyvelhető el a  kódolási élmény rész. 
+</para>
+<para>
+Tehát a kész kódot igazából csak annyit változtattam, hogy akárhanyadik poziciótól kezdve tudjon számolni és ezt az értéket parancssori argumentumként "kéri" be.
+</para>
+<programlisting language='java'>
+<![CDATA[    public static void main(String args[]) {
+        int position = Integer.parseInt(args[0]);          
+        System.out.print(new PiBBP(position));
+}]]>
+</programlisting>
+<para>
+Ezután a képletnek megfelelően meghíjuk négyszer a függvényeket különböző paraméterrel.
+</para>
+<programlisting language='java'>
+<![CDATA[        double d16S1t = d16Sj(d, 1);
+        double d16S4t = d16Sj(d, 4);
+        double d16S5t = d16Sj(d, 5);
+double d16S6t = d16Sj(d, 6);]]>
+</programlisting>
+<para>
+A függvény, amit meghív az nem más mint a dokumentációban szereplő szummás rész. Itt igazából a modulóval kell vigyázni, de teljesen egyértelmű. Érdemes megjegyezni, hogy a for ciklusnál ha jó eredmény szeretnénk visszakapni, akkor kisebb egyenlőként kell megkapnunk, mivel az utolsó iteráció így lesz jó.
+</para>
+<programlisting language='java'>
+<![CDATA[    public double d16Sj(int d, int j) {
+        
+        double d16Sj = 0.0d;
+        
+        for(int k=0; k<=d; ++k)
+            d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+        
+        return d16Sj - StrictMath.floor(d16Sj);
+}]]>
+</programlisting>
+<para>
+Az így kapott 4 részértéket már csak vissza kell helyettesíteni, ahol még szorzunk, összeadunk és kivonunk.
+</para>
+<programlisting language='java'>
+<![CDATA[ d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;]]>
+</programlisting>
+<para>
+Így kaptunk egy double-t, ami 0 és egy közé esik. Ezt már csak át kell váltanunk hexadeimálisba, ami nem fog másból állni mint, hogy 16-al szorozuk és hozzárendeljjuk a megfelelő hexadecimális karaktert majd stringként visszaadjuk.
+</para>
+<programlisting language='java'>
+<![CDATA[       Character hexaJegyek[] = {'A', 'B', 'C', 'D', 'E', 'F'};
+        
+        while(d16Pi != 0.0d) {
+            
+            int jegy = (int)StrictMath.floor(16.0d*d16Pi);
+            
+            if(jegy<10)
+                sb.append(jegy);
+            else
+                sb.append(hexaJegyek[jegy-10]);
+            
+            d16Pi = (16.0d*d16Pi) - StrictMath.floor(16.0d*d16Pi);
+        }
+        
+        d16PiHexaJegyek = sb.toString();
+}]]>
+</programlisting>
+<para>
+Most ha kipróbáljuk, akkor kicsit eltérő eredményeket kapunk mint a dokumentációban megadott, ez azért lehetséges, mert a szummás rész másik fele nincs implementálva. Szóval egy későbbi időpontban mégiscsak befejezem a saját implementációmat majd.
+</para>
     </section>        
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
