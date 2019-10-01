@@ -11,5 +11,6 @@ public class yoda {
 			Boolean myBoolean = true;
 			if (myBoolean = null) { /* ... */ }
 		}
+		System.out.println("Good, you followed my contion I sense.  Herh herh herh.");
 	}
 }
