@@ -10,55 +10,316 @@
         <title>Liskov helyettesítés sértése</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/liskovrafigyel.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/liskovrafigyel.cpp</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/liskovsert.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/liskovsert.cpp</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/liskov.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/liskov.java</link>              
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+
+<para>
+A liskov helyettesítési szabályt Barbara Liskov fogalmazta meg egy konferencián. A lényege az, hogy objektum orientált nyelvek esetén, úgy osztályokat létrehozni. Pontosabban az osztályok között lévő öröklődésnek úgy kell működnie, hogy ha van egy osztályunk, aminek tulajdonságait más osztály vagy osztályok is örökölnek. Akkor a szülő osztály kicserélhető akármelyik szármeztatott osztályra. Mivel a származtatott osztály működése nem más csak a szülő osztály működésének valamilyen kibővítése. Tehát ha nekünk az alap osztály funkció kellenek, akkor logikus, hogy akármelyik származtatott osztályt használhatjuk, mivel midnegyik tartalmazza azt az implementációt. És Liskov szabálya szerint akármelyik gyerek osztályra cserélve a programunknak nem szabad negatív hatásoktól szenvednie. Azaz a liskov helyettesítési szabály nem más mint objektum orientált programozási nyelvekhez egy jó tanács.
+</para>
+<para>
+A sazbályt többféleképpen lehet megsérteni. Ez alatt azt értem, hogy példáúl attól, hogy nem követjük még a programunk lefordúl, le is fut csak logikailag lesz hibás. Vagy pedig az is lehetséges, hogy ha más osztályra cseréljük ki, akkor futás során hibaüzenetet kapunk.
+</para>
+<para>
+A c++-os példa esetében logikai hibába ütközünk. Mivel nem csinálunk mást különböző madarakat definiálunk osztályokban. És azt a hibát követjük el, hogy a származtatott madár osztály tud repülni. Pedig a valóságban nem minden madár képes erre. Így a programunk logikailag hibás lesz.
+</para>
+<programlisting language='c++'>
+<![CDATA[class Madar {
+public:
+     virtual void repul() {};
+};
+
+class Sas : public Madar
+{};
+
+class Pingvin : public Madar // ezt úgy is lehet/kell olvasni, hogy a pingvin tud repülni
+{};]]></programlisting>            
+<para>
+Ha nem szeretnénk megsérteni a liskov szabályt, akkor azon a hibás feltevésünkön kell javítani, hogy minden madár tud alapból repülni. Ezért a madár osztályba más jellemzőket gyűjtünk. Példáúl, hogy tud enni, járni stb. és ezeket a tulajdonságokat örökli egy olyan osztály, ahol a repülést definiáljuk. Így el tudjuk dönteni, hogy melyik osztályból szeretnénk továbbadni tulajdonságokat, hogy logaikailag se legyen hibás a programunk.
+</para>
+<programlisting language='c++'>
+<![CDATA[class Madar {
+
+};
+RepuloMadar : public Madar {
+public:
+     virtual void repul() {};
+};
+
+
+class Sas : public RepuloMadar
+{};
+
+class Pingvin : public Madar // most a pingvin nem tud repülni
+{};]]></programlisting>
+<para>
+Ugyanez a probléma java esetén így néz ki, ahol a megoldás ugynaz lesz. Igazából ami itt lényeges eltérés az az, hogy itt az extends kulcsszó használatával tudjuk az öröklődést végrehajtani.
+</para>
+<programlisting language='java'>
+<![CDATA[class bird{
+    public void fly(){
+
+    }
+}
+class duck extends bird{}
+class ostrich extends bird{}]]>
+</programlisting>
     </section>        
 
     <section>
         <title>Szülő-gyerek</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/downcasting.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/downcasting.cpp</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/downcasting.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/downcasting.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Maga a feladat megoldása nem igényel mást mithogy létrehozzunk két osztályt, ahol az egyik a másiktól örökli a tulajdonságait. Majd a származtatott osztályt használva. Majd így bemutatni c++ illetve java nyelveken, hogy ha a származtatott osztályt catoljuk az alap osztály típúsára, akkor csak a szülő osztály metódusai/változói lesznek elérhetőek és a gyereké nem.
+</para>
+<para>
+A folyamatot magát, amikor egy gyerek osztályt szűlővé alakítunk csatolás segítségével downcastingnak nevezzük. Ennek ellentettjét pedig upcastingnak. Ezen kívűl létezik még dynamic casting, de egyelőre ez most lényegtelen számunkra.
+</para>
+<para>
+A példától eltekítve a downcastingnak van szerepe a programozásban, de ez nem annyira gyakori. Legalábbis amennyit eddig láttam belőle.
+</para>
+<para>
+De nézzük, hogyan lehet ezt megvalósítani először java esetében.
+</para>
+<programlisting language='java'>
+<![CDATA[class Base {
+    public void basePrint() {
+        System.out.println("base class");
+    }
+}
+class Derived extends Base {
+    public void  derivedPrint() {
+        System.out.println("derived class");
+    }
+}
+
+public class downcasting {
+
+    public static void main(String[] args) {
+        Derived dClass = new Derived();
+        dClass.basePrint();
+        dClass.derivedPrint();
+        ((Base)dClass).basePrint();
+        //((Base)dClass).derivedPrint(); //downcast esetén itt hibát kapunk
+    }
+}]]>
+</programlisting>
+<para>
+A fenti kód az egész programot mutatja. Létrehoztunk két osztályt, majd a származtatott osztályt példányosítjuk és ekkor nyugodtan használhatjuk mindkét metódust. Azonban downcastolás után csak a zülőé működik.
+</para>
+<para>
+C++-ban is ugynez a helyzet viszont ott máshogy néz ki a csastolás. Java esetén elég barátságos.
+</para>
+<programlisting language='java'>
+<![CDATA[((Base)dClass).basePrint();]]>
+</programlisting>
+<para>
+Míg c++ esetén kicsit csúnya.
+</para>
+<programlisting language='c++'>
+<![CDATA[	Derived test;
+	Base* test1 = (Base*)&test;
+test1->baseMethod();]]>
+</programlisting>
+<para>
+Csak úgy mejegyzésképp java esetén az upcasting az automatikus ezért ott nem kell még külön arra se figyelni, hogy jól legyen zárójelezve.
+</para>
     </section>        
         
     <section>
         <title>Anti OO</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/BBP.c">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/BBP.c</link>,
+<link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/BBP.cs">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/BBP.cs</link>,
+<link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/BBP.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/BBP.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Programozás során nem csak az fontos, hogy programunk ne okozzon problémát. Ez alatt nem csak az értendő, hogy leforduljon a forráskód. Hanem az is, hogy szemantikai hiba se legyen benne. És az esetleges az előforduló hibákat kezeljük. Az is fontos, hogy a program mennyi idő alatt fut le a programunk. Ezt tapasztalattal lehet javítani, hogy úgy írjuk meg a programot, hogy az minél hatékonyabb legyen. Másik tényező ebben a témában az, hogy milyen programozási nyelvet használunk. Különböző programozási nyelvek különböző erősségekekkel és futási idővel rendelkeznek.
+</para>
+<para>
+Futási idő mérése ezekeben a példákban úgy zajlik, hogy megnézzük egy adott helyen a program futása során, hogy mennyi az idő. Ezt célszerű az előtt elkezdeni, mielőtt ahhoz a részhez érnénk, aminek a futási idejére vagyunk kiváncsiak. Majd a végén újra lekérjük az időt és kivonjuk a kezdetiből. 
+</para>
+<para>
+C# esetén így néz ki. Lekérjük az időt, kivonjuk, majd másodpercben kiírjuk.
+</para>
+<programlisting language='c'>
+<![CDATA[System.DateTime kezd = System.DateTime.Now;
+System.TimeSpan delta = System.DateTime.Now.Subtract(kezd);
+System.Console.WriteLine(delta.TotalMilliseconds/1000.0);]]>
+</programlisting>
+<para>
+C
+</para>
+<programlisting language='c'>
+<![CDATA[clock_t delta = clock ();
+delta = clock () - delta;
+printf ("%f\n", (double) delta / CLOCKS_PER_SEC);]]>
+</programlisting>
+<para>
+Java
+</para>
+<programlisting language='java'>
+<![CDATA[long delta = System.currentTimeMillis();
+delta = System.currentTimeMillis() - delta;
+System.out.println(delta/1000.0);]]>
+</programlisting>
+<para>
+Most hogy már tudjuk, hogyan kell időt mérni, már csak be kell dobni a forráskódokba és megnézni mennyi ideig tart egyes nyelveken.
+</para>
+<para>
+A futási időt nagyban befolyásolja az is, hogy meilyen gépünk van és hogy mennyire van leterhelve. Nyílván kisebb terheltség alatt jobban teljesít.
+</para>
+<para>
+C# esetén 10^6 értéket 2.8031596 sec alatt futattja le visual studion belűl. Ha csak simán futatnám az exe fájlt ezen még lehetne javítani.
+</para>
+<para>
+C++ esetén még lehetőség van párhuzamosítani, aminek implementálása későbbre csúszik, majd a teljes táblázatokkal.
+</para>
     </section>        
 
     <section>
         <title>Hello, Android!</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/SMNISTSurfaceView.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/SMNISTSurfaceView.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A feladat maga egy tökéletes világban úgy nézne ki, hogy vagy tudja a hallgató, hogy mégis mit próbál csinálni, vagy kap egy igen jól használható leírást. Ez az én esetemben úgy nézett ki, hogy még igen hamar rájöttem, hogy androidos program létrehozásához talán jó ötlet lenne valamijen IDE használata, ami mondjuk pont támogat adnroid alkalmazás fejlesztést. Szerencsére kitűnő megérzésem nem hagyott cserben, aminek köszönhetően az én választásom az Android Studio nevezetű program lett. Aminek köszönhetően végülis sikerűlt elérni a leírásban szereplő kritériumot, miszerint csak a színvilágot kell módosítani. Vagy legalábbis a színösszetétellel egy nehézségi szinten lévő dolgokat. Gondolom ez elhelyezkedést/méretet próbál jelenteni.
+</para>
+<para>
+A feladat könnyűségén felbuzdúlva abban a pillanatban töltöttem és telepítettem a szívem választotta Android Stuidiot, azt gondolva, hogy ez egy könnyű és gyors feladat lesz. De még mielőtt belemerűlnék magába a folyamatba íme a csoda, amit műveltem.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/Untitled.png" scale="75" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Mentségemre szóljon, hogy a program megírása során elég sokszor kaptam rajtam kívűl álló ok miatt hibát. Példáúl az IDE szerint az android emulátor már futott közben nem és emiatt törölni kellet neki egy .lock fájlt, vagy futattás közben úgy döntött, hogy ő most nem szeretne lefordúlni mert hiába nincs hiba a kódban neki nem tetszik. Tehát volt néhány hátráltató tényező, ami miatt nem úgy haladtam mint szerettem volna és emiatt ennél a kissé használhatatlan verziónál maradtam. De ha ez nem elfogadható hajlandó vagyok rajta finomítani.
+</para>
+<para>
+Ilyen hiba pl a következő annak ellenére, hogy előzőleg működött és én semmit nem változtattam
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/Untitled2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+De nézzük magát a folyamatot, ahogyan eljutottam idáig. Miután telepítve lett a környezet, mivel csak forráskódok vannak és nem magát a projectet kaptuk meg, így kénytelenek vagyunk magunk lekreálni. Célszerű egy üres projectben kezdeni és ha a package nevet megváltoztatni hu.blog.bhaxor.smnistforhumansexp3-ra cserélni mert így később nem kell átírni a fájlokban. Ezután attól függően, hogy ezt megtettük bemásoljuk a megfelelő helyekre a forrásokat és átírjuk, vagy csak másolunk mert előre gondolkoztunk.
+</para>
+<para>
+De itt nincs vége, mivel ez régi fájlokat szeretne iimportálni vagy csak nekem nincs telepítve valami az sdk-k kötül ezért az adonroid.support.v7.blalbalba dologra azt fogja mondani, hogy nem létezik. Amire többféle megoldást találtam. Példáúl dependecies-hez írjunk oda egy sort, ami nem segített. Helyette át kell írni adnroidx-re és onnan importáljon, ami megoldotta a gondot.
+</para>
+<para>
+Így hosszas órák után eljutottam idáig és ha kell még módosítok rajta.
+</para>
+<programlisting language='java'>
+<![CDATA[textPaint.setColor(Color.YELLOW);
+        textPaint.setStyle(android.graphics.Paint.Style.FILL_AND_STROKE);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextAlign(android.graphics.Paint.Align.CENTER);
+        textPaint.setTextSize(80);
+
+        msgPaint.setColor(Color.MAGENTA);
+        msgPaint.setStyle(android.graphics.Paint.Style.FILL_AND_STROKE);
+        msgPaint.setAntiAlias(true);
+        msgPaint.setTextAlign(android.graphics.Paint.Align.LEFT);
+        msgPaint.setTextSize(40);
+
+        dotPaint.setColor(Color.LTGRAY);
+        dotPaint.setStyle(android.graphics.Paint.Style.FILL_AND_STROKE);
+        dotPaint.setAntiAlias(true);
+        dotPaint.setTextAlign(android.graphics.Paint.Align.CENTER);
+        dotPaint.setTextSize(50);
+
+        borderPaint.setStrokeWidth(20);
+        borderPaint.setColor(Color.BLACK);
+        fillPaint.setStyle(android.graphics.Paint.Style.FILL);
+fillPaint.setColor(android.graphics.Color.rgb(255,238,255));]]>
+</programlisting>
+
     </section>        
 
     <section>
         <title>Ciklomatikus komplexitás</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/c_complexity.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/liskov/c_complexity.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Programozás során az egyik fontos tényező, hogy hibamentes kódra törekejünk. Vagy, hogy megfelelően tudjuk tesztelni a programunkat. Erre léteznek szoftverek is, amik ezt próbálják segíteni. Illetve valaki nagyon sokat gondolkozik a forráskódján at remélve, hogy nem lesz benne hiba.
+</para>
+<para>
+A ciklomatikus komplexitás segítségével azonban könnyíthetünk megunkon, olyan szempontból, hogy az adott programra kiszámolva megkapjuk, hogy mennyire bonyolult és a tesztelési opciókat is segítni.
+</para>
+<para>
+Ennek kiszámítására több módszer is leheetséges. De az alap képlet így néz ki M = E - N + 2P. Ahol E az élek száma, N a csomópontok és P az összekötött kompónensek.
+</para>
+<para>
+Érdemes amúgy a forráskód control flow gráfját felrajzoni, mivel úgy egyszerűbb összeszámolni a kiszámításhoz szükséges dolgokat. A gráfhoz az alábbi szabályokat kell alkalmazni.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/c_flow.jpg" scale="80" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Ennek tudatában már egyszerűen fel tudjuk rajzolni a programok gráfját. Az alábbi program esetén példáúl így fog kinézni.
+</para>
+<programlisting language='java'>
+<![CDATA[	public static void main(String[] args) {
+		System.out.println("Wish to follow yoda conditions do you, hmm");
+		Scanner input = new Scanner(System.in);
+		String answer = input.nextLine();
+		if(answer.equals("yes")) {
+		System.out.println("Yes, hmmm.");
+		} else {
+			Boolean myBoolean = true;
+			if (myBoolean = null) { /* ... */ }
+		}
+	System.out.println("Good, you followed my contion I sense.  Herh herh herh.");
+	}
+}]]>
+</programlisting>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/graph.jpg" scale="10" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Ebből pedig már könnyen megkapható a képletbe behelyetessítve, hogy a komplexitása a programnak M = 12 - 11 + 2*1 azaz 3.
+</para>
+<para>
+Egy másik módszer ami ennél is egyszerűbb az pedig az, hogy a kezdő csomópontot és az utolsó csomópontot összekötjük és megszámoljuk a programbam gráfjában a lyukakat. Ami nem meglepő módon szintén 3-at fog adni.
+</para>
     </section>        
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                
