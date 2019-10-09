@@ -1,0 +1,326 @@
+@startuml
+
+title OOCWC's Beautiful Classes
+
+package "justine" #dddddd
+{
+package "robocar" #bbbbbb
+{
+class Car 
+{
+    #traffic: Traffic&
+    #m_type: CarType
+    #m_from: unsigned_object_id_type
+    #m_to: unsigned_object_id_type
+    #m_step: unsigned_object_id_type
+    +Car()
+    +init()
+    +step()
+    +from()
+    +to()
+    +get_step()
+    +get_type()
+    +set_type()
+    +to_node()
+    +get_max_steps()
+    +nextEdge()
+    +nextSmarterEdge()
+    +print()
+}
+
+class AntCar
+{
+    {static} alist: AdjacencyList
+    {static} alist_evaporate: AdjacencyList
+    -md: bool
+    +AntCar()
+    +nextSmarterEdge()
+    +print()
+    +ant()
+    +ant_rnd()
+    +ant_rernd()
+    +ant_mrernd()
+}
+
+class SmartCar
+{
+    -m_guided: bool
+    -m_routed: bool
+    -route: vector<unsigned int>
+    +SmartCar()
+    +step()
+    +init()
+    +print()
+    +get_guided()
+    +set_route()
+    +nextEdge()
+    +nextGuidedEdge()
+    +set_fromto()
+}
+
+class CopCar
+{
+    #m_num_captured_gangsters: int
+    #m_name: string
+    +CopCar()
+    +print()
+    +get_name()
+    +get_num_captured_gangsters()
+    +captured_gangsters()
+}
+
+enum CarType
+{
+    NORMAL
+    POLICE
+    GANGSTER
+    CAUGHT
+}
+
+class SmartCity
+{
+    #segment: managed_shared_memory*
+    #shm_map: offset_ptr<shm_map_Type>
+    #m_delay: int
+    #m_run: bool
+    -m_mutex: mutex
+    -m_cv: condition_variable
+    -m_thread: thread
+    -m_waynode_locations: WaynodeLocations
+    -m_busWayNodesMap: WayNodesMap
+    -m_way2nodes: Way2Nodes
+    -m_way2name: WayNames
+    -m_remover: shm_remove*
+    +SmartCity()
+    +SmartCity()
+    +~SmartCity()
+    +node2way()
+    +proccesses()
+    +city_run()
+    +busWayLength()
+}
+
+class CarLexer
+{
+    -m_cmd: int
+    -name: char[128]
+    -num: int
+    -role: char
+    -m_ermumber: int
+    -m_guided: bool
+    -route: vector<unsigned int>
+    -m_id: it
+    -from: unsigned int
+    -to: unsigned int
+    +yylex()
+    +get_name()
+    +get_role()
+    +get_num()
+    +get_errnumber()
+    +get_guided()
+    +get_cmd()
+    +get_id()
+    +get_route()
+    +get_from()
+    +get_to()
+}
+
+class SharedData
+{
+    +m_alist: uint_vector
+    +m_salist: uint_vector
+    +m_palist: uint_vector
+    +lon: int
+    +lat: int
+    +SharedData()
+}
+
+class OSMReader
+{
+    +onewayc: int
+    +onewayf: int
+    #vert: Vertices
+    #nOSM_nodes: int
+    #nOSM_ways: int
+    #nOSM_relations: int
+    #sum_unique_highway_nodes: int
+    #sum_highway_nodes: int
+    #sum_highway_length: int
+    #edge_multiplicity: int
+    #nbuses: int
+    #max_edge_length: double
+    #mean_edge_length: double
+    #cedges: int
+    #loctions: OSMLocations
+    -m_estimator: size_t
+    -alist: AdjacencyList&
+    -palist: AdjacecyList&
+    -waynode_locations: WaynodeLocations&
+    -busWayNodesMap: WayNodesMap&
+    -way2nodes: Way2Nodes&
+    -way2name: WayNames&
+    +OSMReader()
+    +~OSMReader()
+    +get_estimated_memory()
+    +edge()
+    +node()
+    +way()
+    +relation()
+    +distance()
+}
+
+enum TrafficType
+{
+    NORMAL
+    ANT
+    ANT_RND
+    ANT_RERND
+    ANT_MRERND
+}
+
+class Traffic
+{
+    #segment: managed_shared_memory*
+    #shm_map: offset_ptr<shm_map_Type>
+    #m_delay: int
+    #m_run: bool
+    #m_catchdist: double
+    -m_size: int
+    -m_time: int
+    -m_minutes: int
+    -m_mutex: mutex
+    -m_cv: condition_variable
+    -m_thread: thread
+    -cars: vector<shared_ptr<Car>>
+    -m_smart_cars: vector<shared_ptr<SmartCar>>
+    -m_cop_cars: vector<shared_ptr<CopCar>>
+    -m_smart_cars_map: map<int, shared_ptr<SmartCar>>
+    -cars_mutex: mutex
+    -m_type: TrafficType
+    -logFile: fstream*
+    -logfile: string
+    +Traffic()
+    +~Traffic()
+    +proccesses()
+    +get_title()
+    +node()
+    +traffic_run()
+    +steps()
+    +pursuit()
+    +nedges()
+    +alist()
+    +alist_inv()
+    +salist()
+    +set_salist()
+    +palist()
+    +hasNode()
+    +start_server()
+    +cmd_session()
+    +naive_node_for_nearest_gangster()
+    +dst()
+    +dst()
+    +toGPS()
+    +naive_neareset_gangster()
+    +get_type()
+    +get_time()
+    -addCop()
+    -addGangster()
+}
+Traffic -- TrafficType
+Car -- CarType
+Car <|-- SmartCar
+Car <|-- AntCar
+SmartCar <|-- CopCar
+}
+package "sampleclient" #bbbbbb
+{
+class ShmClient
+{
+    #shm_map: offset_ptr<shm_map_Type>
+    -segment: managed_shared_memory*
+    +ShmClient()
+    +~ShmClient()
+    +start()
+    +get_random_node()
+    +num_edges()
+    +alist()
+    +alist_inv()
+    +salist()
+    +set_salist()
+    +palist()
+    +hasNode()
+    +dst()
+    +dst()
+    +toGPS()
+    +toGPS()
+    -foo()
+    -init()
+    -gangsters()
+    -pos()
+    -car()
+    -route1()
+    -route2()
+}
+
+class MyShmClient
+{
+    #nr_graph NodeRefGraph*
+    #m_teamname: string
+    -nr2v: map<unsigned_object_id_type, NRGVertex>
+    +MyShmClient()
+    +~MyShmClient()
+    +start()
+    +start10()
+    +num_vertices()
+    +print_edges()
+    +print_vertices()
+    +bgl_graph()
+    +hasDijkstraPath()
+    -foo()
+    -init()
+    -gangsters()
+    -initcops()
+    -pos()
+    -car()
+    -route()
+    -route()
+}
+
+class Typedef_Cop
+{
+    
+}
+hide Typedef_Cop circle
+hide Typedef_Cop methods
+
+class Typedef_Gangster
+{
+    
+}
+hide Typedef_Gangster circle
+hide Typedef_Gangster methods
+
+class struct_SmartCar
+{
+    +id: int
+    +from: unsigned
+    +to: unsigned
+    +step: int
+}
+hide struct_SmartCar circle
+hide struct_SmartCar methods
+MyShmClient +-- Typedef_Cop
+MyShmClient +-- Typedef_Gangster
+MyShmClient +-- struct_SmartCar
+ShmClient <|-- MyShmClient
+
+}
+}
+class struct_shm_remove
+{
+    +name: char const*
+    +shm_remove()
+    +~shm_remove()
+}
+hide struct_shm_remove circle
+@enduml
