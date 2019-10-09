@@ -12,31 +12,153 @@
         <para>
             Megoldás forrása:                
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A feladat megoldása nem igényel semmi mást minthogy, a védési feladatot reverse engineering módszer segtségével létrehozzunk egy UML class diagramot. Az UML diagram röviden átláthatóvá teszi a programunkat. vagyis pontosabban inkább a programunk felépítésést, mivel a diagram képet ad majd a programunk osztályairól, változóiról, metódusairól. Tehát röviden áttekinthetőbb lesz és így egyszerűbb tervezni, hogy mit szeretnénk.
+</para>
+<para>
+Persze mint minden más esetben itt is fontos egy jó program megtalálása, hogy egyszerübbé tegyük életünket. Először Valami bouml nevezetű csodához volt szerencsém, de tőle hamar meg kellet válnom. Habár elvileg ott is meg lehet csinálni és még ingyenes is. De viszont az a program alavetően nem ngyon szerette a magyar karaktereket. De lehetséges, hgoy csak én nem vettem észre, hogy hol lehet változtatni a karakter kódolást.
+</para>
+<para>
+Ami viszont könnyűvé tette ezt az a Visual Paradigm volt. Aminek igaz van commuinity edition verziója is, ami ingyenes, csak az nem támogatja a reverse engineering-et... Szóval miután a próbaverziót telepítettük nincs is igazából sok dolgunk. Tools>Code>Instant reverse és az alábbi kis ablakot kapjuk.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/asd.png" scale="65" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Itt megadjuk a programozási nyelvet, a forrást/forrásokat esetleg a karakterkódolást. Majd feldokgozza a forrásunkat és a következő diagramot kapjuk.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/BinFaUML.png" scale="70" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+És innen leolvashatjuk, hogy a Csomópont és LZWBinFa osztályok között kompozíció van, mivel tömött rombusszal vannak összekötve.
+</para>            
     </section>        
 
     <section>
         <title>Forward engineering UML osztálydiagram</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/mandelbrot/fromUML">https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/mandelbrot/fromUML</link>              
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Az előző feladathoz hasonlóan most is UML diagramot fogunk használni, de most nem kódból fogunk előállítani egy class diagramot, hanem előbb létrohozzuk csodálatos diagramunkat és abból generálunk forráskódot. Ezt a folyamatot forward engineering-nek hívják. Nyílván így nem fogunk mást kapni mint egy üres vázat, ahol csak a függvényeket, metódudokat, osztályokat és változókat kapjuk meg. Azok a programok, amik támogatják a reverse engineering-et is miután megírtuk a saját implementációnkat és az UML diagramon változtatunk a már megadott implementációt be fogja helyettesíteni a megfelelő helyre.
+</para>
+<para>
+Szerencsére Visual Paradigm segítségével ezt is meg tudjuk oldani, amihez nem kell mást, mint hogy létrehozunk egy új diagramot. Pontosabban egy új class diagramot. Ekkor kapunk egy felületet, ahol tudunk rajzolgatni osztályoknak téglalpot stb.
+</para>
+<para>
+Kreativitás hiányában összedobtam egy ilyet, aminek nincs túl sok értelme, de legalább két osztályból áll, ahol öröklődés is van.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/UMLExample.png" scale="85" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Fogalmam sincs itt mi volt a kezdetleges elképzelés, de a Student osztálynak vannak privát változói és publikus metódusai. # a protectedet jelöli, + a publikus és - a privát. Valamint a A Student osztálynak a Something osztály a szülő osztálya.
+</para>
+<para>
+Generálás után kapunk két header fájlt és két c++ forrás fájlt
+</para>
+<programlisting language='c++'>
+<![CDATA[class Student : Something {
+
+private:
+	int ID;
+	int age;
+	int gender;
+	int creditIndex;
+	int eMailAddress;
+
+public:
+	Student();
+
+	void getCreditIndex();
+
+	void setCreditIndex(int creditIndex);
+
+	void getEMailAddress();
+
+	void setEMailAddress(int eMailAddress);
+
+	void doNothingDuringLesson();
+};]]>
+</programlisting>
     </section>        
         
     <section>
         <title>Egy esettan</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/mandelbrot/ProductInventory">https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/mandelbrot/ProductInventory</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A BME-s könyv könyvben találtható esettanulmány rész során szemléltett kódcsipetekből kellet létrehozni ezt a gyönörűséges programot. Ami alapvetően nem egy nagy kihívás vagy legalábbis nem kellene annak lennie, mivel elég bőbeszédesen van leírva a program, ráadásúl a forráskódok is meg vannak adva hozzá és csak össze kell rakni azokat.
+</para>
+<para>
+Mivel kétlem, hogy részletesebben tudok beszélni magáról a programról, mint ahogy le van írva, így a teljes leírását hanyagolnám és inkább maga a folyamat során tapasztalatokról beszélnék valamint néhány érdekesebb dolgot emelnék ki a kódból.
+</para>
+<para>
+Szóval mint egy normális hallgató gondolkoztam a feladat begépelésén, aztán rájöttem, hogy lehet egyszerűbb lenne csak magáról a forráskódról csinálni képeket. Majd egy OCR progi használatával kinyerni a forráskódokat majd csak futattni a programot és így megírtam életem legegyszerűbb programját. Erre visszagondolva persze már eltudom mondani, hogy egy borzalmas ötlet, mivel a kódok össze-vissza vannak több header és c++ forrásfájlban. Arról nem is beszélve, hogy az első OCR onlie szolgáltás, amit próbáltam a sorvégeket nem igazán akarta figyleembe venni és így az egysoros kommentek miatt még azzal is babrálnom kellet volna.
+</para>
+<para>
+szóval kissé megtörve, de készen a feladatra hozzákezdtem a források megírásához, ami nem állt kb másból csak a köynvből való másolásból. Ami alapvetően nem volt nehéz, csak nem mindig rágta a számba, hogy melyik forráskód hova megy és volt hogy pár dolog eleinte rossz helyre került, de később ezek összeálltak, hogy hova is kéne, hogy kerüljenek.
+</para>
+<para>
+Szóval ezek után már csak futattni kell és mindenki boldog lesz. Főleg én, mivel még egy feladat kész lesz. De igazából, amivel szembesültem, az néhány hibüzenet, ami arról beszél, hogy nem talál pár dolgot... Mert hát elírtam.... Szóval ezek után kevésbé sem megtörve kijavítottam az olyan elírásokat mint "vecctor" és társai. Majd fordítanám újra és linker hibával szembesülök, ami már jó. Mert hát ugye ki az, aki IDE-t használ, amikor parancssorból is lehet futattni. Szóval igen miután realizálódott bennem, hogy lehet mostmár ideje lenne használni egy ilyen programnál, ahol elég sok cpp fájl van inkább megadtam neki az összes forrást az alábbi módon
+</para>
+<programlisting>
+<![CDATA[g++ [összes cpp fájl] -o sajt]]>
+</programlisting>
+<para>
+Majd az alábbi csodát kaptam....
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/JustSmile.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Ami annyira nem volt vészes hiba, mert csak nem találja a strlen és strncpy függvényeket. Amiket a string.h tartalmazza, amit még ekkor nem is includoltam, csak mivel az iostream-nek része azt hittem így is működni fog, de nem. Szóval még egy include és már működik is.
+</para>
+<para>
+Na de, amit érdekesnek találtam a program során az az alábbi.
+</para>
+<programlisting language="c++">
+<![CDATA[virtual Product* createProduct(char typeCode) const = 0;]]>
+</programlisting>
+<para>
+Virtual az csak annyit tesz, hogy az implementációt az örökölt osztály felülírhatja. = 0-el viszont pure virtual function, ami annyit tesz, hogy ha nem implementáljuk később, akkor nem is használhatjuk.
+</para>
     </section>        
 
     <section>
@@ -45,20 +167,77 @@
         <para>
             Megoldás forrása:                
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+BPMN segítségével folyamatábrákat lehet készíteni. A feladat során nem volt kikötés, hogy miről kell ezt a folyamatábrát létrehozni, szóval saját kreativitásomra bíztam magam.
+</para>
+<para>
+De előtte még pár szót magának a BPMN diagram jelöléséről/típúsairól. A körök eventeket jelölnek, amiket arra használnak, hogy valamilyen olyan eseményt jelöljenek, ami egy adott időben történik példáúl egy vizsga. Ezeknek az eventeknek 3 fajtája van. Létezik kezdő, ami értelem szerűen a kezdő helyzetet adja meg, ezt egy sima kör jelöli. Van végső event, ami a végeredményt adja meg, ami egy vastagabb vonalvastagsággal jelölt kör. Valamint kezdő és végső eventek közötti eventek is léteznek, amik az előbb leírt időbeliségre utalnak és dupla kör jelöli. A lekerekített sarkú négyzetek maguk a lépések. És vannak még gatewayek, amiből van elég sok. Ezeket egy sarkára állított négyzet jelöl valamilyen belső szimbólummal társulva, ami a gateway fajtáját jelzi. A gatewayek döntéseket jelölnek, azaz nem feltétlen igaz/hamis értékeket jelölnek. A kizáró gateway-t egy x jelöl és két eset közül lehet választani. Event-based event hasonlóan működik az előzőhöz, azzal a feltétellel, hogy azt nézi, hogy melyik event következett be. Ezt egy ötszög jelöl. Párhuzamos gatewaynek egy plusz a jele és itt nem választásról van szó, hanem, hogy egyszerre történnek a dolgok. Az előző kettő kombinációjából létezik parallel event-based gateway, ami a kettő tulajdonságát kombinálja. Inclusive gateway esetén lehtőségünk van több mint 2 elágazást létrehozni. Valamint létezik még komplex gateway, ami bonyolult. A részek közötti átmentet pedig nyilak jelzik.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/BPMN.png" scale="50" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Szóval ezt a csodát hoztam létre, ami elég egyértelmű szerintem, hogy mit szeretne szimbolizálni. Nem mondom, hogy tökéletes, mert lehetne még itt-ott finomítani rajta. De így is viszonylag jó képet ad egy küzködő egyetemi hallgató életéről. Ha esetleg ez túl egyszerű, akkor lehet majd finomítok rajta.
+</para>
     </section>        
 
     <section>
         <title>TeX UML</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/mandelbrot/TeXUML.txt">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/mandelbrot/TeXUML.txt</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Itt egy elég nagy projektről kellet UML diagramot készíteni méghozzá TeX UML-ben. Szóval sajnálatos módon itt nem fog az működni, hogy összeszedjük a header fájlokat és Visual Pradigm segítségével rögtön meg is kapjuk az eredményt. Azonban könnyíthetünk a saját fájdalmunkun mert generálhatunk csak azért UML diagramot, hogy tudjuk mit kell majd beleraknunk az UML diagramba. Így nem nekünk kell majd a header fájlokat lapozni, hanem csak a már kész UML diagramot másolni.
+</para>
+<para>
+Én erre a célre PlantText online felületét használtam, godolom az elég TeX UM-es volt. Vagyis remélem.
+</para>
+<para>
+Szóval itt a diagram az egész OOCWC projektről. Viszont érdemes megjegyezni, hogy én azt másoltam, amit már megkaptam UML diagramba, szóval, ha valamelyik fájlt elfelejtettem behúzni oda akkor az kiamardt. Valamint voltak változók, amik duplán jelentek meg szóval nem feltétlen tökéletes, de jónak néz ki.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/TeXUML.png" scale="28" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Itt amúgy színekkel jelöli, hogy privát, protected vagy éppen publikus-e, a változónk/metódusunk.
+Piros jelöli a privátot, kék a publikus és sárga a protected. Amit aláhuzottan jelöl az pedig statikus. Typedef valamint struktúra jelölésére nem volt lehetőség, szóval ott osztályokat használtam és eltüntettem pér részüket.
+</para>
+<para>
+És íme egy példa egy egyszerűbb class leírására.
+</para>
+<programlisting>
+<![CDATA[class AntCar
+{
+    {static} alist: AdjacencyList
+    {static} alist_evaporate: AdjacencyList
+    -md: bool
+    +AntCar()
+    +nextSmarterEdge()
+    +print()
+    +ant()
+    +ant_rnd()
+    +ant_rernd()
+    +ant_mrernd()
+}]]>
+</programlisting>
+
     </section>        
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                
