@@ -7,14 +7,347 @@
     </info>
 
     <section>
-        <title>...</title>
+        <title>Encoding</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/mandelbrot">https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/mandelbrot</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A feladat lényege annyi, hogy a fenti linken található mandelbrotos java programot le tudjuk fordítani, ami önmagában nem állna másból mint az alábbi parancsból, legalábbis linux esetén pranancssort használva. 
+</para>
+<programlisting>
+<![CDATA[javac MandelbrotHalmaz.java]]>
+</programlisting>
+<para>
+Majd ezután vagy megmondja a compiler, hogy valamit nagyon erősen elcsesztünk és pancserek vagyunk vagy lefordítja és kapunk egy .class kiterjesztésű fájlt. Amit egy másik paranccsal tudunk futattni.
+</para>
+<programlisting>
+<![CDATA[java MandelbrotHalmaz.class]]>
+</programlisting>
+<para>
+Ez egy egyszerű világban legalábbis így működne. De szerencsére létezik egy olyan dolog, hogy karakter kódolás, ami kicsit megbonyolítja a dolgokat.
+</para>
+<para>
+De először a karakterkódolásról röviden. Annyit kell róla tudni, hogy már rég a modern számítógépek előtt is létezett karakterkódolás, aminek akkor és most is az a lényege, hogy tárolandó, továbbítandó információt valamilyen módon le tudjuk írni. Példáúl a ha karaktereket akarunk tárolni ascii kódolással minden karakter 7 bittel van leírva. Persze ez azt jelentené, hogy összesen 128 karakter jeleníthető meg. De valójában csak 95 nyomtatható karaktert tartalmazott. Mivel a vezérlő karakterek is foglalnak helyeket le. Később hogy ezt a problémát orvosolják új kódolásokat vezettek be. Példáúl ilyen az UTF8, ami már barátságosabb több írásmód számára és egy szervezet tartja rendben, hogy mindenféle karktert lehessen használni.
+</para>
+<para>
+És az egész lényege, az hogy a karakterek egy bitsorozatként vannak ábrázolva és különböző kódolás esetén más karaktereket kapunk. Ebből az következik, hogy ha példáúl egy java program során magyar karaktereket akarunk használni, akkor ott lehetnek problémák abból az okból kifolyólag, ha nem a megfelelő kódolást használjuk.
+</para>
+<para>
+Így a fenti példa program sem fog alapból lefordúlni, mivel magyar ékezetes karaktereket tartalmaz. De nem kell kétségbe esni, mert szerencsére a java compilernek, azt is meg lehet adni, hogy milyen karakter kódolást használjon az alábbi módon. 
+</para>
+<programlisting>
+<![CDATA[javac -encoding [character coding] [java file]]]>
+</programlisting>
+<para>
+És már csak arra kell rákeresnünk, hogy melyik országnak milyen karakter kódolást ajánlanak. Ami során, ha le akarjuk fordítani a programot az alábbi módon tehetjük meg.
+</para>
+<programlisting>
+<![CDATA[javac -encoding iso-8859-2 MandelbrotHalmaz.java]]>
+</programlisting>
+<para>
+Persze el lehet ezzel is szórakozni, hogy direkt rossz kódolást adunk meg és megnézzük milyen karaktereket fog visszadobni.
+</para>
+<para>
+És csak úgy hasznos információ ként windows esetén a konzol karakterkódolását a chcp paranccsal lehet megváltoztatni.
+</para>
     </section>        
+
+    <section>
+        <title>l33d1c4</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/leet.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/leet.cpp</link>               
+        </para>
+<para>
+1337 szöveget még mindig menő írni, aminek annyi értelme van, hogy, azok, akik 1337 "nyelven" nyelven írnak egy felsőbbrendű faj tagjai.
+</para>
+<para>
+De viccet félretéve maga a leet írás elég régi. Amit még az internetes világ elején találtak ki. Röviden és egyszerűen annyiról van szó, hogy egyes karaktereket, ami jelen esetben lefedi az angol abc összes betűjét, egy másik karakterrel helyettesítünk vagy szándékos elírásokat is használhatunk. Ez a helyettesített karakter álltalában olyan, amibe lehet lehet látni az eredeti karaktert. Ennek csak annyi értelme van/volt, hogy ha valaki ilyen módon írt, akkor azt a kereső botok nem listázták ki, mivel ők az eredeti karakterlánc szerint kerestek.
+</para>
+<para>
+A leet-nek is van több változata, van amelyik kevésbbé és van amelyik könyebben olvasható. Én a feladat megoldása során wikipédiáról megtalálható táblázatot használtam, aminek 1 leet sorát használtam csak. bár lehet később megadok többet is, hogy nagyobb legyen a változatosság. 
+</para>
+<programlisting language="c++">
+<![CDATA[
+struct charLeetPair
+{
+	char chr[26] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+	std::string chrLeet[26] = {"4", "8", "<", "|)", "3", "|=", "[", "4", "1", "_|", "|<", "|_", "44", "|\\|", "0", "|o", "O_", "|2", "5", "7", "|_|", "\\/", " \\/\\/", "%", "`/", "2"};
+} leet;]]>
+</programlisting>
+<para>
+A fenti táblázat mutatja a rendes betűk és azok leet megfelelőjét, ahol \\ látható az csak azt jelenti, hogy a \ karaktert egy escape karakter előz meg, hogy a fordító ott ne vegye figyelembe a \ sajátos jelentését. 
+</para>
+<para>
+Magát a programot én úgy írtam meg, hogy paranccsori argumentumként is lehessen leet szövegre konvertálni és fájlból is képes legyen rá. Előbbi esetén csak beírjuk magát a szöveget, fáj esetén pedig adunk neki egy -i kapcsolót.
+</para>
+<para>
+Maga a konverzió az úgy néz ki, hogy végig megyünk minden karakteren egyessével és minden leet párost megnézünk mellé, hogy megegyezik-e és ha igen, akkor cseréünk egyet a replace függvénnyel. Valamint ügyelünk arra, hogy nehogy véletlen azért ne tudjuk átalakítani a szöveget leetre, mert nagybetűvel írtuk. 
+</para>
+<programlisting language="c++">
+<![CDATA[for (int x = 0; x < args[i-1].length(); x++)
+				{
+					for (int y = 0; y < 26; y++)
+					{
+						if(tolower(args[i-1][x]) == leet.chr[y])
+						args[i-1].replace(x, 1, leet.chrLeet[y]);
+					}
+				}]]>
+</programlisting>
+<para>
+Persze ezen lehetne javítani, példáúl, hogy ha már felcseréltük a karaktereket, akkor megszakíthatjuk a belső ciklust és rögtön mehetünk a következőre. Vagy akár a karakter párosokat rendezhetjük előfordulási gyakoriság szerint, hogy az előbb említett breakel használva még hatékonyabb legyen.
+</para>
+<para>
+Még gondolkozom rajta, hogy javítsak rajta olyan szinten, hogy több féle leet írásmódot ismerjen. Illetve java nyelven is megírjam-e és esetleg a két nyelv közötti különbségekre is térjek ki.
+</para>
+    </section>
+
+    <section>
+        <title>Full screen</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/MainClass.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/MainClass.java</link>               
+        </para>
+<para>
+Idő hiányában maradtam a kezdetleges programnál, de ezen még lesz alakítva, mivel elég egyszerű, de legalább könnyebb leírni, hogy hogyan is működik az egész.
+</para>
+<para>
+Szóval maga a feladat nem más, mint, hogy egy teljes képernyős java programot hozzunk léntre. Ez persze elég halvány leírás, szóval csak, hogy ne egy fekete képek kelljen bámulni én kezdetben úgy döntöttem, hogy egy képet jelenítsen meg teljes képernyőben, ami nem sokkal bonyolultabb, de legalább valami és mint említettem ezen később még lesz módosítva, hogy kicsit izgalmasabb legyen.
+</para>
+<para>
+Szóval én pár dolgot beimportáltam, de magához a teljes képernyős képhez és egy kép megjelenítéséhez, amik fontosak azok az alábbiak.
+</para>
+<programlisting language="java">
+<![CDATA[import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Window;
+import java.awt.image.BufferedImage;
+import java.io.File;]]>
+</programlisting>
+<para>
+Szóval először is tudnia kéne a programunknak, hogy melyik képernyőt vegye igénybe, ha több van, illtetve, hogy van-e egyáltalán teljes képernyős mód mint támogatott opció. Erre tudjuk használni a GrapicsEnvireonment-et és annak segítségével lekérjük az alapértelmezett kijelzőt.
+</para>
+<programlisting language="java">
+<![CDATA[    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice screen = ge.getDefaultScreenDevice();
+
+    if (!screen.isFullScreenSupported()) {
+      System.out.println("Full screen mode not supported");
+      System.exit(1);
+    }]]>
+</programlisting>
+<para>
+Ezután már nincs mit csinálnunk mint a megadott képet megjelenítsük a képernyőn teljes képernyős módban. De mint jó programozók tudjuk, hogy ez hibát okozhat, mert mi történik, ha a kép nem létezik. Ezért ezt az egészet egy try catch blokkba tesszük csak a biztonság kedvéért.
+</para>
+<programlisting language="java">
+<![CDATA[    try {
+      BufferedImage loadedpic = ImageIO.read(new File("asd.png"));
+      screen.setFullScreenWindow(new MainClass(loadedpic));
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
+    }
+  }]]>
+</programlisting>
+<para>
+Valamint még érdemes megjegyezni, hogy az osztályunk az a Window osztály gyereke ezért tudjuk használni a super kulcsszót, ami nem tesz mást mint a szülő osztálybeli implementációt használja.
+</para>
+<programlisting language="java">
+<![CDATA[super(new Frame());]]>
+</programlisting>
+<para>
+Most hogy van egy teljes képernyős képünk jó lenne ha valahogy egyszerűen ki tudnánk lépni belőle. Mondjuk egy gomb lenyomására vagy hasonlóan. Ennek egy egyszerű változata, ha agérkattintást nézünk. Amihez nem kell mást csinálnunk, csak megdani egy listenert, ami figyelni, ha kattintunk és leállítja a programot.
+</para>
+<programlisting language="java">
+<![CDATA[
+    addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        System.exit(0);
+      }
+    })]]>
+</programlisting>
+    </section>
+
+    <section>
+        <title>Paszigráfia Rapszódia OpenGL full screen vizualizáció</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/para6.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/para6.cpp</link>               
+        </para>
+<para>
+Bátfai Tanár Úr egy kísérleti programja, ami mesterséges intelligenciával foglalkozna. De maga a feladat mint az androidosnál is volt csak annyi, hogy kisebb változtatásokat eszközöljünk nem nagyon mélyednék bele a programba, már persze amennyire tudnék.
+</para>
+<para>
+Szóval erősen csak az apróbb módosítgatásokra koncentrálva először nyíéván működésre kell bírnunk az alap programot. Ami nem nehéz mert megvan adva, hogy hogyan kell fordítani. És talán a legegyszerűbb módja az, hogy megpróbáljuk lefordítani és megnézzük milyen fájlokat nem talál. Majd telepítjük és újra fordítani próbáljuk.
+</para>
+<para>
+Az első ilyen a boost könyvtár lesz, amit gyorsan orvosolni is tudunk az alábbi módon.
+</para>
+<programlisting>
+<![CDATA[sudo apt install libboost-all-dev]]>
+</programlisting>
+<para>
+Ezután a megadott módon újra fordítani próbáljuk, de megmint baja lesz egy glut.h fájllal, amit hasonlóan tudunk orvosolni.
+</para>
+<programlisting>
+<![CDATA[sudo apt-get install freeglut3-dev]]>
+</programlisting>
+<para>
+És csak, hogy rövid legyen ez a rész. Ezzel a módszerrel még a libsdl valamint a libsdl-image könyvtárakat is telepíteni kell és készen is vagyunk. Az egész csak pár percet vesz igénybe, szóval eddig mindenki boldog.
+</para>
+<para>
+Itt jön az a rész, hogy én először a para12.cpp-t próbáltam fordítani, ami mostmár le is fordúlt csak futattáskor képeket kér. És mint szorgalmas hallgató mi mást tennék, mint megnézném, hogy a para6.cpp-hez kell-e megadni képet. És örömünkre ami megszabadít minket attól a thertől, hogy 6 képet összeszedjünk a programnak.
+</para>
+<para>
+Szóval fordítunk majd futattjuka a programot és ez a gyönyörűség fogad minket. Ami nem rossz, de valahogy nem az igazi. Olyan nagyon egyszínű.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/PRO.png" scale="85" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Az átszínezéshez nem kell igazából sokmindent csinálni csak rákeresni a color részekre és kicsit átírkálni az értékeket.
+</para>
+<programlisting language="c++">
+<![CDATA[glColor3f ( 0.818f, .00f, 0.824f );]]>
+</programlisting>
+<para>
+Valamint még a megjelenített kép felbontását is módosíthatjuk, vagy úgy hogy árírjuk a magasság és szélesség értékeket. Vagy pedig a végén szorozzuk be azokat az értékeket.
+</para>
+<programlisting language="c++">
+<![CDATA[int w = 640;
+int h = 480;
+glutInitWindowSize ( w*1.5, h*0.7 );]]>
+</programlisting>
+<para>
+És csak úgy véletlenszerűen nézegetve a kódot az alábbi kis kódrészletre lehetünk figyelmesek. Amit jól átírva igazva átlátszóvá tehetjük a négyzeteket.
+</para>
+<programlisting language="c++">
+<![CDATA[bool transp {true};]]>
+</programlisting>
+<para>
+Még persze lehetne szórakozni a forgatással, de azt kihagytam.
+</para>
+<programlisting language="c++">
+<![CDATA[
+        GLfloat rotx = 0.0f;
+        GLfloat roty = 0.0f;
+        GLfloat rotz = 0.0f;]]>
+</programlisting>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/PRO1.png" scale="80" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Szóval ezzel a csodával álltam elő és mondhatni elég színes lett. Bár kissé érdekes, hogy ennyire rózsaszínre sikerűlt alkotnom csak véletlen változtatgatásokkal.
+</para>
+    </section>
+
+    <section>
+        <title>Perceptron osztály</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/ml.hpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/ml.hpp</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/main.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/main.cpp</link>               
+        </para>
+<para>
+Először is szeretném tisztázni a feladat megoldása kapcsán, hogy alapvetően a lua-s forrással próbálkkoztam és többszöri nekifutásra sem sikerűlt úgy váltaottam erre, ami miatt végül nem sikerűlt ezt a programot mőködésre bírni, mert a png++ valamit nem szeretett telepítés közben úgyhogy csak a forrással és magyarázattal tudok szolgálni egyelőre.
+</para>
+<para>
+png++-os gyönyörűség vége.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/png++.png" scale="90" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Kicsit hosszú lua error log vége.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/asdf.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+A perceptron nem más mint egy algoritmus model, ami az emberi agy működését próbálja utánozni. Hasonló a neurális hálóhoz azonban van pár különbség. Számos vector alapján "egyenes következtetést" próbál levonni, viszont még a belső állomásoknak is van súlya, amit igazítani próbál és jobb esetben megfelelő mintavétel után helyes eredményt ad vissza. Az így kapott súlyokat összeadja és ha ez elér egy bizonyos szintet, akkor a program adott része aktiválódik, pont úgy mint egy idegsejt esetén. És egy a lineáris folyamat ismétlődik amíg el nem jut a
+válaszig.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/perceptron.png" scale="18" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Itt maga a header fájl a perceptron és a cpp fájlban használjuk a perceptron kimenetét.
+</para>
+<para>
+Kérünk egy perceptront a képünk méretével.
+</para>
+<programlisting language="c++">
+<![CDATA[Perceptron* p = new Perceptron (3, size, 256, size);]]>
+</programlisting>
+<para>
+Készítünk egy másolatot.
+</para>
+<programlisting language="c++">
+<![CDATA[
+    double* image = new double[size];
+    
+    for (int i = 0; i<png_image.get_width(); ++i)
+        for (int j = 0; j<png_image.get_height(); ++j)
+            image[i*png_image.get_width() + j] = png_image[i][j].red;]]>
+</programlisting>
+<para>
+Majd a perceptron kimenetét is hozzáadjuk és lementjük a fájlt.
+</para>
+<programlisting language="c++">
+<![CDATA[
+    for (int i = 0; i<png_image.get_width(); ++i)
+        for (int j = 0; j<png_image.get_height(); ++j)
+        {
+            png_image[i][j].red = value[i*png_image.get_width() + j];
+            png_image[i][j].green = value[i*png_image.get_height() + i];
+        }
+    
+    png_image.write("result.png");]]>
+</programlisting>
+<para>
+Képet jelenleg nem tudok mutatni az elején leírtak miatt, de ezt miahamarabb pótolom.
+</para>
+    </section>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 </chapter>                
