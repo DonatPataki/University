@@ -24,7 +24,7 @@ public class MainClass extends Window {
     }
 
     try {
-      BufferedImage loadedpic = ImageIO.read(new File("/home/hallgato/Letöltések/boost_1_71_0/boost.png"));
+      BufferedImage loadedpic = ImageIO.read(new File("asd.png"));
       screen.setFullScreenWindow(new MainClass(loadedpic));
     } catch (Exception e) {
       System.err.println(e.getMessage());
