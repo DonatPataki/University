@@ -1,0 +1,21 @@
+planets {
+    display: table;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+}
+
+planet {
+    display: table-row;
+}
+
+name {
+    display: none;
+}
+
+name:lang(en), iauAbbrev, symbol {
+    display: table-cell;
+    padding: 0.5em;
+    border: thin solid gray;
+}
