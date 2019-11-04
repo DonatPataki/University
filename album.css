@@ -7,11 +7,13 @@ album {
     margin-top: 1em;
     box-shadow: 0.5em 0.5em 0.5em gray;
     padding: 0.5em;
+    width: fit-content;
 }
 
 artist, album > title, year {
     font-size: x-large;
     margin-bottom: 0.5em;
+    display: inline-block;
 }
 
 year::before {
@@ -28,6 +30,8 @@ artist::after {
 
 tracks {
     display: table;
+    width: 100%;
+    counter-reset: track-number;
 }
 
 track {
@@ -37,4 +41,26 @@ track {
 length, track > title {
     display: table-cell;
     padding: 0.5em;
+}
+
+length {
+    text-align: right;
+}
+
+track > title::before {
+    content: counter(track-number) ".";
+    counter-increment: track-number;
+    width: 2em;
+    text-align: right;
+    margin-right: 0.5em;
+    display: inline-block;
+}
+
+track:nth-child(odd) {
+    background-color: whitesmoke;
+}
+
+track:hover {
+    background-color: gold;
+    font-weight: bold;
 }
