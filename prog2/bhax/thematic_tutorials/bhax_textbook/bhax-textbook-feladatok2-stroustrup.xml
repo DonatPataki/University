@@ -7,14 +7,465 @@
     </info>
 
     <section>
-        <title>...</title>
+        <title>JDK osztályok</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/filelisting.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/filelisting.cpp</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A feladat megoldása röviden nem igényel mást mint, hogy bejárjunk egy mappát és annak almappáit. A bejárás során pedig a .java kiterjesztésű fájlokat kiírjuk. Mivel a feladat azt is előírja, hogy boost könyvtárt használjuk, ami boost nem más mint egy függvénykönyvtár csokor c++ nyelvre. Ennek használatával sok olyan funkcióhoz kapunk függvényt, amit magunknak kéne megírni, mivel az alap könyvtárak nem tartalmazzák. Azaz gyorsbban tudunk forráskódokat írni, márha ismerjük a boost függvényeket. A telepítést  elvégezetjük a boost honlapján leírás során vagy linuxon a következő paranccsal is telepíthetjük, ha túl lusták lennénk.
+</para>
+<programlisting>
+<![CDATA[sudo apt install libboost-all-dev]]>
+</programlisting>
+<para>
+Most hogy telepítve lettek a boost könyvtárak csak includolni kell a fájrendszerek kezelését leíró header fájlokat és boldogak lehetünk, mert nem kell magunknak megírni a fájlkezelést.
+</para>
+<para>
+Még mielőtt azonban áttérnénk a program megírására érdemes megjegyezni, hogy c++17-től az alap függvénykönyvtár is tartalmaz filesystem függvénykönyvtárt, így a boost használata a feladat során nem feltétlen kötelező. Ez az implementáció, amúgy elég előrsen merítkezik a boost megvalósításaiból. Ezt mi sem bizonyítja jobban mint példáúl a nevek megegyezése is több név megegyzeése is. Érdemes viszont még megjegyezeni, hogy a feladat megoldása során a cppreference.com erre a könyvtárra még kísérletiként tekint. Tehát nem biztos, hogy minden operációs rendszeren a kívánt eredményt kapjuk.
+</para>
+<para>
+Most hogy a zárójeles standard librarys rész is említésre került jöhet maga a program.
+</para>
+<para>
+Szóval röviden annyit szeretnénk a programtól, hogy megkap egy elérési útvonalat és azt, hogy milyen kiterjesztést keresünk és visszadobja a fájlokat. Bár maga a feladat kifejezetten azt kérte, hogy a java src osztályát és a .java kiterjesztéseket. De mivel nem nagy változtatás és maga a program nem lesz speicifikus ehhez a feladathoz, így én úgy oldottam meg, hogy az adott mappában és annak almappábaiban keresi azt a kiterjesztéstípúst, amit parancssori argumentumként adtunk meg.
+</para>
+<para>
+Mivel parancssori argumentumként kér két adatot, így először ellenőrizzük, hogy elég lett-e megadva és ha nem, akkor kiírjuk, hogy hogyan is kéne lefuttatni a programot.
+</para>
+<programlisting language="c++">
+<![CDATA[    if(argc != 3)
+    {
+    	std::cout << "Usage: ./a.out [path] [extension]\n";
+    	return 1;
+    }]]>
+</programlisting>
+<para>
+Ezután átadjuk a kvánt mappát, amire szeretnénk ráereszteni a keresést.
+</para>
+<programlisting language="c++">
+<![CDATA[    boost::filesystem::path p = argv[1];]]>
+</programlisting>
+<para>
+Hasonlóképpen a kersendő fájlkiterjesztést is átadjuk. Viszont érdemes arra figyelni, hogy nem egyértelmű, hogy hogyan is kéne megadni. Ezért ha . nélkül adná meg a felhasználó odarakjuk a program odarakja. Ennek később lesz jelentőssége, amikor bejárás során nézzük a fájlkiterjesztéseket.
+</para>
+<programlisting language="c++">
+<![CDATA[    std::string ext = argv[2];
+    if(ext[0] != '.')
+    	ext.insert(0, ".");]]>
+</programlisting>
+<para>
+Ezután ellenőrizzük, hogy a "mappa", amit a felhasználó megadott, valóban mappa-e.
+</para>
+<programlisting language="c++">
+<![CDATA[    if(is_directory(p)) {]]>
+</programlisting>
+<para>
+Ha valóban mappa, akkor rekurzívan bejárjuk és ha a fájlkiterjesztés megegyezik, akkor kiírjuk az elérési útvonalat.
+</para>
+<programlisting language="c++">
+<![CDATA[        for(auto& file : boost::make_iterator_range(boost::filesystem::recursive_directory_iterator(p), {}))
+            if (boost::filesystem::extension(file) == ext)
+            	std::cout << file << "\n";]]>
+</programlisting>
+<para>
+Ez még nem a legszebb megoldás, de mivel elérési útvonalakat ad vissza, így ezeket később fel lehet használni a program futása során. Példáúl akár arra is, hogy egy esztétikusabb megjelenítéshez felhasználjuk. De ezt valószínűleg akkor csinálom meg, ha lesz elég időm.
+</para>
     </section>        
+
+    <section>
+        <title>Másoló-mozgató szemantika</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/ctrs.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/ctrs.cpp</link>            
+        </para>
+<para>
+Az objetkum orientált programozási nyelvek, mint példáúl java vagy C# osztályokaban gondolkozik. És habár c++-ban is léteznek osztályok, de maga a compiler nem követeli meg azok használatát, mivel, azt amit meg lehet oldani osztályokkal, osztályok nélkül is meg lehet írni. Így teljesen a programozó kezében marad a döntés, hogy használni szeretné-e az az osztályok álltal nyújtott lehetőséget. Használatukkal ugyanis nagyban le lehet egyszerűsíteni bizonyos kódokat és mivel elég az osztályt példányosítani, így jelentősen áttekínthető is lesz.
+</para>
+<para>
+Az osztályokat tehát szeretjük, mert megkönyítík az életünket és lehetőséget adnak az OOP szemlélet használatára, ami röviden annyit nyelent, hogy objektumokban gondolkozunk és azokat próbáljuk leírni. Ez a szemlélet, amúgy elég közel áll ahhoz, hogy hogyan tekintünk a körölüttünk lévő világra és talán ezért is ennyire elterjedt.
+</para>
+<para>
+Most hogy tudjuk, hogy miért is szeretnénk használni osztályokat el kezdhetünk beszélni arról, hogy ha szeretnénk egy új objektumot létrehozni egy osztályból, akkor írhatnánk akár egy külön függvényt, amivel átadjuk a megfelelő paraméterértékeket, meghívunk függvényeket vagy valamilyen egyébb viselkedést leírunk. És minden egyes új osztály létrehozása után meghívjuk ezt, ami nem a legjobb megoldás, mert erről akár meg is feledkezhetünk. Ezt a hibalehetőséget orvosolja a constructor. Erre úgy lehet tekinteni, mitn egy speciális függvényre, ami mindig akkor fut le, amikor egy új elemet hozunk létre az osztályból anékül, hogy külön szólnánk neki. A constructor deklarálása úgy néz ki mint egy metódusé, viszont nincs visszatérítési értéke és a neve megegyezika az osztály nevével. Lehetőség van a constructor túlterhelésére is. Azaz többet is megadhatunk, ameddig a paraméterlista eltérő.
+</para>
+<para>
+A consturctoroknak lehetnek eltérő szerpei olyan szempontból, hogy mire használjuk azokat. Példáúl, ha már egy meglévő objektumot szeretnénk egy újba másolni, akkor másoló construcorról beszélünk. Vagy ha egy meglévő elem értékeit csak át szernénk adni egy új elemnek, akkor mozgató construcktorról beszélük, ami kevésbé erőforrásigényes mint a teljes másolás, mivel ott a végén két megegyzeő objektumunk lesz. Míg mozgatás esetén a kettőből, az egyik üres lesz, amit törlésre ítélünk.
+</para>
+<para>
+Érdemes megjegyezni azt, hogy ha a programunk pointereket használ, akkor ezeket a connstruktorokat magunknak kell megírni, mivel nem mély másolat fog történni, amit nem szertnénk. Valamint ha előbb létrehozzuk az alap constructorral egy példányt és később másolunk/mozgatunk, akkor másoló/mozgató értékadásról beszélünk.
+</para>
+<para>
+A másoló constructor során figyelünk a pointerektre és igazából minden átveszi a másik értékét.
+</para>
+<programlisting language="c++">
+<![CDATA[	example(example &other)
+	{
+		std::cout << "cpy ctr\n";
+		ptr = new int;
+		ptr = other.ptr;
+	}
+]]>
+</programlisting>
+<para>
+A másoló értékadás igazából ugyanez lesz csak a = operátort túlterheltjük és visszatérítjük az egészet.
+</para>
+<programlisting language="c++">
+<![CDATA[	example& operator=(const example &other)
+	{
+		std::cout << "cpy assign\n";
+		ptr = new int;
+		ptr = other.ptr;
+		return *this;
+	}]]>
+</programlisting>
+<para>
+Mozgató értékadás és mozgató constructor esetén, amiből mozgattunk nullpointerre állítjuk így az az erőforrás felszabadúl.
+</para>
+<programlisting language="c++">
+<![CDATA[	example(example &&other)
+	{
+		std::cout << "mv ctr\n";
+		ptr = other.ptr;
+		other.ptr = nullptr;
+	}
+
+
+	example& operator=(example &&other)
+	{
+		std::cout << "mv assign\n";
+		ptr = other.ptr;
+		other.ptr = nullptr;
+		return *this;
+	}]]>
+</programlisting>
+<para>
+Mozgatás vectorok esetén lehet előidézni egyszerűen push_back során vagy pedig a move()-al külön hívhatjuk a move constructort.
+</para>
+    </section>  
+
+    <section>
+        <title>Hibásan implementált RSA törés + összefoglaló</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/rsa.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/rsa.cpp</link>,<link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/rsabreak.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/rsabreak.cpp</link>               
+        </para>
+<para>
+Már a kezdetektől fogva felmerűlt az igény üzenetek/adatok titkosítására abból az okból kifolyólag, hogy léteznek olyan információk amikhez nem szeretnénk, hogy mindenki hozzáférhessen. Ha titkosításról beszélünk az informatikában akkot két fajtájáról beszélhetünk. Létezik szimetrikus és aszimetrikus titkosítás.
+</para>
+<para>
+A szimetrikus titkosítás annyit takar, hogy a titkosítani kívánt szöveget egy kulccsal titkosítjuk és később a titkosított szövegből ugyanazzal a kulccsal állítjuk elő a szöveget. Ez persze magában hordozza azt a sebezhetőséget, hogy elég sok próbálkozással meg lehet találni a kulcsot és így nem kívánt személyek is hozzájuthatnak a tárolt adatokhoz. Erre példa a már bevprogon használt törő program, ahol nem csináltunk mást mint egy stringet úgy titkosítottunk, hogy egy kulcsot megadtunk és karakterenként végigmentünk rajta és az éppen adott karaktert a kulcs éppen aktuális karakterével összeéseltünk. Ami legalább abból a szempontból jó, hogy gyakoriság alapján nem lehet megtörni. De mivel szimetrikus kulcsokat használ, így ha sok idő is, de mi is előállíthatjuk a kulcsokat.
+</para>
+<para>
+Ezzel szemben az aszimetrikus titkosítás nem kűzd ilyen hibával, mivel a titkosító kulcs és a titkosított szövegből tiszta szöveget előállító kulcs nem egyezik meg. És ha bár neki lehet esni, de jól megválasztott kulcsok esetén belátható időn belűl nem fogják megkapni a tiszta szöveget az arra nem jogosultak. Manapság inkább ezt a módszert használják, mivel a publikus kulcsokkal csak titkosítani lehet és ezért ezeket nyugodtan meg lehet osztani. A privát kulccsal pedig csak a tiszta szöveget lehet előállítani, tehát azt nem érdemes kiadni. Hátránya viszont, hogy jobban megterheli az erőforrásokat, így előfordulhat, hogy valamit először aszimetrikusan titkosítanak először. Majd néhány fontos információt megoszt a két fél és áttérnek szimetrikus titkosításra.
+</para>
+<para>
+Az RSA ilyen aszimetrikus titkosító módszer, amit első feltalálásukkor még titokban tartottak, majd később három professzor ismét feltatlálta, akiknek amúgy a neveik kezdőbetűiből jött az RSA és azóta ismert. Az RSA használatához először szükségünk van két prímpre és ezeket a prímeket kell titokban tartani, mivel ezek tudatában meg lehet kapni a privát kulcsot. Érdmes minél nagyobb prímeket választani, mert így exponenciálisan nehezebb lesz a szöveget megtörni és hamar elérjük azt az időhatárt, ahol mondhatni sosem lesz megtörve. Ezután a két prímet összeszorozzuk. Ezután jön a totient funkció, ahol fontos, hogy prímekkel dolgozunk, így egyszerű lesz megadni az értékeket. Alapvetően csak a prímekből kivonunk egyet-egyet és azokat szörozzuk össze. Ezután előállítjuk a publikus kulcsot, amit 1 és a totient funkció közben megkapott érték közé kell esnie és igaz, hogy a totient-vel relatív prím. Ezek után létrehozzuk a privát kulcsot is és boldogak vagyunk. Ez a programban ugyanebben a sorrendben így néz ki.
+</para>
+<programlisting language="c++">
+<![CDATA[int p1 = 53, p2 = 59;
+int n = p1 * p2;
+int pin = (--p1) * (--p2);
+int e = 3;
+int d = (2 * pin + 1) / e;]]>
+</programlisting>
+<para>
+Ezek után a publikus kulcssal titkosítani tudjuk olyan módon, hogy a szöveget a kulcs kitevőjére elmeljuk majd modulot számolunk nnel.
+</para>
+<programlisting language="c++">
+<![CDATA[void encrypt(const std::string& message)
+{
+	std::ofstream output;
+	output.open("encrypted", std::ios::app);
+	for (int i = 0; i < message.length(); i++)
+	{
+		output << (int)pow((double)message[i], e) % n;
+		output << "\n";
+	}
+	output.close();
+}]]>
+</programlisting>
+<para>
+A fenti kódrészletben azért írok minden titkosított karaktert új sorba, hogy könyebb elkülöníteni a karaktereket.
+</para>
+<para>
+Most hogy ezzel is megvagyunk titkosítva van a szövegünk méghozzá RSA módszerrel, ami azt jelenti, hogy a viszonylag sose lesz megtörve. De ez így nem pontosan igaz, mivel a titkosítás során e a lényeges és azt mindenhol használtuk. Ami azt jelenti, hogy gyakoriság alapján meg lehet törni, mivel ugynazok a karaktereket ugyanazt a titkosított értéket vették fel.
+</para>
+<para>
+A törés röviden úgy néz ki, hogy megnézzük melyik titkosított karakterek hányszor fordúlnak elő. Majd megnézzük, hogy az adott nyelven milyen karakterelőfodrulások jellemzőek és elé hosszú szöveg használatakor, ami akár már 100 karakter is lehet majdhogynem hibátlanul visszaadja az eredeti szöveget. Azért csak majdnem mert ha két karakter előfordulásának gyakorisága megyezik, akkor lehet, hogy azok felcsrélve lesznek behelyetessítve.
+</para>
+<para>
+Mivel nálam van a még nem titkosított szöveg is én így kicsit csaltam és ahelyett, hogy valós szöveget titkosítottam volna megszámoltam a még titkosítatlan szöveg karakterelőfordulását, ami kódban az alábbi módon néz ki. Röviden beolvassuk a szöveget és karakterenként egy map-ba tesszük, ahol a karakter lesz a kuls az előfordulás pedig a szám érték.
+</para>
+<programlisting language="c++">
+<![CDATA[	while (std::getline(text, line))
+	{
+		for (int i = 0; i < line.length(); i++)
+		{	
+			check = numOfChars.insert(std::pair<char,int>(line[i], 1));
+			if (check.second == false)
+			{
+				check.first->second++;
+			}
+		}
+	}]]>
+</programlisting>
+<para>
+Ezt akár ezután vagy később is, de még a decryption előtt, hogy könyebb legyen az életem felcseréltem a kulcs érték párokat, bár nem kötelező, de így jóval egyszerűbb lesz később.
+</para>
+<programlisting language="c++">
+<![CDATA[	for (itr = numOfChars.begin(); itr != numOfChars.end(); itr++)
+	{
+		reverse.insert(std::pair<int, char>(itr->second, itr->first));
+	}	]]>
+</programlisting>
+<para>
+Majd ha ezzel megvagyunk, akkor megszámoljuk a titkosított szöveg kódolt karakterek gyakoríságát is. Mivel kódolás során midig új sorba kezdtük, így most elég a sorokat mint egészeket nézni. És azokat az értékeket megszámolni.
+</para>
+<programlisting language="c++">
+<![CDATA[	while (std::getline(text, line))
+	{
+		check2 = encrypted.insert(std::pair<int,int>(std::stoi(line), 1));
+		if (check2.second == false)
+		{
+			check2.first->second++;
+		}
+		asd.push_back(std::stoi(line));
+	}]]>
+</programlisting>
+<para>
+Most hogy ezzel is megvagyunk most jön a megfeleltetés, ami annyiból áll, hogy megadjuk a mapnak az értékeket, amit szeretnénk. És a megfordított szövegnél az most a kulcs érték, azaz automatikusan visszadobja a karakter, amit nekünk csak ki kell írni.
+</para>
+<programlisting language="c++">
+<![CDATA[	std::ofstream output;
+	output.open("decrypted");
+	for (std::vector<int>::iterator it = asd.begin(); it != asd.end(); it++)
+	{
+		output << reverse[encrypted[*it]];
+	}
+	output.close();]]>
+</programlisting>
+<para>
+Ennek a módszernek csak annyi a hibája, hogy ha kettő vagy több karakter ugyanannyiszor fordúl elő, nem tudjuk a kulcs érték párokat csak úgy megfordítani.
+</para>
+<para>
+Valamint azt a problémát, hogy gyakoriság alapján ne lehessen megtörni úgy lehet orvosolni, hogy több e értéket adunk meg és hasonlóan a bevprogoshoz, sorba megyünk azon is át, így elég kulcs megadása után elég valószínűtlen, hogy ugyanaz a karakter mindenhol ugyanazt a titkosított értéket fogja felvenni.
+</para>
+    </section>  
+
+    <section>
+        <title>Saját string osztály</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.hpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.hpp</link>            
+        </para>
+<para>
+Még mielőtt elkezdek írni a stringekről és hogy én hogyan oldottam meg jelezném, hogy apróbb módosítások lesznek eszközölve a leíráson és a kódon is mert pl header fájlt nem így kéne használni, mint ahogy azt én csináltam...
+</para>
+<para>
+C++-ban több féle változótípus létzeik pl char, int stb. De mi van akkor, ha mi azt szeretnénk, hogy szövegeket reprezentáljunk. Erre a célra szoktunk stringeket használni, ami nem más mint egy karakterlánc. Pontosabban ha string literálokat használunk, akkor azok const char*-ként lesznek létrehozva. És igazából ez a C verziója a stringeknek.
+</para>
+<para>
+De mivel ezt megemlítettem felmerülhet a kérdés, hogy ha a stringek nem mások mint egy char pointer, akkor hogyan lehetséges az, hogy a többi karaktert is el tudjuk vele értni, hiszen a pointer csak egy adott memóriacímre kéne mutasson nem pedig az összes stringben szereplő karakterre. Ami igaz is, mivel a pointer az első karakterre mutat, de azt is tudni kell, hogy minden string null értékre végződik. Tehát az első karaktertől kezdve addig megy, aamíg el nem éri a null karaktert és azokat fogja kiírni. Ebből adódik, ha akár a string osztálynak vagy akár a const char*-nak a közepébe rakunk egy null karaktert, akkor nem kapjuk vissza a tejes karakterláncot.
+</para>
+<para>
+Ennek tudatában elkezdhetjük írni a saját string osztályunkat. Ahol nyílván szeretnénk magát a szövegeet tárolni és mondjuk azt is, hogy milyen hosszú. Bár ez utóbbi felesleges, mivel van függvényünk, ami visszaadja a string hosszát
+</para>
+<programlisting language="c++">
+<![CDATA[private:
+	char* text;
+	unsigned int size;]]>
+</programlisting>
+<para>
+Most hogy az alap váz megvan, jöhetnek a consturctorok és funkciók. Nyílván ha nem adunk értéket az osztálynak deklarációkor, akkor nem szeretnénk, hogy csináljon valami csúnya dolgot, így mindent nullára állítunk. Amire azért van szükség mert c++ esetén ha nem adunk értéket, akkor azzal dolgozunk, ami a memóriában maradt.
+</para>
+<programlisting language="c++">
+<![CDATA[	MyEpicStringClass()
+	{
+		size = 0;
+		text = NULL;
+	}]]>
+</programlisting>
+<para>
+És persze ha adunk értéket, akkor foglalunk helyet a memóriában, és arra is figyelve, hogy a végén egy null értékkel is lezérjuk.
+</para>
+<programlisting language="c++">
+<![CDATA[	MyEpicStringClass(const char* string)
+	{
+		size = length(string);
+		text = new char[size + 1];
+		for (int i = 0; i < size; i++)
+		{
+			text[i] = string[i];
+		}
+		text[size] = '\0';
+	}]]>
+</programlisting>
+<para>
+Maga a length funkció paraméterrel, addig számol, ameddig el nem ér egy null értékig és ha nem tároljuk le a string hosszát, akkor ennek kell mindig majd lefutnia.
+</para>
+<programlisting language="c++">
+<![CDATA[	unsigned int length(const char* string)
+	{
+		if (NULL == string)
+		{
+			return 0;
+		}
+
+		unsigned int counter = 0;
+
+		while (*string)
+		{
+			counter++;
+			string++;
+		}
+
+		return counter;
+	}]]>
+
+</programlisting>
+<para>
+Most hogy ez megvan érdemes egy destructort is létrehozni, hacsak nem szeretnénk, hogy a memória elfolyon. Erre azért van szükség mert pointereket használunk, amik nem kerülnek felszabasításra csak ha teljesen leállítjuk a progtamot.
+</para>
+<programlisting>
+<![CDATA[	~MyEpicStringClass()
+	{
+		delete[] text;
+	}]]>
+</programlisting>
+<para>
+És elérkeztünk arra a pontra, hogy string literálokat tudunk egy változóban tárolni. Ez mind szép és jó de még csak ki sem tudjuk iratni az értékét ugyhogy ehhez túl kell terhelni egy operátort.
+</para>
+<programlisting>
+<![CDATA[	friend std::ostream& operator<<(std::ostream& stream, const MyEpicStringClass& string)
+	{
+		stream << string.text;
+		return stream;
+	}]]>
+</programlisting>
+<para>
+Most hogy van egy nagyon alap osztályunk elkezdthetünk funkciókat adni hozzá. Mint példáúl, hogy egy karaktert is vissza tudjon adni. ezt az alábbi módon tehetjük meg.
+</para>
+<programlisting>
+<![CDATA[	char& operator[](unsigned int index)
+	{
+		return text[index];
+	}]]>
+</programlisting>
+<para>
+Ha magára string hosszára vagyunk kíváncsiak, akkor csak visszaadjuk a tárolt értéket vagy innen meghívjuk a számolást tartalmazó függvényt.
+</para>
+<programlisting>
+<![CDATA[	unsigned int length()
+	{
+		return size;
+	}]]>
+</programlisting>
+<para>
+Ha szeretnénk másoló constructor létrehozni, az igazából ugyanolan mint az alap constructor csak itt most a már létező objektumból fogjuk átmásolgatni az értékeket.
+</para>
+<programlisting>
+<![CDATA[	MyEpicStringClass(const MyEpicStringClass& old)
+	{
+		size = old.size;
+		text = new char[size + 1];
+		for (int i = 0; i < old.size; i++)
+		{
+			text[i] = old.text[i];
+		}
+		text[size] = '\0';
+	}
+]]>
+</programlisting>
+<para>
+Valamint ha már constructorunk van, akkor miért ne legyen másoló értékadás is. Itt kétszer lett túlterhelve az = operátor, azért hogy string literállal is működjön és más azonos objektumtípussal is. Itt először törölni kell és igazból a contructor lépéseit folytatjuk.
+</para>
+<programlisting>
+<![CDATA[	MyEpicStringClass& operator=(const MyEpicStringClass& string)
+	{
+		delete[] text;
+		size = string.size;
+		text = new char[size + 1];
+		for (int i = 0; i < size; i++)
+		{
+			text[i] = string.text[i];
+		}
+		text[size] = '\0';
+	}
+
+		MyEpicStringClass& operator=(const char* string)
+	{
+		delete[] text;
+		size = length(string);
+		text = new char[size + 1];
+		for (int i = 0; i < size; i++)
+		{
+			text[i] = string[i];
+		}
+		text[size] = '\0';
+	}]]>
+</programlisting>
+<para>
+Az is lehet hogy csak bővíteni szeretnénk egy stringet egy adott pizíciónál, ezért először ellenőrizük, hogy benne van-e egyáltalán az a pozíció, majd hozzunk létre egy idéiglenes másolatot, foglaljuk helyet és a megfelelő részre másoljuk be a régi/insertálandó tartalmakat. A null lezáró karakterről pedig ne feledkezzünk meg.
+</para>
+<programlisting>
+<![CDATA[	void insert(const char* string, const unsigned int position)
+	{
+		if (position > size)
+		{
+			throw "Out of index";
+		}
+		
+		unsigned int insertlength = length(string);
+		MyEpicStringClass temp = text;
+		delete[] text;
+		size += insertlength;
+		text = new char[size + 1];
+		int x = 0, y = 0, z = 0;
+		for (int i = 0; i < position; i++)
+		{
+			text[i] = temp[y];
+			y++;
+		}
+		for (int i = position; i < (position + insertlength); i++)
+		{
+			text[i] = string[z];
+			z++;
+		}
+		for ( int i = (position + insertlength); i < size; i++)
+		{
+			text[i] = temp[y];
+			y++;	
+		}
+		text[size] = '\0';
+	}]]>
+</programlisting>
+<para>
+Innentől kezdve pedig kicsit lustára vettem és ha a végénél szeretnénk bővíteni, akkor csak az insertálást a végére hívjuk meg.
+</para>
+<programlisting>
+<![CDATA[	void append(const char* string)
+	{
+		this->insert(string, size);
+	}]]>
+</programlisting>
+<para>
+Valamint ha szeretnénk, a + operátort túrterhelni, ami nyílván a végéhez másolná a dolgokat, akkor azt is könnyen megtehetjük már. Csak arra figyeljünk, hogy a másoló értékadáshoz hasonlóan itt is lehet char* és a már meglévő osztályunk egy objektuma.
+</para>
+<programlisting>
+<![CDATA[	MyEpicStringClass& operator+(const MyEpicStringClass& string)
+	{
+		this->append(string.text);
+		return *this;
+	}
+
+	MyEpicStringClass& operator+(const char* string)
+	{
+		this->append(string);
+		return *this;
+	}]]>
+</programlisting>
+    </section>  
+
+
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 </chapter>                

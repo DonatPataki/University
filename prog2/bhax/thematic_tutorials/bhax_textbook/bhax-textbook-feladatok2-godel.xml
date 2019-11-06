@@ -7,14 +7,358 @@
     </info>
 
     <section>
-        <title>...</title>
+        <title>Gengszterek</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/myshmclient.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/myshmclient.cpp</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+Bátfai Tanár Úr robot város szimulációjának egyik c++ forrásfájlában kell átírni egy sort, hogy labmdával rendezzük a gengsztereket. Maga a project amúgy arról szól, hogy Debrecen úthálózatán rendórök és gengszterek vannak és a rendőrök feladata a gengszeterek elkapása, míg a gengsztereké a rendőrök elkerülése.
+</para>
+<para>
+Az alap rendezés az alábbi módon néz ki.
+</para>
+<programlisting language='c++'>
+<![CDATA[  std::sort ( gangsters.begin(), gangsters.end(), [this, cop] ( Gangster x, Gangster y )
+  {
+    return dst ( cop, x.to ) < dst ( cop, y.to );
+  } );]]>
+</programlisting>
+<para>
+Ezzel szemben a lambdás kifejezés kicsit összébbpakolja a lambdás kifejezést.
+</para>
+<programlisting language='c++'>
+<![CDATA[std::sort ( gangsters.begin(), gangsters.end(), [this, cop] (unsigned x, unsigned y) {return dst(coop, x) < dst(cop, y);} )]]>
+</programlisting>
+<para>
+De mi is a lambda kifejezés? A lambda kifejezések a funkcionális programozás szülötte. ez lényegében egy névtelen funkció, amit ott lambdának neveztek el és így c++-ban is ez lett a neve. C++11-től lett bevezetbe a lembda kifejezés és azóta is c++14, c++17 és c++20 kissé változtatta a mőködését.
+</para>
+<para>
+Maga lambda kifejezés szintaxisa az alábbi lehet.
+</para>
+<programlisting language='c++'>
+<![CDATA[[ captures ] { body } 
+[ captures ] ( params ) { body }
+[ captures ] ( params ) -> ret { body } 
+[ captures ] <tparams>(optional)(c++20) ( params ) specifiers exception attr -> ret requires(optional)(c++20) { body } ]]>
+</programlisting>
+<para>
+A body az maga az utasításokat tartalmaz, hogy miket hajtson végre.
+</para>
+<para>
+A captures részen belűl kell megadni a locális változókat.
+</para>
+<para>
+Params maga a paraméterlista.
+</para>
+<para>
+Ret adja meg, hogy milyen legyen a viszsatérítési érétke, viszont ezt nem kötelező megandi. Ha nem adjuk meg és nem is téritünk vissza, akkor void lesz különben pedig a return alapján próbálja kitalálni.
+</para>
     </section>        
+
+    <section>
+        <title>C++11 custom allocator</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/custAlloc.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/custAlloc.cpp</link>               
+        </para>
+<para>
+A programoknak valamilyen módon memóriát kell lefoglalnia. Ez a feladat az allocator feladata. Ezt vectorok esetén lehet feltűnő. Alapvetően ha egy integer típusú vectort akarunk létrehozni, akkor az valahogy így nézne ki.
+</para>
+<programlisting language='c++'>
+<![CDATA[vector<int> vec;]]>
+</programlisting>
+<para>
+Viszont ebből nem látszik, hogy ilyenkor az alapértelmezett allocatort fogja használni. És hogy vecotorok esetén lehetőség van saját allocator megadására.
+</para>
+<para>
+C++17 előtt
+</para>
+<programlisting language='c++'>
+<![CDATA[template<
+
+    class T,
+    class Allocator = std::allocator<T>
+> class vector;]]>
+</programlisting>
+<para>
+C++17-től
+</para>
+<programlisting language='c++'>
+<![CDATA[namespace pmr {
+
+    template <class T>
+    using vector = std::vector<T, std::pmr::polymorphic_allocator<T>>;
+}]]>
+</programlisting>
+<para>
+Ahogy a fenti kódrészletekből már látszik, van lehetőség allocator megadására is. Ami c++17 előtt az std::allocator későbbi verzióban pedig az std::pmr::polymorphic_allocator alapértelmezetten. De ugyanúgy saját allocatort is megadhatunk az alábbi módon.
+</para>
+<programlisting language='c++'>
+<![CDATA[std::vector< int, CustomAlloc<int> > vec;]]>
+</programlisting>
+<para>
+De miért is akarnánk custom allocatort használni? Igazából azért mert így lehetőségünk van beleszólni, hogy hogyan kezelje a programunk a memóriát. A példákat amiket láttam ott elsősorban game enginekhez írták, de állítólag intel TBB allocatora jelentősen növeli a multithreaded alkalmazások teljesítményét. Amit az alábbi módon lehet megadni.
+</para>	
+<programlisting language='c++'>
+<![CDATA[std::vector<T,tbb::scalable_allocator<T> >]]>
+</programlisting>
+<para>
+Maga a custom allocatornak egy tamplete-ben kell lennie. És néhány alap dolog deklarálása után megadhatjuk a saját funkcióinkat stb. Valamint nem szabad megfeledkezni a deallocate funkcióról mert nem szeretnénk, hogy a memóriának csúnya vége legyen.
+</para>
+<programlisting language='c++'>
+<![CDATA[template<typename T>
+    struct CustomAlloc 
+    {
+        using size_type = size_t;
+        using value_type = T;
+        using pointer = T*;
+        using const_pointer = const T*;
+        using reference = T&;
+        using const_reference = const T&;
+        using difference_type = ptrdiff_t;
+        Arena& arena;
+        CustomAlloc (Arena& arena):arena(arena){}
+        int nn {0};
+        pointer allocate (size_type n){
+        ++arena.nnn;
+        ++nn;
+        int s;
+        char* p=abi::__cxa_demangle(typeid (T).name(), 0, 0, &s);
+        std::cout << "Allocating "
+                    << n << " objects of "
+                    << n*sizeof(T)
+                    << " bytes"
+                    << typeid (T).name() << "=" << p
+                    << " hivasok szama " << nn
+                    << " hivasok szama " << arena.nnn
+                    << std::endl;
+        free(p);
+        char *q = arena.q;
+        std::cout << "q " << static_cast <const void *> ( q) << std::endl;
+        arena.q += n*sizeof(T);
+        return reinterpret_cast<T*>(q);
+    }
+    void deallocate (pointer p, size_type n){
+    }
+    };]]>
+</programlisting>
+    </section>   
+
+    <section>
+        <title>STL map érték szerinti rendezése</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/stlMap.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/stlMap.cpp</link>               
+        </para>
+<para>
+A map nem más mint egy kulcs érték pár, ami nagyban meg tudja könnyíteni az életünket, mivel kulcs alapján könnyen lehet benne keresni. A map használatához először includolni kell a map headert.
+</para>
+<programlisting language='c++'>
+<![CDATA[typedef pair<const Key, T> value_type;]]>
+</programlisting>
+<para>
+A fenti kódrészlet azt mutatja, hogy a map kulcsát nem lehet változtatni mivel az egy konstans. Ebből az következik, hogy ha fel akarjuk cserélni a kulcs érték párokat, akkor egy új mapot kell létrehoznunk. Valamint a map sorrendje olyan lesz, ahogyan insertelve lettek a az elemek benne.
+</para>
+<para>
+Na de próbáljuk meg érték szerint rendezni. Először szükségünk van valamilyen mapra ugyhogy hozzunnk is létre egyet.
+</para>
+<programlisting language='c++'>
+<![CDATA[  std::map<std::string, int> mapOfWordCount = { { "a", 66 }, { "b", 52 },
+      { "c", 62 }, { "d", 13 } };]]>
+</programlisting>
+<para>
+Ezután szükségünk lesz valamire, ami két pairt kér be és egy bool értéket ad vissza. Ezen keresztűl tudjuk majd összeasonlítani. Ez így néz ki.
+</para>
+<programlisting language='c++'>
+<![CDATA[typedef std::function<bool(std::pair<std::string, int>, std::pair<std::string, int>)> Comparator;]]>
+</programlisting>
+<para>
+És ha már lambda fukció úgyis volt, akkor miért ne használjunk az összehasonlításhoz. Mivel érték szerint szeretnénk rendezni, ezért a .second szerint hasonlítjuk össze.
+</para>
+<programlisting language='c++'>
+<![CDATA[  Comparator compFunctor =
+      [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+      {
+        return elem1.second < elem2.second;
+      };]]>
+</programlisting>
+<para>
+Ezután létrehozunk egy set-et, ami majd tárolni fogja az értékeket és a fenti kód szerint rendezi.
+</para>
+<programlisting language='c++'>
+<![CDATA[  std::set<std::pair<std::string, int>, Comparator> setOfWords(
+      mapOfWordCount.begin(), mapOfWordCount.end(), compFunctor);]]>
+</programlisting>
+<para>
+Ezzel kész is van a rendezés még ha szeretnénk kiíratni akkor, azt így tehetjük meg.
+</para>
+<programlisting language='c++'>
+<![CDATA[  for (std::pair<std::string, int> element : setOfWords)
+    std::cout << element.first << " :: " << element.second << std::endl;]]>
+</programlisting>
+    </section>   
+
+    <section>
+        <title>Alternatív tabella rendezése</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/AltTabella.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/AltTabella.java</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/Wiki2Matrix.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/Wiki2Matrix.java</link>              
+        </para>
+<para>
+Bátfai tanár Úr egy másik programja, amivel a labdarugó bajnokság csapatait lehet ranksorolni a pagerank módszerrel.
+</para>
+<para>
+Először a Wiki2Matrix.java-t kell lefutattni, ami tartalmazza a bajnokság kereszttáblázatát. ez nálam át lett írva a 2018-2019-re. 0 jelöli azt, hogy nem játszott a két csapat, 1 a győztest, 2 a döntetlent és 3 pedig a vesztest jelöli.
+</para>
+<programlisting language='java'>
+<![CDATA[		int[][] tablazat= {
+			      {0, 2, 3, 1, 3, 0, 0, 0, 1, 0, 0, 2},
+			      {0, 0, 1, 0, 1, 3, 1, 1, 1, 0, 0, 0},
+			      {0, 0, 0, 0, 2, 0, 0, 0, 1, 1, 1, 1},
+			      {0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1},
+			      {0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1},
+			      {2, 0, 2, 3, 3, 0, 1, 0, 0, 0, 0, 0},
+			      {1, 0, 1, 2, 1, 0, 0, 0, 1, 0, 0, 0},
+			      {3, 0, 1, 3, 0, 3, 3, 0, 0, 0, 0, 0},
+			      {0, 0, 0, 0, 0, 1, 0, 1, 0, 2, 3, 2},
+			      {2, 1, 0, 2, 0, 3, 1, 1, 0, 0, 0, 0},
+			      {2, 2, 0, 0, 0, 1, 1, 2, 0, 3, 0, 0},
+			      {0, 1, 0, 0, 0, 1, 1, 1, 0, 2, 1, 0},
+			      };]]>
+</programlisting>
+<para>
+Ezután ez a program ki fog dobni egy rakat számot, amit az AltTabella.java programba be kell másolni. az Lnk tömbbe.
+</para>
+<programlisting language='java'>
+<![CDATA[double[][] Lnk = {
+				{ 0.0, 0.08333333333333333, 0.0, 0.1111111111111111,
+						.......]]>
+</programlisting>
+<para>
+De mivel ez eléggé körüményes megoldás valószínűleg át fogom írni a programot úgy, hogy automatikusan építse fel magának ezt a táblázatot a wiki2matrixból.
+</para>
+<para>
+Ezután megadjuk még a csapatokat és az általuk elért pontokat és máris futatthatjuk a programot.
+</para>
+<programlisting language='java'>
+<![CDATA[		String[] eredetinev = { "Budapest Honvéd", "Debreceni VSC", "Diósgyőri VTK",
+				"Ferencváros", "Haladás", "Kisvárda",
+				"Mezőkövesd–Zsóry FC", "MTK", "Paksi FC", "Puskás Akadémia",
+				"Újpest", "Vidi" };
+		int[] eredetipont = { 74, 61, 51, 49, 48, 44, 40, 39, 38, 38, 34, 30 };
+		
+		String[] eredetinev = { "Budapest Honvéd", "Debreceni VSC", "Diósgyőri VTK",
+				"Ferencváros", "Haladás", "Kisvárda",
+				"Mezőkövesd–Zsóry FC", "MTK", "Paksi FC", "Puskás Akadémia",
+				"Újpest", "Vidi" };]]>
+</programlisting>
+<para>
+Magát az összehasonlítást a comperable interface segítségével fogjuk megvalósítani. Ahol nekünk kell megadni az összehasonlítás során milyen értékeket adjon vissza. Mivel a focicsapatokat szeretnénk rendezni teljesítmény szerint.
+</para>
+<programlisting language='java'>
+<![CDATA[	public int compareTo(Csapat a) {
+		if (this.getErtek() < a.getErtek()) {
+			return 1;
+		} else if (this.getErtek() > a.getErtek()) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}]]>
+</programlisting>
+<para>
+A compareable comareto medódusát a fenti módon felülírva elérjük azt, hogy a legtöbb pontot elérő csapat kerüljön előre. Mivel ha nagyobb akkor 1-es értékkel tér vissza ha kisebb, akkor -1-es és 0 pedig akkor ah megegyezik a két csapat pontszáma. Így ezekből egyértelműen el lehet dönteni, hogy hogyan is viszonyúlnak egymáshoz a csapatok.
+</para>
+    </section>   
+
+    <section>
+        <title>GIMP Scheme hack</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/bhax_chrome3.scm">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/godel/bhax_chrome3.scm</link>                 
+        </para>
+<para>
+Ha egyszerűen akarnám elmagyarázni, akkor azt mondanám, hogy Script-Fu segítségével scripteket lehet írni gimphez, a scheme programozási nyelv segítségével, ami hasonló a lisphez. Azaz automatizálni lehet akár egyszerűbb vagy komplikáltabb feladatokat is.
+</para>
+<para>
+A króm effekt lényege, hogy a program kap egy szöveget és azt úgy, alakítja át, hogy azt az illuziót keltse, hogy a szövegnek fémes tulajdonságai vannak. Ez persze megkövetel pár előkészületet mint például maga a színgörbe amit használni szeretnénk, valamit az hogy a szövegből megkapjuk a számonkra fontos pixeleket.
+</para>
+<para>
+Ezek után elkezdhetjük a króm effekt létrehozását, amit egyszerű lépésekre lehet bontani és szerencsékre van is dokumentáció is róla, amit tanár úr is használt. <link xlink:href="http://penguinpetes.com/b2evo/index.php?p=351">http://penguinpetes.com/b2evo/index.php?p=351</link>
+</para>
+<para>
+Az első lépés alapján először létrehozunk egy fekete háteren, a már általunk beírt szöveget fehér betűszínnel. Ezt a scriptben úgy tudjuk megoldani, hogy először létrohozunk egy fekete réteget és mégegyet, ahol maga a szöveg van fehérrel. Majd végül a két réteget egyesítjük.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-image-insert-layer image layer 0 0)
+(gimp-context-set-foreground '(0 0 0))
+(gimp-drawable-fill layer  FILL-FOREGROUND )
+(gimp-context-set-foreground '(255 255 255)) ; feketére layer létrehozásának vége
+   
+(set! textfs (car (gimp-text-layer-new image text font fontsize PIXELS)))
+(gimp-image-insert-layer image textfs 0 0)   
+(gimp-layer-set-offsets textfs (- (/ width 2) (/ text-width 2)) (- (/ height 2) (/ text-height 2))) ; szöveg középre igazításával vége a szöveges rétegnek is
+   
+(set! layer (car(gimp-image-merge-down image textfs CLIP-TO-BOTTOM-LAYER))) ; végül egyesítjük a két régteget]]>
+</programlisting>
+<para>
+Ezután második lépésben elmossuk az egészet, hogy az éles széleket, kissé elsimitsuk.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(plug-in-gauss-iir RUN-INTERACTIVE image layer 15 TRUE TRUE)]]>
+</programlisting>
+<para>
+A második lépés miatt a szövegünk nem csak fehér színből áll, amit a harmadik lépésben korigálunk. Így kapva egy lekerekített szélekkel rendelhező fehér szöveget.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-drawable-levels layer HISTOGRAM-VALUE .11 .42 TRUE 1 0 1 TRUE)]]>
+</programlisting>
+<para>
+A negyedik lépésben ismét haszálunk egy kis elmosást, de ezuttal kisebb mértékben. Ennek jelenleg nem látszik sok értelme, de majd a 8. lépsénél lesz jelentősége.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(plug-in-gauss-iir RUN-INTERACTIVE image layer 2 TRUE TRUE)]]>
+</programlisting>
+<para>
+Az ötödik először kijelöljük a fekete részeket, majd ezt megfordítva megkapjuk magát a szöveget.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-image-select-color image CHANNEL-OP-REPLACE layer '(0 0 0))
+(gimp-selection-invert image)]]>
+</programlisting>
+<para>
+Ezután létrehozunk egy új réteget.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(set! layer2 (car (gimp-layer-new image width height RGB-IMAGE "2" 100 LAYER-MODE-NORMAL-LEGACY)))
+(gimp-image-insert-layer image layer2 0 0)]]>
+</programlisting>
+<para>
+Ezután a hetedik lépésben az új rétegen kijelölt részt felöltjük szürke árnyalatokkal
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-context-set-gradient gradient) 
+(gimp-edit-blend layer2 BLEND-CUSTOM LAYER-MODE-NORMAL-LEGACY GRADIENT-LINEAR 100 0 REPEAT-NONE 
+FALSE TRUE 5 .1 TRUE width (/ height 3) width (- height (/ height 3)))]]>
+</programlisting>
+<para>
+Nyolcadik lépésben az első réteget felhasználva bump mapet használunk az második rétegen.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(plug-in-bump-map RUN-NONINTERACTIVE image layer2 layer 120 25 7 5 5 0 0 TRUE FALSE 2)]]>
+</programlisting>
+<para>
+Végül a a kilencedik lépésben alkalmazzuk a szingörbért, amit a program legelején létrehoztunk és készen is vagyunk.
+</para>
+<programlisting language='lisp'>
+<![CDATA[(gimp-curves-spline layer2 HISTOGRAM-VALUE 8 (color-curve)) ; színgörbe alkalmazása
+      
+(gimp-display-new image)
+(gimp-image-clean-all image) ; utóbbi két sor annyira nem fontos, ezzel csak magát a szöveget fogjuk látni]]>
+</programlisting>
+<para> A progrmot pedig zárjuk a register-rel, hogy minden tökéletesen működjön.
+</para>
+    </section>   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 </chapter>                
