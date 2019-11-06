@@ -131,20 +131,16 @@ public class AltTabella {
 						0.1, 0.08333333333333333, 0.1111111111111111, 0.0625,
 						0.15384615384615385, 0.08333333333333333, 0.0, 0.0, } };
 
-		String[] eredetinev = { "Videoton", "Ferencvαros", "Paks",
-				"Debreceni VSC", "Zalaegerszegi TE", "Kaposvαri Rαkσczi",
-				"Lombard Pαpa", "Kecskemιti TE", "Ϊjpest", "Gyυri ETO",
-				"Budapest Honvιd", "MTK Budapest", "Vasas",
-				"Szombathelyi Haladαs", "BFC Siσfok", "Szolnoki MΑV" };
-		int[] eredetipont = { 40, 34, 31, 31, 30, 29, 27, 24, 23, 23, 22, 22,
-				21, 20, 18, 9 };
-		String[] ujnev = { "BFC Siσfok", "Budapest Honvιd", "Vasas",
-				"Debreceni VSC", "Ferencvαros", "Gyυri ETO",
-				"Kaposvαri Rαkσczi", "Kecskemιti TE", "Lombard Pαpa",
-				"MTK Budapest", "Paksi FC", "Szolnoki MΑV FC",
-				"Szombathelyi Haladαs", "Ϊjpest", "Videoton",
-				"Zalaegerszegi TE" };
-
+		String[] eredetinev = { "Budapest Honvéd", "Debreceni VSC", "Diósgyőri VTK",
+				"Ferencváros", "Haladás", "Kisvárda",
+				"Mezőkövesd–Zsóry FC", "MTK", "Paksi FC", "Puskás Akadémia",
+				"Újpest", "Vidi" };
+		int[] eredetipont = { 74, 61, 51, 49, 48, 44, 40, 39, 38, 38, 34, 30 };
+		
+		String[] eredetinev = { "Budapest Honvéd", "Debreceni VSC", "Diósgyőri VTK",
+				"Ferencváros", "Haladás", "Kisvárda",
+				"Mezőkövesd–Zsóry FC", "MTK", "Paksi FC", "Puskás Akadémia",
+				"Újpest", "Vidi" };
 		
 		ArrayList<Csapat> regi = new ArrayList<Csapat>(eredetinev.length);
 		ArrayList<Csapat> uj = new ArrayList<Csapat>(ujnev.length);
