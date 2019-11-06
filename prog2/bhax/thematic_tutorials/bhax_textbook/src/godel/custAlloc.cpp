@@ -14,28 +14,24 @@ template<typename T>
         using reference = T&;
         using const_reference = const T&;
         using difference_type = ptrdiff_t;
-        Arena& arena;
-        CustomAlloc (Arena& arena):arena(arena){}
-        int nn {0};
+        
+        CustomAlloc() {}
+        CustomAlloc (const CustomAlloc&) {}
+        ~CustomAlloc() {}
+        
         pointer allocate (size_type n){
-        ++arena.nnn;
-        ++nn;
-        int s;
-        char* p=abi::__cxa_demangle(typeid (T).name(), 0, 0, &s);
-        std::cout << "Allocating "
+            int s;
+            char* p = abi::__cxa_demangle(typeid (T).name(), 0, 0, &s);
+            std::cout << "Allocating "
                     << n << " objects of "
                     << n*sizeof(T)
                     << " bytes"
                     << typeid (T).name() << "=" << p
-                    << " hivasok szama " << nn
-                    << " hivasok szama " << arena.nnn
                     << std::endl;
         free(p);
-        char *q = arena.q;
-        std::cout << "q " << static_cast <const void *> ( q) << std::endl;
-        arena.q += n*sizeof(T);
-        return reinterpret_cast<T*>(q);
+        return reinterpret_cast<T*>(new char[n * sizeof(T)]);
     }
+        
     void deallocate (pointer p, size_type n){
         delete[] reinterpret_cast<char *>(p);
         std::cout << "Deallocating" << std::endl;
