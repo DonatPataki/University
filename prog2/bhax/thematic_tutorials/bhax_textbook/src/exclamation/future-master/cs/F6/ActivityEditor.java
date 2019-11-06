@@ -49,6 +49,7 @@
  * https://www.twitch.tv/videos/218289099
  * https://shrek.unideb.hu/~nbatfai/FUTURE6-series1bevezetes.pdf
  */
+import javafx.scene.input.MouseButton;
 class FileTree extends javafx.scene.control.TreeView<java.io.File> {
 
     class FileTreeItem extends javafx.scene.control.TreeItem<java.io.File> {
@@ -145,6 +146,9 @@ class FileTree extends javafx.scene.control.TreeView<java.io.File> {
         setOnMouseClicked((javafx.scene.input.MouseEvent evt) -> {
 
             if (evt.getClickCount() == 1) {
+            	if (evt.getButton() == MouseButton.PRIMARY) {
+            		return;
+            	}
 
                 javafx.scene.control.TreeItem<java.io.File> item = getSelectionModel().getSelectedItem();
 
@@ -381,7 +385,10 @@ class StringTree extends javafx.scene.control.TreeView<String> {
 
         setOnMouseClicked((javafx.scene.input.MouseEvent mouseEvent) -> {
             {
-                if (mouseEvent.getClickCount() == 2) {
+                if (mouseEvent.getClickCount() == 1) {
+                	            	if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+            		return;
+            	}
                     javafx.scene.control.TreeItem<String> item = getSelectionModel().getSelectedItem();
                     if (item != null) {
                         propsEdit.appendText(item.getValue());
