@@ -1,0 +1,104 @@
+    <chapter xmlns="http://docbook.org/ns/docbook" version="5.1" xml:lang="hu"
+             xmlns:xlink="http://www.w3.org/1999/xlink"
+             xmlns:xi="http://www.w3.org/2001/XInclude" xml:id="body_hu">
+    <info>
+        <title>A játék5let kidolgozása</title>
+    </info>
+    <para>
+    </para>
+    <section>
+        <title>Elképzelt riportok</title>    
+        <para>
+            Ebben a pontban, intuitív megalapozásként vázolunk néhány ad hoc használati esetet        
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <emphasis>Szülők a keresztségben</emphasis>
+                </para>
+                <para>
+                    Vajon Zsuzskáékat vagy Jocóékat kérjem fel Lívia keresztszüleinek? 
+                    &#x2013; tette fel magának a kérdést az újdonsült apuka, H. Bence 27 éves gyulai építési vállalkozó. 
+                    Kinyitotta Zsuzsa és Jocó aktuális idővonalát, majd mindkettőből létrehozott 
+                    egy alternatív valóságot, egyik leágazásban Zsuzskáékat, a másikban 
+                    Jocóékat keresztszülőknek megtéve.
+                </para>
+                <para>
+                    Zsuzsának jelzett a telefonja, hogy forkoltak egy őt is érintő 
+                    virtuális valóságot. Megtekintette, elfogadta, sőt saját egyik aktuális idővonalát 
+                    két év múlva esedékes gyerekáldással tovább forkolta, amelyben a kapott forkbeli 
+                    H. Bencét jelölte meg a születendő Arnold gyermeke keresztszülőjének.
+                </para>
+            </listitem>
+        </itemizedlist>
+            
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <emphasis>Gyerekszájak</emphasis>
+                </para>
+                <para>
+                    G. Jancsi egy középiskolába akar menni Tamással. Beírja a 
+                    Future-be, hogy milyen jegyeik vannak és e szerint a Future 
+                    jelez Tamásnak, hogy a jegyeik alapján ha minden jól megy 
+                    egy középiskolába kerülhetnek. 
+                </para>
+                <para>
+                    D. Milán lovasversenyre készül. Az osztálya egy része 
+                    nagyon szereti a lovasversenyeket.
+                    Ezért beírja a Future-be, hogy a lovasversenyre jön az 
+                    osztálytársa Pista is. Pista telefonja jelez, hogy Milán 
+                    betette őt egy lovasversenyre. Pista is belép és beírja, 
+                    hogy ketten nyerik meg az első díjat.                  
+                </para>
+                <para>
+                    K. Zalán szerelmes Annába, beírta a Future-be hogy 
+                    összeházasodnak, de Anna viszont azt írta be, hogy nem, 
+                    mert ő Petibe szerelmes.                                        
+                </para>
+            </listitem>
+        </itemizedlist>
+    </section>
+    <section>
+        <title>A játék alapvetései</title>    
+    </section>        
+    <section>
+        <title>A játék elképzelése</title>    
+        <section>
+            <title>A játék tere és ideje</title>                
+        </section>    
+        <section>
+            <title>A játék játékosai</title>                
+            <para>
+                <figure>
+                    <title>Egy társasház rutin játékosainak és négy valódi játékosának elképzelt ábrázolása.</title>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="futurewin2.png" scale="55"/>
+                        </imageobject>
+                        <textobject>
+                            <phrase>
+                                Egy társasház rutin játékosainak és négy valódi játékosának elképzelt ábrázolása.
+                            </phrase>
+                        </textobject>
+                    </mediaobject>    
+                </figure>
+            </para>
+        </section>
+        <section>
+            <title>A játék menete</title>                
+            <section>
+                <title>A tervezett játékélmény</title>                
+            </section>
+        </section>
+        <section>
+            <title>A játék hasznosítása</title>                
+        </section>        
+    </section>
+    <section>
+        <title>A játék megvalósítása</title>                                   
+    </section>
+    <section>
+        <title>Fejlesztési és üzleti modell</title>                                   
+    </section>                  
+</chapter>  

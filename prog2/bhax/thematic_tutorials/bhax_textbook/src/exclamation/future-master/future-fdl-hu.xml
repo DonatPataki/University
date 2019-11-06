@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book xmlns="http://docbook.org/ns/docbook" version="5.1" xml:lang="hu"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude">    
+    <info>
+        <xi:include href="title-hu.xml">
+            <xi:fallback>
+                <para>
+                    <emphasis>XInclude: title-hu.xml file not found</emphasis>
+                </para>
+            </xi:fallback>
+        </xi:include>         
+        <xi:include href="subtit-hu.xml">
+            <xi:fallback>
+                <para>
+                    <emphasis>XInclude: subtit-hu.xml file not found</emphasis>
+                </para>
+            </xi:fallback>
+        </xi:include>         
+        <titleabbrev>FUT</titleabbrev>
+        <xi:include href="aut-hu.xml">
+            <xi:fallback>
+                <para>
+                    <emphasis>XInclude: aut-hu.xml file not found</emphasis>
+                </para>
+            </xi:fallback>
+        </xi:include>         
+        <xi:include href="edt-hu.xml">
+            <xi:fallback>
+                <para>
+                    <emphasis>XInclude: edt-hu.xml file not found</emphasis>
+                </para>
+            </xi:fallback>
+        </xi:include>                 
+        <xi:include href="revhist-hu.xml">
+            <xi:fallback>
+                <para>
+                    <emphasis>XInclude: revhist-hu.xml file not found</emphasis>
+                </para>
+            </xi:fallback>
+        </xi:include>         
+        <pubdate>2017</pubdate>
+        <copyright>
+            <year>2017</year>
+            <holder>Dr. Bátfai Norbert</holder>
+        </copyright>
+        <xi:include href="fdllegal-hu.xml">
+            <xi:fallback>
+                <para>
+                    <emphasis>XInclude: fdllegal-hu.xml file not found</emphasis>
+                </para>
+            </xi:fallback>
+        </xi:include>         
+        <xi:include href="revhist-hu.xml">
+            <xi:fallback>
+                <para>
+                    <emphasis>XInclude: revhist-hu.xml file not found</emphasis>
+                </para>
+            </xi:fallback>
+        </xi:include>         
+    </info>   
+    <xi:include href="intro-hu.xml">
+        <xi:fallback>
+            <para>
+                <emphasis>XInclude: intro-hu.xml file not found</emphasis>
+            </para>
+        </xi:fallback>
+    </xi:include>     
+    <xi:include href="body-hu.xml">
+        <xi:fallback>
+            <para>
+                <emphasis>XInclude: body-hu.xml file not found</emphasis>
+            </para>
+        </xi:fallback>
+    </xi:include>         
+    <xi:include href="conc-hu.xml">
+        <xi:fallback>
+            <para>
+                <emphasis>XInclude: conc-hu.xml file not found</emphasis>
+            </para>
+        </xi:fallback>
+    </xi:include>         
+</book>

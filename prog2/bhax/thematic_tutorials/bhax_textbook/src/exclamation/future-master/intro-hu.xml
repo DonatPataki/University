@@ -1,0 +1,185 @@
+    <chapter xmlns="http://docbook.org/ns/docbook" version="5.1" xml:lang="hu"
+             xmlns:xlink="http://www.w3.org/1999/xlink"
+             xmlns:xi="http://www.w3.org/2001/XInclude" xml:id="intro_hu">
+    <info>
+        <title>A játék5let bevezetése</title>
+    </info>
+    <para>
+        A játék nevét minden olyan városban ahol játsszák a szóban forgó város nevéből származtatjuk. 
+        Például a Debrecenben játszott lenne a <emphasis>JÖVŐ DEBRECEN</emphasis>, 
+        a Budapesten játszott a <emphasis>JÖVŐ BUDAPEST</emphasis>,
+        a Philadelphiában játszott <emphasis>FUTURE PHILADELPHIA</emphasis>.
+    </para>    
+    <section>
+        <title>A játék alapvetései</title>    
+        <itemizedlist>
+            <listitem>
+                <para>
+                    A játék alapvető környezete egy adott város, ahol a játék játszódik.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A játékosok a saját alternatív életútjaikat (jövőképeiket) szimulálhatják le a játékkal.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A játékosok műveleteket végezhetnek a maguk és ismerőseik életútjaival, 
+                    ez adná a játékot tipikusan jellemző játékélményt.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A játékosok szimulációi egyben a város néhány emberöltőnyi jövőjét is előrevetítik, 
+                    ez adná a projekt kutatási értékének egy pillérét.                        
+                </para>
+            </listitem>
+        </itemizedlist>            
+    </section>        
+    <section>
+        <title>A játék elképzelése</title>    
+        <section>
+            <title>A játék tere és ideje</title>                
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        A játék tere egyrészt az adott város térképe, másrészt a térkép feletti szimulált világok.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Időben, a játékosok tulajdonságait firtató mérések tekintetében a jelen, 
+                        a szimulált világokbeli előrevetített tulajdonságaikat illetően a jövő.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </section>    
+        <section>
+            <title>A játék játékosai</title>                
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Megkülönböztetünk valódi játékost és rutin játékost. 
+                        A valódi játékos egy ember játékos, a rutin játékos a város egy 
+                        olyan nem valóságos polgára, aki mögött még nem áll 
+                        valódi játékos.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        A játék adott városbeli indulásakor minden játékos rutin játékos.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Egy rutin játékos valódi játékossá válik, ha regisztrál, 
+                        vagy ha egy másik valódi játékos regisztrálja.                        
+                    </para>
+                </listitem>
+            </itemizedlist>            
+        </section>
+        <section>
+            <title>A játék menete</title>                
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        A játék programjai direkt adatokat is kérnek a játékostól 
+                        és automatikusan is mérik 
+                        mérhető szokásait.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Ezen adatok segítik a szimulált életutak előállítását.                                                
+                    </para>
+                </listitem>
+            </itemizedlist>
+            
+            <section>
+                <title>A tervezett játékélmény</title>                
+                <itemizedlist>
+                    <listitem>
+                        <para>
+                            A szimulált életutak vizsgálata.                                                
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>
+                            A saját és az ismerősök szimulált életútjainak korlátozott szerkesztése.
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>
+                            A saját és az ismerősök szimulált életútjai kölcsönhatásainak vizsgálata.                                                
+                        </para>
+                    </listitem>
+                </itemizedlist>
+            </section>            
+        </section>
+        <section>
+            <title>A játék hasznosítása</title>                
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        A játékos tudatos jövőtervezésének támogatása.                                                
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Az adott város tudatos jövőtervezésének támogatása.                                                
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </section>        
+    </section>
+    <section>
+        <title>A játék megvalósítása</title>                           
+        <itemizedlist>
+            <listitem>
+                <para>
+                    A városok térképeként az OpenStreetMap térképeket használjuk.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A játék adott városbeli indulásakor minden játékos rutin játékosként kerül a térképre. 
+                    A valódi játékossá változtató regisztráció a regisztráló GPS koordinátája alapján történik.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A kezdetben vett rutin játékosok száma megegyezik az város lélekszámával.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A regisztráló kliens program figyeli a felhasználó mozgását, ez alapján tételezi fel lakhelyét, munkahelyét, iskoláját, szabadidős helyeit stb. 
+                </para>
+            </listitem>
+        </itemizedlist>
+    </section>
+        <section>
+        <title>Fejlesztési és üzleti modell</title>                           
+        <itemizedlist>
+            <listitem>
+                <para>
+                    A játék tervezése és fejlesztése multi-licences rendszerben 
+                    (GNU FDL és CC BY SA a dokumentációra, GNU GPL v3 és e mellett esetleges jövőbeli kialakítású 
+                    zárt licenc a szoftverre) történik.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A játék ingyenesen játszható.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    A játékon belüli fizetés felvetése megvizsgálható, például az alapértelmezés fölötti
+                    szimulált alternatív jövőképek számának növelésével kapcsolatban.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </section>
+</chapter>  

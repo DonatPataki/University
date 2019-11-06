@@ -1,0 +1,28 @@
+<legalnotice xmlns="http://docbook.org/ns/docbook" version="5.1" xml:lang="hu"
+             xmlns:xlink="http://www.w3.org/1999/xlink"
+             xmlns:xi="http://www.w3.org/2001/XInclude">
+    <para>JÖVŐ/FUTURE játék 5let specifikáció
+    </para>
+    <para>                
+        Copyright (C) 2017, Norbert Bátfai. Ph.D., batfai.norbert@inf.unideb.hu, nbatfai@gmail.com, 
+    </para>
+    <para>
+        This work is licensed under a Creative Commons Attribution 4.0 International License.
+    </para>
+    <para>
+        <link xlink:href="https://creativecommons.org/licenses/by-sa/4.0/">https://creativecommons.org/licenses/by-sa/4.0/</link>                
+    </para>            
+    <para>
+        Ez a mű a Creative Commons Nevezd meg! 4.0 Nemzetközi Licenc feltételeinek megfelelően felhasználható.                
+    </para>
+    <para>
+        <link xlink:href="https://creativecommons.org/licenses/by-sa/4.0/deed.hu">https://creativecommons.org/licenses/by-sa/4.0/deed.hu</link>                
+    </para>
+    <xi:include href="legaltip-hu.xml">
+        <xi:fallback>
+            <para>
+                <emphasis>XInclude: legaltip-hu.xml file not found</emphasis>
+            </para>
+        </xi:fallback>
+    </xi:include>                       
+</legalnotice>            

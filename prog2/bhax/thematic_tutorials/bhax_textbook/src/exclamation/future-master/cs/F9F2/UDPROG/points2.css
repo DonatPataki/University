@@ -1,0 +1,70 @@
+table.student
+{           
+    border: thin solid #3385D6;
+    border-collapse: separate;                        
+}
+caption
+{
+    caption-side: bottom;
+    color: #023d96;
+    font-weight: bold;
+    font-family: sans serif;
+}
+tr 
+{
+    color: #003366;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-align: left; 
+    background-color: #D1D1D4;    
+}                    
+tr.title
+{
+    color: #ffffff;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-align: left;
+    background-color: #1F5080;
+    
+}                    
+tr.offered_5
+{
+    color: #00193D;
+    background-color: #0878E7;    
+    font-weight: bold;
+
+}
+tr.offered_4
+{
+    color: #00193D;
+    background-color: #489AEB;    
+    font-weight: bold;
+
+}
+tr.offered_3
+{
+    color: #00193D;
+    background-color: #92BFEB;    
+    font-weight: bold;
+
+}  
+td 
+{
+    padding-right: 25px;
+    padding-left: 25px;
+}                    
+td.points 
+{
+    color: #800000;
+    text-align: right;
+}   
+td.points2 
+{
+    color: #eeffff;
+    text-align: right;
+}   
+th
+{
+    padding-right: 25px;
+    padding-left: 25px;
+}  

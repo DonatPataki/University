@@ -1,0 +1,14 @@
+<tip xmlns="http://docbook.org/ns/docbook" version="5.1" xml:lang="hu"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>Multi-licencelés: GNU FDL, CC BY-SA 4.0 és esetleges további zárt licenc</title>
+    <para>
+        A multi-licencelés választását az indokolja, hogy az itt kidolgozott játék 5letet
+        nyíltan (GNU FDL, CC BY-SA) és adott esetben akár majd még zártan is fel 
+        lehessen használni.
+    </para>
+    <para>
+        A dokumentum jelenleg GNU FDL és CC BY-SA licencek alatt kerül kiadásra, de
+        ezek mellett a jövőben elképzelhető lehet zárt kiadás is.
+    </para>
+</tip>  
