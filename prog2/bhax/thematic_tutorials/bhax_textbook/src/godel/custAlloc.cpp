@@ -37,5 +37,7 @@ template<typename T>
         return reinterpret_cast<T*>(q);
     }
     void deallocate (pointer p, size_type n){
+        delete[] reinterpret_cast<char *>(p);
+        std::cout << "Deallocating" << std::endl;
     }
     };
