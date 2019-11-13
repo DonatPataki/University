@@ -7,14 +7,309 @@
     </info>
 
     <section>
-        <title>...</title>
+        <title>FUTURE tevékenység editor</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/exclamation/future-master/cs/F6/ActivityEditor.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/exclamation/future-master/cs/F6/ActivityEditor.java</link>               
+        </para>
+<para>
+Röviden a program célja annyi, hogy a felhasználók bejelölhetik rajta, hogy milyen tevékenységeket végeztek és ezeket az adtokat később valamilyen módon fel lehet használni.
+</para>
+<para>
+Az egyetelen probléma csak az, hogy előfordűlnak hibák a program futása során. Így ránézésre, ami bugnak tűnt, az az hogy mappákba is be lehet "írni" a tevékenységeket, amik amúgy nem mentődnek el. De valószínűleg nem is lenne szabad, hogy érték kerüljön oda. A másik feltűnőbb hiba az a setOnMouseClicked miatt jön létre, ami röviden annyi, hogy nem mindig tudja eldönteni, hogy most ki szeretnénk nyitni egy mappát vagy tevékenységet jelölünk ki.
+</para>
+<para>
+Ezt elsősorban úgy orvosoltam, hogy szétválasztottam, jobb és bal kattitásra a műveleteket. Vagy legalábbis ez volt a terv és működik is viszont nem tökéletes.
+</para>
+<programlisting language='Java'>
+<![CDATA[
+            	if (evt.getButton() == MouseButton.PRIMARY) {
+            		return;]]>
+</programlisting>
+<para>
+És ennek megfelelően a jobb kattintás is benne van. Viszont tovább nem tudtam haladni, mert a javafx telepítése valahogy nem akart sikerűlni linuxon.
+</para>
+    </section>        
+              
+    <section>
+        <title>OOCWC Boost ASIO hálózatkezelése</title>
 
         <para>
             Megoldás forrása:                
         </para>
+<para>
+Tanár Úr robotautós projectjének az a lényege, hogy egy város területén, gengszeterek és rendőrök vannak és adott a két fél feladata. Az egyinek el kell kapnia másikat a másiknak pedig menekülnie kell. És ennek a projectnek van egy scanf-es része, amiről nekem beszélnem kéne.
+</para>
+<para>
+Alapvetően a scanf nem csinál mást mint a standard inptról olvas be értékeket, aminek meg lehet adni pár specifiert. De nézzünk inkább a kódrészeleteket.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+INIT	"<init"
+INITG	"<init guided"
+WS	[ \t]*
+WORD	[^-:\n \t()]{2,}
+INT	[0123456789]+
+FLOAT	[-.0123456789]+
+ROUTE	"<route"
+CAR	"<car"
+POS	"<pos"
+GANGSTERS	"<gangsters"
+STAT	"<stat"
+DISP	"<disp>"]]>
+</programlisting>
+<para>
+A fenti kódrészlet írja le azt, hogy miket keresünk. Pl int-nek tekintjük azt ami 0-9-ig valamelyik számmal kezdődik és ebból lehet több is. Vagy ha egy tabulátorral találkozunk, akkor azt word space-nek tituláljuk. Ezt hosszasan le lehetne írni, de szerintem a többi is egyértelmű.
+</para>
+<programlisting language='c++'>
+<![CDATA[{DISP}					{
+					  m_cmd = 0;
+					}
+{POS}{WS}{INT}{WS}{INT}{WS}{INT}	{
+					  std::sscanf(yytext, "<pos %d %u %u", &m_id, &from, &to);
+					  m_cmd = 10001;
+					}
+{CAR}{WS}{INT}				{
+					  std::sscanf(yytext, "<car %d", &m_id);
+					  m_cmd = 1001;
+					}
+{STAT}{WS}{INT}				{
+					  std::sscanf(yytext, "<stat %d", &m_id);
+					  m_cmd = 1003;
+					}
+{GANGSTERS}{WS}{INT}			{
+					  std::sscanf(yytext, "<gangsters %d", &m_id);
+					  m_cmd = 1002;
+					}
+{ROUTE}{WS}{INT}{WS}{INT}({WS}{INT})*	{
+				  int size{0};
+				  int ss{0};
+				  int sn{0};				  
+				  
+				  std::sscanf(yytext, "<route %d %d%n", &size, &m_id, &sn);
+				  ss += sn;
+				  for(int i{0}; i<size; ++i)
+				  {
+				    unsigned int u{0u};
+				    std::sscanf(yytext+ss, "%u%n", &u, &sn);
+				    route.push_back(u);
+				    ss += sn; 				    
+				  }
+				  m_cmd = 101;
+				}
+{INIT}{WS}{WORD}{WS}("c"|"g")	{
+				  std::sscanf(yytext, "<init %s %c>", name, &role);
+				  num = 1;
+				  m_cmd = 0;
+				}
+{INIT}{WS}{WORD}{WS}{INT}{WS}("c"|"g")	{
+				  std::sscanf(yytext, "<init %s %d %c>", name, &num, &role);
+				  if(num >200)
+				  {
+				    m_errnumber = 1;
+				    num = 200;
+				  }
+				  m_cmd = 1;
+				}				
+{INITG}{WS}{WORD}{WS}("c"|"g")	{
+				  std::sscanf(yytext, "<init guided %s %c>", name, &role);
+				  num = 1;
+				  m_guided = true;
+				  m_cmd = 3;
+				}
+{INITG}{WS}{WORD}{WS}{INT}{WS}("c"|"g")	{				  
+				  std::sscanf(yytext, "<init guided %s %d %c>", name, &num, &role);
+				  if(num >200)
+				  {
+				    m_errnumber = 1;
+				    num = 200;
+				  }
+				  m_guided = true;
+				  m_cmd = 2;
+				}								
+.				{;}
+]]>
+</programlisting>
+<para>
+Annak megfelelően, hogy mit olvasunk fogja eldönteni, hogy mi történik. Példáúl, ha egy car-t egy tabulátor követ, amit egy init, akkor akkor az m_id-t átadja. De ha egy poziciót 3 int követ, akkor magát az id-t és azt is beolvassa hogy honnan hova. Tehát röviden a scanf segítségével tudjuk feldolgozni, hogy mi történik. Az m_cmd értéket mindenhol változtatjuk ez gondolom azt a célt szolgálja, hogy tudjuk hol vagyunk.
+</para>
+    </section>
+
+    <section>
+        <title>SamuCam</title>
+
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Megoldás forrása:                
         </para>
-    </section>        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+<para>
+Fogalmam sincs a program, miről szeretne szólni, de szerencsére csak a kamerakezelésről kell írni.
+</para>
+<para>
+Maga a samucam osztály konstruktora nem csinál mást mint beállítja a magasságot, szélességet és megadja a videsteam-et. Érdemes lehet megjegyezni, hogy initializer list-et használunk, ami miatt szépen elkülönül a függvény törzsétől.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+SamuCam::SamuCam ( std::string videoStream, int width = 176, int height = 144 )
+  : videoStream ( videoStream ), width ( width ), height ( height )
+{
+  openVideoStream();
+}]]>
+</programlisting>
+<para>
+Ez meghívja az openVideoStream függvényt, ami elindítja magát a felvételt és azt, hogy milyen magas és széles legyen, valamint azt is, hogy hány fps-el fusson ez az egész.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+void SamuCam::openVideoStream()
+{
+  videoCapture.open ( videoStream );
+
+  videoCapture.set ( CV_CAP_PROP_FRAME_WIDTH, width );
+  videoCapture.set ( CV_CAP_PROP_FRAME_HEIGHT, height );
+  videoCapture.set ( CV_CAP_PROP_FPS, 10 );
+}]]>
+</programlisting>
+<para>
+Tovább haladva a kódban feltételezem, hogy arcfelismerésről lesz szó és, hogy opencv-t használunk.
+Szóval ha van képünk akkor először 50 millisecond-ot pihentetjük, aztán elég sok minden történik.
+</para>
+<programlisting language='c++'>
+<![CDATA[ while ( videoCapture.isOpened() )
+    {
+
+      QThread::msleep ( 50 );
+      while ( videoCapture.read ( frame ) )
+        {
+
+          if ( !frame.empty() )
+            {
+
+              cv::resize ( frame, frame, cv::Size ( 176, 144 ), 0, 0, cv::INTER_CUBIC );
+
+              std::vector<cv::Rect> faces;
+              cv::Mat grayFrame;
+
+              cv::cvtColor ( frame, grayFrame, cv::COLOR_BGR2GRAY );
+              cv::equalizeHist ( grayFrame, grayFrame );
+
+              faceClassifier.detectMultiScale ( grayFrame, faces, 1.1, 4, 0, cv::Size ( 60, 60 ) );
+
+              if ( faces.size() > 0 )
+                {
+
+                  cv::Mat onlyFace = frame ( faces[0] ).clone();
+
+                  QImage* face = new QImage ( onlyFace.data,
+                                              onlyFace.cols,
+                                              onlyFace.rows,
+                                              onlyFace.step,
+                                              QImage::Format_RGB888 );
+
+                  cv::Point x ( faces[0].x-1, faces[0].y-1 );
+                  cv::Point y ( faces[0].x + faces[0].width+2, faces[0].y + faces[0].height+2 );
+                  cv::rectangle ( frame, x, y, cv::Scalar ( 240, 230, 200 ) );
+
+
+                  emit  faceChanged ( face );
+                }
+
+              QImage*  webcam = new QImage ( frame.data,
+                                             frame.cols,
+                                             frame.rows,
+                                             frame.step,
+                                             QImage::Format_RGB888 );
+
+              emit  webcamChanged ( webcam );
+
+            }]]>
+</programlisting>
+<para>
+Ha az éppen adott frame nem üres akkor átméretezük a majd létrehozunk egy vectort és egy fekete fehér képet, aminek átadjuk a framet. Ezután pedig felismerjük az arcokat.
+</para>
+    </section>
+
+    <section>
+        <title>BrainB</title>
+
+        <para>
+            Megoldás forrása:                
+        </para>
+<para>
+Ha még semmi lényeges nem változott, akkor a BrainB egy kísérleti fázisban lévő szoftver, aminek az a célja, hogy a felhasználó szellemi teljesítményét próbálja mérni. Ezt arra alapoza, hogy mennyire tud az adott illető koncentrálni. Ennek a mérése nem áll másból mint a képernyőn megjelenő objectek követése. Vagyis pontosabban egy saját karaktert kell követni anélkül, hogy eleszítené azt a felhasználó.
+</para>
+<para>
+Viszont nekünk most a Qt slot-signal mechanizmus a lényeges. Ez a slot-signal mechanizmus lehetővég teszi az az objectek közötti kommunikációt. Leegyszerűsítve, ha egy adott esemény bekövetkezik, akkor az egy jelet fog kibocsátani, egy másik objectnek hasonlóan a java eventekhez.
+</para>
+<para>
+Példáúl a BrainB-s programban a következőket figyelhetjük meg.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+BrainBWin::BrainBWin ( int w, int h, QWidget *parent ) : QMainWindow ( parent )
+{
+
+//    setWindowTitle(appName + " " + appVersion);
+//    setFixedSize(QSize(w, h));
+
+        statDir = appName + " " + appVersion + " - " + QDate::currentDate().toString() + QString::number ( QDateTime::currentMSecsSinceEpoch() );
+
+        brainBThread = new BrainBThread ( w, h - yshift );
+        brainBThread->start();
+
+        connect ( brainBThread, SIGNAL ( heroesChanged ( QImage, int, int ) ),
+                  this, SLOT ( updateHeroes ( QImage, int, int ) ) );
+
+        connect ( brainBThread, SIGNAL ( endAndStats ( int ) ),
+                  this, SLOT ( endAndStats ( int ) ) );
+
+}]]>
+</programlisting>
+<para>
+Alapvetően connect(obj1, signal1, obj2, slot2) módon működik. Szóvel itt most saját magának küld jelet, hogy hova pakolja a képet és hogy milyen stat írjon ki.
+</para>
+    </section>
+                          
+    <section>
+        <title>OSM térképre rajzolása</title>
+
+        <para>
+            Megoldás forrása:                
+        </para>
+<para>
+Maga az OSM nem más mint adatbázis a világ logisztikai részeiről. Ezt bárki letöltheti akár xml formában és úgy dolgoza fel, ahogy akarja vagy használhatja az OSM által nyújtött API-kat. Ebből elég sok van elég sok nyelven.
+</para>
+<para>
+Példáúl osmium használatával valahogy így néz ki az utak megjelenítése.
+</para>
+<para>
+Előszöt beolvassuk az osm file-t az osmium segítségével.
+</para>
+<programlisting language='c++'>
+<![CDATA[  osmium::io::Reader reader(argv[1], osmium::osm_entity_bits::way);]]>
+</programlisting>
+<para>
+Ezután a bufferben lévő elemeken végig kell mennünk, hogy le tudjuk szűrni a számunkra fontos adatokat.
+</para>
+<programlisting language='c++'>
+<![CDATA[  while (osmium::memory::Buffer buffer = reader.read())
+  {
+    for (const auto &item : buffer)
+]]>
+</programlisting>
+<para>
+Az éppen aktuális elemet kimásoljuk.
+</para>
+<programlisting language='c++'>
+<![CDATA[      const osmium::Way &way = static_cast<const osmium::Way&>(item);]]>
+</programlisting>
+<para>
+És mivel most az utakra vagyunk kíváncsiak így a már kiválasztott elemnek megnézzük, hogy a tagek között szerepel-e az alábbi. És ha igen akkor azt csinálunk vele, amit szeretnénk.
+</para>
+<programlisting language='c++'>
+<![CDATA[      const char *name = way.get_value_by_key("name");
+      const char *highway = way.get_value_by_key("highway");
+]]>
+</programlisting>
+    </section>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 </chapter>                
