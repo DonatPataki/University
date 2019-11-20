@@ -29,6 +29,20 @@ Ezt elsősorban úgy orvosoltam, hogy szétválasztottam, jobb és bal kattitás
 <para>
 És ennek megfelelően a jobb kattintás is benne van. Viszont tovább nem tudtam haladni, mert a javafx telepítése valahogy nem akart sikerűlni linuxon.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/error.png" scale="85" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Annyit még érdemes megjegyezni azzal a hibával kapcsolatban, hogy a dupla kattintáshoz elég gyorsan kell nyomkodni a gobmokat, hogy ezt valőszínűleg azt okozza, hogy magát setONMouseClicked-et használ a program. Az internet nekem azt mondta, hogy inkább mouseressed vagy mousereleased függvényekkel ezt jobban meg lehet oldani, mivel akkor nem fogunk ezzel a problémával találkozni, hogy úgy kell nyomkodni az egérgombot mint akivel valami baj van. Vagy egy másik megoldás lehetett volna az, hogy még az if statement előtt adni neki egy kis szünetet, hogy legyen idő kétszer kattintani és így ne folyon össze a két függvény.
+</para>
     </section>        
               
     <section>
@@ -59,7 +73,7 @@ STAT	"<stat"
 DISP	"<disp>"]]>
 </programlisting>
 <para>
-A fenti kódrészlet írja le azt, hogy miket keresünk. Pl int-nek tekintjük azt ami 0-9-ig valamelyik számmal kezdődik és ebból lehet több is. Vagy ha egy tabulátorral találkozunk, akkor azt word space-nek tituláljuk. Ezt hosszasan le lehetne írni, de szerintem a többi is egyértelmű.
+A fenti kódrészlet írja le azt, hogy miket keresünk. Pl int-nek tekintjük azt ami 0-9-ig valamelyik számmal kezdődik és ebból lehet több is. Vagy ha egy tabulátorral találkozunk, akkor azt word space-nek tituláljuk. Ezt hosszasan le lehetne írni, de szerintem a többi is egyértelmű és igazából nem történik semmi más mint a szöveget tokenizáljuk, azaz megadott egységekre bontjuk. Ilyen a már leírt szám, de az összes többit is fel lehetne sorolni.
 </para>
 <programlisting language='c++'>
 <![CDATA[{DISP}					{
@@ -131,7 +145,7 @@ A fenti kódrészlet írja le azt, hogy miket keresünk. Pl int-nek tekintjük a
 ]]>
 </programlisting>
 <para>
-Annak megfelelően, hogy mit olvasunk fogja eldönteni, hogy mi történik. Példáúl, ha egy car-t egy tabulátor követ, amit egy init, akkor akkor az m_id-t átadja. De ha egy poziciót 3 int követ, akkor magát az id-t és azt is beolvassa hogy honnan hova. Tehát röviden a scanf segítségével tudjuk feldolgozni, hogy mi történik. Az m_cmd értéket mindenhol változtatjuk ez gondolom azt a célt szolgálja, hogy tudjuk hol vagyunk.
+Annak megfelelően, hogy mit olvasunk fogja eldönteni, hogy mi történik. Példáúl, ha egy car-t egy tabulátor követ, amit egy init, akkor akkor az m_id-t átadja. De ha egy poziciót 3 int követ, akkor magát az id-t és azt is beolvassa hogy honnan hova. Tehát röviden a scanf segítségével tudjuk feldolgozni a már tokeinzált bemenetünket és annak megfelelően, hogy jelenleg milyen esemény fut le a programban a megadott viselkedést fogja produkálni.Példáúl az m_cmd értéket mindenhol változtatjuk ez gondolom azt a célt szolgálja, hogy tudjuk hol vagyunk. Vagy más esetben hibaellenőrzést végzünk, de az utakat is beolvassuk más helyen egy vektorba.
 </para>
     </section>
 
@@ -145,7 +159,7 @@ Annak megfelelően, hogy mit olvasunk fogja eldönteni, hogy mi történik. Pél
 Fogalmam sincs a program, miről szeretne szólni, de szerencsére csak a kamerakezelésről kell írni.
 </para>
 <para>
-Maga a samucam osztály konstruktora nem csinál mást mint beállítja a magasságot, szélességet és megadja a videsteam-et. Érdemes lehet megjegyezni, hogy initializer list-et használunk, ami miatt szépen elkülönül a függvény törzsétől.
+Maga a samucam osztály konstruktora nem csinál mást mint beállítja a magasságot, szélességet és megadja a videsteam-et. Érdemes lehet megjegyezni, hogy initializer list-et használunk, ami miatt szépen elkülönül a függvény törzsétől. Így amúgy jól el lehet különíteni, hogy milyen értékeket adunk át és, hogy a konstruktornak van-e és ha igen milyen saját egyedi viselkedése van még azon kívűl. Jelen esetben csak az openVideoStream függvényt hívja meg.
 </para>
 <programlisting language='c++'>
 <![CDATA[
@@ -156,7 +170,7 @@ SamuCam::SamuCam ( std::string videoStream, int width = 176, int height = 144 )
 }]]>
 </programlisting>
 <para>
-Ez meghívja az openVideoStream függvényt, ami elindítja magát a felvételt és azt, hogy milyen magas és széles legyen, valamint azt is, hogy hány fps-el fusson ez az egész.
+Az openVideoStream függvény az, ami elindítja magát a felvételt és azt, hogy milyen magas és széles legyen, valamint azt is, hogy hány fps-el fusson ez az egész. Ez itt már az opencv álltal nyujtott videostream lesz és ezért adjuk meg neki mégegyszer a magasságot és szélességet.
 </para>
 <programlisting language='c++'>
 <![CDATA[
@@ -170,8 +184,7 @@ void SamuCam::openVideoStream()
 }]]>
 </programlisting>
 <para>
-Tovább haladva a kódban feltételezem, hogy arcfelismerésről lesz szó és, hogy opencv-t használunk.
-Szóval ha van képünk akkor először 50 millisecond-ot pihentetjük, aztán elég sok minden történik.
+Tovább haladva a kódban feltételezem, hogy arcfelismerésről lesz szó. Szóval ha van az adott pillanatban futó videostream, akkor először 50 millisecond-ot pihentetjük. Majd elkezdjük képkockánként beolvasni az egészet. Annak hogy ez a rész két while ciklusban van csak annyi értelmet látok, ha van videostreamünk, de nem rögzitjük, akkor azt megtehetjük és csak után tudjuk olvasni képkockánként, mivel ellenkező esetben nem lenne olyan sok értelme. De ismét a belső while ciklusban ellenőrizük, hogy üres-e beolvasott kép szóval nem nagyon értem, hogy miért így van. De amennyiben nem üres átméterezzük 176x144-es felbontásra, áttérünk szinesről fekete fehér képre. Majd elkezdünk az arcokkal dolgozni. Ez alatt csak azt értem, hogy arcfelismerést végzünk és később csak az arc megjelenítéséhez szükséges magasséggal és szélességel dolgozunk.
 </para>
 <programlisting language='c++'>
 <![CDATA[ while ( videoCapture.isOpened() )
@@ -224,7 +237,7 @@ Szóval ha van képünk akkor először 50 millisecond-ot pihentetjük, aztán e
             }]]>
 </programlisting>
 <para>
-Ha az éppen adott frame nem üres akkor átméretezük a majd létrehozunk egy vectort és egy fekete fehér képet, aminek átadjuk a framet. Ezután pedig felismerjük az arcokat.
+Szóval valami ilyesmit csinál és nagyban építkezik az opencv-re és qt-ra.
 </para>
     </section>
 
@@ -235,11 +248,22 @@ Ha az éppen adott frame nem üres akkor átméretezük a majd létrehozunk egy 
             Megoldás forrása:                
         </para>
 <para>
-Ha még semmi lényeges nem változott, akkor a BrainB egy kísérleti fázisban lévő szoftver, aminek az a célja, hogy a felhasználó szellemi teljesítményét próbálja mérni. Ezt arra alapoza, hogy mennyire tud az adott illető koncentrálni. Ennek a mérése nem áll másból mint a képernyőn megjelenő objectek követése. Vagyis pontosabban egy saját karaktert kell követni anélkül, hogy eleszítené azt a felhasználó.
+Ha még semmi lényeges nem változott, akkor a BrainB egy kísérleti fázisban lévő szoftver, aminek az a célja, hogy a felhasználó szellemi teljesítményét próbálja mérni. Ezt arra alapoza, hogy mennyire tud az adott illető koncentrálni. Ennek a mérése nem áll másból mint a képernyőn megjelenő objectek követése és ez csak azt méri ki mennyire tud koncentrálni, de talán összefüggésbe hozató azzal, hogy ki hogyan tud teljesítei. Mivel aki jobban tud koncentrálni, az jobban is tud teljesíteni és ilyen alapon nincs benne kifogásolható, viszont ennek a bebizonyítása még tudásom szerint nem történt meg. Jelen esetben a oject követése csak annyiból áll, hogy tobb karakter között kell egy saját karaktert követni a felhasználónak és ha tudja követni, akkor eléggé koncentrál ha nem akkor kicsit elveszítette a fókuszt és az mentális koncentrációjának határa a többi pedig úgy működik elméletben, ahogy azt már leírtam.
 </para>
 <para>
-Viszont nekünk most a Qt slot-signal mechanizmus a lényeges. Ez a slot-signal mechanizmus lehetővég teszi az az objectek közötti kommunikációt. Leegyszerűsítve, ha egy adott esemény bekövetkezik, akkor az egy jelet fog kibocsátani, egy másik objectnek hasonlóan a java eventekhez.
+Viszont nekünk most a Qt slot-signal mechanizmus a lényeges. Ez a slot-signal mechanizmus lehetővég teszi az az objectek közötti kommunikációt. Ez nem csinál mást mint egy megadott sloton keresztűl kapcsolódik egy másik objecthez és átad pár információt és a signal része magának a mechanizmusnak. Leegyszerűsítve, ha egy adott esemény bekövetkezik, akkor az egy jelet fog kibocsátani, egy másik objectnek hasonlóan a java eventekhez.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/slot-signal.png" scale="60" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
 <para>
 Példáúl a BrainB-s programban a következőket figyelhetjük meg.
 </para>
@@ -273,13 +297,13 @@ Alapvetően connect(obj1, signal1, obj2, slot2) módon működik. Szóvel itt mo
         <title>OSM térképre rajzolása</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása:<link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/exclamation/osm.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/exclamation/osm.cpp</link>                
         </para>
 <para>
-Maga az OSM nem más mint adatbázis a világ logisztikai részeiről. Ezt bárki letöltheti akár xml formában és úgy dolgoza fel, ahogy akarja vagy használhatja az OSM által nyújtött API-kat. Ebből elég sok van elég sok nyelven.
+Maga az OSM nem más mint adatbázis a világ logisztikai részeiről, aminek felhasználása attól tér el a google nyújtotta saját térkép szolgálatlásától, hogy a google szigorúbban kezelni, hogy hogyan is lehet felhasználni az adatait. Ellenban az OSM nyujtotta adatokat bárki letöltheti akár xml formában és úgy dolgoza fel, vagy pedig saját bináris formában, ami jóval tömörebb és még API-t is ad hozzá, amiből az igazat megvallva van egy pár és több nyelven is elérhető. De lehetőség van a nyers xml-t is megszerezni, viszont ezzel óvatosan kell bánni, mert elég nagy lehet egy egy ilyen xml és ha valaki nem tudja mit csinál, akkor a saját feldolgozás kicsit hosszadalmas lehet. 
 </para>
 <para>
-Példáúl osmium használatával valahogy így néz ki az utak megjelenítése.
+Az előbb említett API közé ééldáúl az osmium, aminek használatával valahogy így néznek ki az utak megjelenítése.
 </para>
 <para>
 Előszöt beolvassuk az osm file-t az osmium segítségével.
