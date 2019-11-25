@@ -93,7 +93,9 @@ int main() {
 	mask.setTo(GC_FGD, barna);
 	mask.setTo(GC_PR_FGD, veloter);
 	mask.setTo(GC_BGD, bhatter);
-
+	Mat model1, model2;
+	grabCut(img, mask, Rect(), model1, model2, 10, GC_INIT_WITH_MASK);
+	imshow("sf", mask);
 
 	waitKey();
 	return 0;
