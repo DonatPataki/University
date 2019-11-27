@@ -7,14 +7,438 @@
     </info>
 
     <section>
-        <title>...</title>
+        <title>Port scan</title>
 
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/scan.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/scan.java</link>               
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+<para>
+A megadott program nem csinál mást mint visszaad egy listát a 0-tól 1024-ig tartó TCP kapukról, hogy az adott időben melyik volt használva és melyik nem. Ennek a megvalósítására kivételkezelést használ és ez lenne a lényeg, hogy miért ezt használja. De először nézzük a programot röviden.
+</para>
+<programlisting language='java'>
+<![CDATA[        for(int i=0; i<1024; ++i)
+            
+            try {
+                
+                java.net.Socket socket = new java.net.Socket(args[0], i);
+                
+                System.out.println(i + " figyeli");
+                
+                socket.close();
+                
+            } catch (Exception e) {
+                
+                System.out.println(i + " nem figyeli");]]>
+</programlisting>
+<para>
+A fenti programrész igazából az egész main function és igazán egyszerű megvalósítás. Az hogy 0-tól 1024-ig nézzük a kapukat az egyértemű, hogy egy for cikluson belűl lesz megoldva. Viszont egy try catch blokkban található maga a socket létrehozása és azt látjuk, ha létre tudja hozni, akkor használatban van, ha pedig akármilyen hiba exception jön akkor nem figyelnek.
+</para>
+<para>
+Ha tudni akarjuk, hogy pontosan miért fog mőködni ez a megoldás akkor egy gyors kereséssel meg is lehet találni az oracle oldalán, hogy a függvény mikor dobhat kivételt és egy rövid leírást is.
+</para>
+<programlisting language='java'>
+<![CDATA[public Socket(String host, int port)]]>
+</programlisting>
+<para>
+Röviden fogalmazva IOException-t fog dobni ha nem tud létrehozni egy socketet. Vagy másképpen fogalmazva, ha nincs nyitva port, akkor nem fogja tudni létrehozni a socketet és egy exceptionnel lep meg inkább minket. Ami rögtön meg is magyaráza, hogy miért try catch blokkban van az egész. De ezen kívűl az is kiderűl, hogy ha a host nevét null-ként adjuk át akkor a loopback címmel fog alapértelmezetten dolgozni. És ezzel a módszerrel el is kezdhetünk nyitott portok után keresni akár biztonsági okokból akár nem.
+</para>
     </section>        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+              
+    <section>
+        <title>AOP</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/aop.aj">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/aop.aj</link>               
+        </para>
+<para>
+Aspect oriented programming nem más mint egy olyan programozási módszer, ami a modularitásra épül és ennek segítségével anélkül lehet új viselkedést hozzáadni a már meglévő kódokhoz, hogy azokat módosítanánk. Ezt pointcutok és joint pointok segítségével éri el. Lényegében amire ezt lehet használni az főként debuging célok. Mivel példáúl jól lehet vele logolni, hogy egy függvény mondjuk hányszor lett megírva. De az is igaz, hogy új viselkedést is hozzá lehet adni mint példáúl ennél a feladatnál.
+</para>
+<para>
+A bináris fákat három féleképpen lehet bejárni. Inorder, postorder és preorder sorrendben. Ezek az elnevezések arra utalnak, hogy milyen sorrendben vannak feldoldolgozva a gyökér elemek a gyerekekhez képest. És mivel ez egy rekurzív függvényhívás lesz, vagyis kettő így elég egyszerű megvalósítani is.
+</para>
+<para>
+Először megadjuk, hogy hol szeretnénk egy pointcutot létrehozni. Lényegében ezzel adjuk meg, hogy hol szeretnénk beleszólni a program működésébe.
+</para>
+<programlisting language='java'>
+<![CDATA[	public pointcut travel(LZWBinaryTree.Node n, PrintWriter os) 
+	: call(public void LZWBinaryTree.printTree(LZWBinaryTree.Node, PrintWriter)) && args(n,os);]]>
+</programlisting>
+<para>
+Ezután megadjuk, hogy mit szeretnénk csinálni. Mi most a poncut után. Azaz akkor amikor már lefutott a függvény az alábbi kis kódrészletet szeretnénk lefutatni, ami nem tesz mást mint elkezdi a rekurziót az inorder és postorder bejárásokhoz és kiírja a tartalmukat egy fájlba.
+</para>
+<programlisting language='java'>
+<![CDATA[    after(LZWBinaryTree.Node n, PrintWriter os) throws FileNotFoundException : travel(n, os)
+    {
+    	inOrder(n,new PrintWriter("in-order.txt"));
+    	depth = 0;
+    	postOrder(n,new PrintWriter("post-order.txt"));
+    }]]>
+</programlisting>
+<para>
+És végül itt a két függvény. Ezekben nincs semmi különös. Mivel rekúrzívak így egyszer csak be kell indítani őket és onnantól kezdve végigmennek a fán.
+</para>
+<programlisting language='java'>
+<![CDATA[
+    public void inOrder(LZWBinaryTree.Node n, PrintWriter p)
+    {
+    	if (n != null)
+        {
+            ++depth;
+            for (int i = 0; i < depth; ++i)
+                p.print("---");
+            p.print(n.getValue () + "(" + depth + ")\n");
+            inOrder (n.getLeftChild (), p);
+            inOrder (n.getRightChild (), p);
+            --depth;
+        }
+    }
+    public void postOrder(LZWBinaryTree.Node n, PrintWriter p)
+    {
+    	if (n != null)
+        {
+            ++depth;
+            postOrder (n.getLeftChild (), p);
+            postOrder (n.getRightChild (), p);
+            for (int i = 0; i < depth; ++i)
+                p.print("---");
+            p.print(n.getValue () + "(" + depth + ")\n");
+            --depth;
+        }
+    }]]>
+</programlisting>
+    </section>
+
+    <section>
+        <title>Junit teszt</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/LZWBinFaTest.java">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/LZWBinFaTest.java</link>               
+        </para>
+<para>
+A programozóknak szükségük van eszközökre amikkel könnyebbé lehet tenni a debugging folyamatot vagy magát azt, hogy egy programot, hogyan tudnak tesztelni. Ezek még egy kisebb programnál nem okoznak gondot, de mikor már nagyobb projektről van szó, akkor már elég bonyolulttá tud válni a dolog. Ezt a tesztelési fázist szeretné megkönnyíteni a junit. Ennek segítségével olyan programokat tudunk írni java nyelven, amivel tesztelni tudjuk java osztályainkat és ha nem is tudjuk rögtön, hogy hol a hiba legalább arra választ kaphatunk, hogy mondjuk melyik osztályban vagy függvényben kell keresni.
+</para>
+<para>
+Junit kicsit olyan mint a AOP egy kicsit átgondolása mivel ugyanúgy lehetőség van tesztelésre anélkül, hogy a forráskódot módosítanánk. Példáúl lehetőség van tageket megadni, amikkel lehet szűrni a @Tag megadásával. Vagy olyan függvényt írni, ami lefog futni még maga teszt előtt vagy a teszt után @BeforeAll és @AfterAll formájában, így példáúl a teszt előtt bekérhetjük az adatokat és a végén mondjuk összegezetjük, hogy mi lett az eredménye. Vagy akár minden teszt medódus előtt vagy után is csinálhatunk ilyet, ha logolni szeretnénk példáúl valamit. De akár egy teszt medusnak vagy osztálynak meg is modhatjuk, hogy most őt nem szeretnénk lefutattni. És még lehetne sorlni, hogy miket lehet vele csinálni, de inkább nézzük magát a feladatot.
+</para>
+<para>
+Szóval ha megírtunk egy osztáyt, akkor igazából el kell kezdenünk goldolkozni, hogy milyen bemenetre milyen végeredmény várható és ezt kell összehasonlítani azzal, hogy valójában mit kapunk. Erre önmagában nem szükséges a junit, de ha használjuk, akkor nem fogjuk összeszemetetlni a saját kódunkat. Tehát binfa esetén megnézzük, hogy egy bemenetre milyen fát kéne kapunk és milyen értékeinek kéne lennie.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/lzwpapir.jpeg" scale="70" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Most hogy megvan, hogy egy adott bemenetre milyen értékeket kéne adni elkezdhetjük megírni magát a teszt programot. De még előtte fontos megjegyezni, hogy érdemes olyan bemenetet választani, ami problémás lehet vagy érdemes tesztelni. Nyílván itt a binfánál nincs olyan nagy választék, de nagyobb projekteknél elképzelhető, hogy több különböző bemenetet is tesztelni kell.
+</para>
+<programlisting language='java'>
+<![CDATA[public class LZWBinFaTest {
+    LZWBinFa binfa = new LZWBinFa();
+    
+    @Test
+    public void testHozzarendel() {
+        char[] minta = "01111001001001000111".toCharArray();
+        
+        for(char betu: minta ){
+            binfa.hozzarendel(betu);
+        }
+        
+        assertEquals(4, binfa.getMelyseg());
+        assertEquals(2.75, binfa.getAtlag(), 0.01);
+        assertEquals(0.957427, binfa.getSzoras(), 0.000001);
+    }    
+    
+}]]>
+</programlisting>
+<para>
+A fenti program pedig teszteli a bemenetet olyan módon, hogy létrehozunk egy elemét a binfa osztálynak. Azután belerakjuk a már papíron felhasznált bemenetet és megnézzük, hogy maga az értékek, amiket kapnunk kell azok mennyire egyeznek meg azzal, amit kapnunk kéne. Érdemes megjegyezni, hogy milve az átlag és a szórás azok nem egész típusok ezért kerekítés miatt lehet nem pont ugynazt az eredményt kapjuk, mivel véges a memória. Példáúl 1 / 3 * 3 nem lesz egyenlő eggyel ugyanezen ok miatt és ezért adtunk meg egy kis toleranciát ha elófordúlna ilyesmi.
+</para>
+    </section>
+
+    <section>
+        <title>OSCI</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI.cpp</link>               
+        </para>
+<para>
+Leírás szerint maga a program annyi, hogy egy egyszrű opengl-es megjelenítő és egy kocsit lehet rajta irányítani. Viszont ez az opengl-es megjelenítés annyira nem volt kötelező legalábbis azokból, amit én hallotam és meg lehetet oldani unityben is. Viszont ha unityben csináltam volna akkor már régen kész lennék vele és nem lenne kihívás. Szóval én szeretem ha fáj és ezért én a leírásból indultam ki és a terv az, hogy egy 2d kocsit lehessen irányítani.
+</para>
+<para>
+Szóval még nincs kész a feladat, de elég erősen meg van kezdve és ezért leírnám az eddigi tapasztalatokat, mire jutottam, hogyan tovább és minél hamarabb befejezem, csak kaptam egy kisebb hibát és elkezdett érdekelni, hogy mi lehet a gondja mivel opengl-nél nem szokása szólni hogy van-e gond ha nem kéri le valaki hanem meghagy egy fekete képernyőt és azzal letudja.
+</para>
+<para>
+Magáról a hibáról gyorsan annyit, hogy elvileg az okozza, hogy a vertex shader helyett fragment shadert kap viszont ezt így nem sikerűlt este felfedeznem. Szóval majd átnézem rendesen meg kicsit szétbontom a kódot, hogy ne egy cpp fájl legyen.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/osci.png" scale="80" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Így egy rövid bevezető után végre elkezdhetünk beszélni magáról a programról.
+</para>
+<para>
+Szóval maga opengl segítségével kéne megjeleníteni bár objectet és jobb esetben még interaktálni is lehet velük. Én ehhez a feladathoz <link xlink:href="https://www.glfw.org/">GLFW</link> könyvtárat használtam, ami nem más mint ad egy crossplatform supportot az opengl-hez. Tehát ha nem csak windowson szeretném hogy fusson, akkor csak az adot platformra kell lefordítani. Érdemes még azt is megjegyzeni, hogy windows esetében opengl1.1 az utolsó kiadott verzió, ami kicsit régi. Valamint azt érdemes megjegyezni, hogy opengl használata során mi nem látjuk magát a forráskódokat csak függvényeket használunk és maga az utasítássorozat a grafikus kártya driverében van implementálva. Ezért igazából ha újabb verziót szeretnénk használni windowson mint opengl1.1 ezért szükségünk lesz még egy opengl extension libraryre, ahonnan megkapjuk a függvényeket. Ehhez én <link xlink:href="http://glew.sourceforge.net/">GLEW</link>-t használtam, ami szintén cross-platform.
+</para>
+<para>
+Szóval le vannak tudva a függvénykönyvtárak és mostmár elkezdhetjük magát a programot írni. Kiindulási alapnak GLFW oldalán meg lehet találni egy kódot ami készít egy adott felbontású ablakot.
+</para>
+<programlisting language='c++'>
+<![CDATA[#include <GLFW/glfw3.h>
+
+int main(void)
+{
+    GLFWwindow* window;
+
+    /* Initialize the library */
+    if (!glfwInit())
+        return -1;
+
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        return -1;
+    }
+
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
+
+    /* Loop until the user closes the window */
+    while (!glfwWindowShouldClose(window))
+    {
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        /* Swap front and back buffers */
+        glfwSwapBuffers(window);
+
+        /* Poll for and process events */
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+    return 0;
+}]]>
+</programlisting>
+<para>
+Itt nyíván meg kell adni include directorinak azt, ahova pakoltuk a GLFW és a nekünk megfelelő visual studio verzióval rendeklehóző mappát a linkernek. Valamint dependeciesnél magát az opengl32.lib-et és eldöntjük, hogy hogyan szeretnénk linkelni a GLFW-t, mivel nincs miért ne statikusan linkelni, így megadhatjuk a megfelelő .lib fájlt.
+</para>
+<para>
+Ezek után már tudunk is használni legacy opengl kódokat. Amik így visszagondolva elég egyszerűek. Példáúl egy háromszög rajzolása.
+</para>
+<programlisting language='c++'>
+<![CDATA[        glBegin(GL_TRIANGLES);
+        glVertex2f(0, 0);
+        glVertex2f(1, 0);
+        glVertex2f(0, 1);
+        glEnd();
+]]>
+</programlisting>
+<para>
+Modern opengl-ben ez kicsit bonyolúltabban néz ki. És mivel szeretem ha fáj ezért jól miért is ne próbálkoznék azzal. Szóval ehhez előbb includolni kell GLEW-t és máris tudunk modern opengl függvényeket használni. Azon kívűl ha statikusan szeretnénk linkelni, akkor definiálnunk kell GLEW_STATIC-ot. Includolásnál fontos, hogy még GLFW előtt includoljuk valamint akkor kell inicializálni mikor már van egy valid opengl context. 
+</para>
+<para>
+Maga drawcall csak ennyi, ami egy kicsit megtévesztő mivel kell neki egy kis előkészítés.
+</para>
+<programlisting language='c++'>
+<![CDATA[glDrawArrays(GL_TRIANGLES, 0, 3);]]>
+</programlisting>
+<para>
+Modern opengl esetében két féleképpen lehet előkészíteni a dolgokat. Előszor egy VBO kell és ha szerenénk, akkor már elementeket rajzolunk. Index buffereknek annyi szerepe van, hogy ne ismételjünk vertexet feleslegesen a memóriában, hanem adjuk meg magukt a pontokat és egy indexeket tartalmazó tömbben megtalálhtó, hogy hogyan rajzolja ki háromszögekből az adott objektumot.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+	unsigned int buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);]]>
+</programlisting>
+<para>
+Szóval ha a fenti kódot beírtuk akkor még lehetséges, hogy csak egy fekete képet látunk, mivel nincs shaderünk és ezt a driverünk dönti el, hogy szeretne nekünk adni egy alap shadert vagy nem ad és csak egy fekete képet látunk.
+</para>
+<para>
+Nálam most úgy néz ki, hogy a vertex shader hibás, de a fragment shaderrel nincs baj szóval magát a háromszög színét tudom befolyásolni. De ezt és a több dolgot is akkor részletezném, ha teljesen kész a feladat.
+</para>
+<para>
+Nagyjából itt tartok most és mivel ezzel a hibával foglalkoztam, így csak meg lett kezdve a feladat. De hogy hogyan tovább arra is van ötlet. Maga a kocsi csak egy textúra lesz egy téglatesten így azzal nem gond. Az irányítást pedig lehet használni a GLFW nyújtotta lehetőségeket példáúl.
+</para>
+<programlisting language='c++'>
+<![CDATA[void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_E && action == GLFW_PRESS)
+        activate_airship();
+}]]>
+</programlisting>
+
+    </section>
+
+    <section>
+        <title>OSCI3</title>
+
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp</link>               
+        </para>
+<para>
+Az OSCI-hez képest ez sincs teljesen befejezve, de ez is elég közel van a befejezett verzióhoz. Itt most nem sorolnám végig az opengl-ben mi mit csinál megint, bár OSCI-nél jelenleg csak egy nagyon kezdetleges leírás van. Szóval itt is hasonló eírás lesz, hogy most hol tartok, hogyan tovább.
+</para>
+<para>
+Szóval maga a feladat leírása azt mondta, hogy rajzoljuk ki opengl-ben Debrecen utcáit. Vagyis pontosabban csak utakat jelenítsen meg és nekem valahogy ez csapódott hozzá alapból és ezt kezdtem el csinlálni.
+</para>
+<para>
+Szóval maga az alapelképzelés az volt, hogy Debrecen térképét meg lehet kapni xml formában OSM oldaláról és én onnan saját programot írva kiszedem a nekem hasznos információkat példáúl az utcák koordinátáit és már csak ki kell rajzolni opengl-ben. És ilyenkor jönnek azok a finomságok, hogy az OSM oldaláról nem lehet letölteni mert node limit van. Ekkor nem estem kétségbe és megnéztem hol van tükrözve az adat így pedig le tudom majd onnan tölteni a megfelelőt. Így kerültem a geofabrik oldalára, ahol le kicsit túl lőttem a célon és letöltöttem egész Magyarországra vonatkozó adatokat. Ami kicsomagolás után 3 gigát nyomott...  És volt vele egy kicsi gond...
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/size.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Szóval hogy elérte a 2 GB-s limitet és ezért nem lehet ilyen módon megnyitni. De én nem esetem kétségbe és letöltöttem egy olyan programot, ami tud nagyobb fájlokat is kezelni és láttam 54534701 szép sort, amiből elég sokmindent ki tudtam szedni hasszas nézegetés után, de azért mégiscsak kicsit túlzás, hogy ezzel dolgozzak.
+</para>
+<para>
+És ekkor láttam, hogy létezik egy overpass turbo nevezetű oldal, ami OSM adatokaktl dolgozik és lehet szűrni és a visszaadot xml-t le lehet tölteni. Ahol örömben az alőbbi querryvel ki is szedtem a az utakat. És így már csak egy kis csinás 6 megás fájllal kell dolgozni.
+</para>
+<programlisting>
+<![CDATA[area[name="Debrecen"][type=boundary]->.a;
+(
+way(area.a)[highway]; -
+(rel(area.a)[route=road][type=route];>;);
+);
+(._;>;);out;]]>
+</programlisting>
+<para>
+Az OSM formátum viszont olyan, hogy külön vannak a pontok és az utaknál csak referenciaként kezeli azokat. Szóval itt jön a saját módszerrel való kiszedés. Ezen lehetne javítani, nagy vonalakban abból áll, hogy kiszedem a hosszúsági és szélességi koordinátákat és magát az id-t amire hivatkoznak majd az utak. Valamint az utaknak az összes referenciáját külön.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+	while (getline(raw, line))
+	{
+		if (line.find("node id") != std::string::npos)
+		{
+			points.push_back({ extract(line, "\""), extract(line, "lat=\""), extract(line, "lon=\"") });
+		}
+		else if (line.find("nd ref") != std::string::npos)
+		{
+			tempv.push_back(extract(line, "nd ref=\""));
+		}
+		else if (!(tempv.empty()))
+		{
+			references.push_back(tempv);
+			tempv.clear();
+		}
+	}]]>
+</programlisting>
+<para>
+Maga a függvény.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+std::string extract(const std::string& input, const std::string& search)
+{
+	std::string output;
+	std::size_t from = input.find(search) + search.length() - 1;
+	while (input[++from] != '"')
+	{
+		output += input[from];
+	}
+	return output;
+}]]>
+</programlisting>
+<para>
+Ezután már csak össze kellet párostani a referenciákat a megfelelő koordinátákkal, ami elég sokáig tartott és valószínű erre van egy jobb megoldás. Mondjuk elég fapados megoldás majd lehet keresek rá egy jobbat.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+	for (unsigned int i = 0; i < references.size(); i++)
+	{
+		for (unsigned int j = 0; j < references[i].size(); j++)
+		{
+			getPointIndex(references[i][j], points, lat, lon);
+			coordinates << lat << " " << lon << std::endl;
+		}
+		coordinates << "\n";
+	}]]>
+</programlisting>
+<para>
+Itt még üres sorral választottam el az utakat és úgy írtam ki egy fájlba, de később rájöttem, hogy ez felesleges. És akkor át is térhetünk az opengl részére, hogy hogyan lesz befejezve a program.
+</para>
+<para>
+Ömlesztve megkapja a koordinátákat és egy másik indexben lesz tárolva, hogy hol kezdődik az utca és hány pont hosszú.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+	float positions[] = {
+		-0.5f, -0.5f,
+		 0.5f,  0.5f,
+		 0.3f, 0.4f,
+		 1.0f, 1.0f,
+		 0.2f, -0.4f,
+		 -0.9f, -0.8f,
+		 -0.7f, 0.0f,
+		 0.2f, 0.0f
+	};
+
+	unsigned int indexes[] = {0, 2, 2, 2, 5, 4};]]>
+</programlisting>
+<para>
+Ez jelenleg ott tart, hogy ömlesztve megvannak a koordináták és hogy hol kezdődik és hol ér véget az út. Ezt átalakítani hogy olyan legyen, hogy hol kezdődik és hány pont hosszú pár percet fog igénybe venni maximum. És utána már csak includolni kell a {} helyére mivel az nem csinál mást mint bemásolja és akkor nem is kell fájlkezeléssel foglalkozni.
+</para>
+<para>
+Maga a kiíratás úgynézki, hogy átadjuk az összes koordinátát és megmondjuk index alapján, hogy mit szeretnénk mivel a glDrawArrays bekéri, hogy mit szeretnénk rajzolni, hol kezdődik és milyen hosszú. És ezt be lehet rakni egy for ciklusba és mondhatni készen is van.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, 0, positions);
+			glDrawArrays(GL_LINE_STRIP, indexes[0], indexes[1]);
+			glDrawArrays(GL_LINE_STRIP, indexes[2], indexes[3]);
+			glDrawArrays(GL_LINE_STRIP, indexes[4], indexes[5]);
+		glDisableClientState(GL_VERTEX_ARRAY);]]>
+</programlisting>
+<para>
+A jelenlegi teszt koordinátákkal a következőt rajzolta csak, hogy bizonyítsa, hogy működőképes az elgondolás.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/OSCI3.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Viszont ehhez kellesz még egy transformation matrix, mivel az opengl alapértelmezetten -1-től 1-ig osztja be magának a helyet és itt 47 és 21 körüli pontokról van szó, de ennek az implementációja nem hiszem, hogy nagy probléma lesz.
+</para>
+<para>
+Ha teljesen kész az OSCI és OSCI3 azok leírásai frissítve lesznek.
+</para>
+    </section>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 </chapter>                
