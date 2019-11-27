@@ -6,9 +6,6 @@ import org.junit.Test;
 public class LZWBinFaTest {
     LZWBinFa binfa = new LZWBinFa();
     
-    /**
-     * Test of hozzarendel method, of class LZWBinFa.
-     */
     @Test
     public void testHozzarendel() {
         char[] minta = "01111001001001000111".toCharArray();
