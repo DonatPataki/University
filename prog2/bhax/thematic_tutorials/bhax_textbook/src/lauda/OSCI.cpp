@@ -86,7 +86,7 @@ int main(void)
 		"\n"
 		"void main()\n"
 		"{\n"
-		"	gl_Postion = position;\n"
+		"	gl_Position = position;\n"
 		"}\n";
 
 	std::string fragmentShader =
