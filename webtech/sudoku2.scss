@@ -1,0 +1,31 @@
+table {
+    border: medium solid black;
+    border-collapse: collapse;
+    margin: 1em auto;
+    td {
+        border: thin solid lightgray;
+        width: 2em;
+        height: 2em;
+        text-align: center;
+        vertical-align: middle;
+    }
+    td:nth-child(3n) {
+        border-right: medium solid black;
+    }
+    tr:nth-child(3n) {
+        border-bottom: medium solid black;
+    }
+
+    @for $i from 1 through 9 {
+        @for $j from 1 through 9 {
+            tr:nth-child(#{$i}) > td:nth-child(#{$j}) {
+                @if (floor(($i - 1) / 3) + floor(($j - 1) / 3)) % 2 == 0 {
+                    background-color: lavender;
+                }
+                @else {
+                    background-color: whitesmoke;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,346 @@
+table {
+  border: medium solid black;
+  border-collapse: collapse;
+  margin: 1em auto;
+}
+
+table td {
+  border: thin solid lightgray;
+  width: 2em;
+  height: 2em;
+  text-align: center;
+  vertical-align: middle;
+}
+
+table td:nth-child(3n) {
+  border-right: medium solid black;
+}
+
+table tr:nth-child(3n) {
+  border-bottom: medium solid black;
+}
+
+table tr:nth-child(1) > td:nth-child(1) {
+  background-color: lavender;
+}
+
+table tr:nth-child(1) > td:nth-child(2) {
+  background-color: lavender;
+}
+
+table tr:nth-child(1) > td:nth-child(3) {
+  background-color: lavender;
+}
+
+table tr:nth-child(1) > td:nth-child(4) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(1) > td:nth-child(5) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(1) > td:nth-child(6) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(1) > td:nth-child(7) {
+  background-color: lavender;
+}
+
+table tr:nth-child(1) > td:nth-child(8) {
+  background-color: lavender;
+}
+
+table tr:nth-child(1) > td:nth-child(9) {
+  background-color: lavender;
+}
+
+table tr:nth-child(2) > td:nth-child(1) {
+  background-color: lavender;
+}
+
+table tr:nth-child(2) > td:nth-child(2) {
+  background-color: lavender;
+}
+
+table tr:nth-child(2) > td:nth-child(3) {
+  background-color: lavender;
+}
+
+table tr:nth-child(2) > td:nth-child(4) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(2) > td:nth-child(5) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(2) > td:nth-child(6) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(2) > td:nth-child(7) {
+  background-color: lavender;
+}
+
+table tr:nth-child(2) > td:nth-child(8) {
+  background-color: lavender;
+}
+
+table tr:nth-child(2) > td:nth-child(9) {
+  background-color: lavender;
+}
+
+table tr:nth-child(3) > td:nth-child(1) {
+  background-color: lavender;
+}
+
+table tr:nth-child(3) > td:nth-child(2) {
+  background-color: lavender;
+}
+
+table tr:nth-child(3) > td:nth-child(3) {
+  background-color: lavender;
+}
+
+table tr:nth-child(3) > td:nth-child(4) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(3) > td:nth-child(5) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(3) > td:nth-child(6) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(3) > td:nth-child(7) {
+  background-color: lavender;
+}
+
+table tr:nth-child(3) > td:nth-child(8) {
+  background-color: lavender;
+}
+
+table tr:nth-child(3) > td:nth-child(9) {
+  background-color: lavender;
+}
+
+table tr:nth-child(4) > td:nth-child(1) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(4) > td:nth-child(2) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(4) > td:nth-child(3) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(4) > td:nth-child(4) {
+  background-color: lavender;
+}
+
+table tr:nth-child(4) > td:nth-child(5) {
+  background-color: lavender;
+}
+
+table tr:nth-child(4) > td:nth-child(6) {
+  background-color: lavender;
+}
+
+table tr:nth-child(4) > td:nth-child(7) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(4) > td:nth-child(8) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(4) > td:nth-child(9) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(5) > td:nth-child(1) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(5) > td:nth-child(2) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(5) > td:nth-child(3) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(5) > td:nth-child(4) {
+  background-color: lavender;
+}
+
+table tr:nth-child(5) > td:nth-child(5) {
+  background-color: lavender;
+}
+
+table tr:nth-child(5) > td:nth-child(6) {
+  background-color: lavender;
+}
+
+table tr:nth-child(5) > td:nth-child(7) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(5) > td:nth-child(8) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(5) > td:nth-child(9) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(6) > td:nth-child(1) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(6) > td:nth-child(2) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(6) > td:nth-child(3) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(6) > td:nth-child(4) {
+  background-color: lavender;
+}
+
+table tr:nth-child(6) > td:nth-child(5) {
+  background-color: lavender;
+}
+
+table tr:nth-child(6) > td:nth-child(6) {
+  background-color: lavender;
+}
+
+table tr:nth-child(6) > td:nth-child(7) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(6) > td:nth-child(8) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(6) > td:nth-child(9) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(7) > td:nth-child(1) {
+  background-color: lavender;
+}
+
+table tr:nth-child(7) > td:nth-child(2) {
+  background-color: lavender;
+}
+
+table tr:nth-child(7) > td:nth-child(3) {
+  background-color: lavender;
+}
+
+table tr:nth-child(7) > td:nth-child(4) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(7) > td:nth-child(5) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(7) > td:nth-child(6) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(7) > td:nth-child(7) {
+  background-color: lavender;
+}
+
+table tr:nth-child(7) > td:nth-child(8) {
+  background-color: lavender;
+}
+
+table tr:nth-child(7) > td:nth-child(9) {
+  background-color: lavender;
+}
+
+table tr:nth-child(8) > td:nth-child(1) {
+  background-color: lavender;
+}
+
+table tr:nth-child(8) > td:nth-child(2) {
+  background-color: lavender;
+}
+
+table tr:nth-child(8) > td:nth-child(3) {
+  background-color: lavender;
+}
+
+table tr:nth-child(8) > td:nth-child(4) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(8) > td:nth-child(5) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(8) > td:nth-child(6) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(8) > td:nth-child(7) {
+  background-color: lavender;
+}
+
+table tr:nth-child(8) > td:nth-child(8) {
+  background-color: lavender;
+}
+
+table tr:nth-child(8) > td:nth-child(9) {
+  background-color: lavender;
+}
+
+table tr:nth-child(9) > td:nth-child(1) {
+  background-color: lavender;
+}
+
+table tr:nth-child(9) > td:nth-child(2) {
+  background-color: lavender;
+}
+
+table tr:nth-child(9) > td:nth-child(3) {
+  background-color: lavender;
+}
+
+table tr:nth-child(9) > td:nth-child(4) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(9) > td:nth-child(5) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(9) > td:nth-child(6) {
+  background-color: whitesmoke;
+}
+
+table tr:nth-child(9) > td:nth-child(7) {
+  background-color: lavender;
+}
+
+table tr:nth-child(9) > td:nth-child(8) {
+  background-color: lavender;
+}
+
+table tr:nth-child(9) > td:nth-child(9) {
+  background-color: lavender;
+}
+/*# sourceMappingURL=sudoku2.css.map */

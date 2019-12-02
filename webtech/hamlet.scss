@@ -1,0 +1,113 @@
+$size: 1em;
+
+%centered-text {
+  text-align: cetner;
+}
+
+body {
+  border: thin solid black;
+  width: 50%;
+  margin: $size;
+}
+
+h1 {
+  @extend %centered-text;
+}
+
+header,
+nav {
+  margin: $size;
+  padding: $size;
+}
+
+header {
+  font-variant: small-caps;
+  letter-spacing: $size / 4;
+}
+
+p.author {
+  @extend %centered-text;
+  font-size: x-large;
+}
+
+nav,
+section.act {
+  border-top: medium solid black;
+}
+
+a {
+  color: slateblue;
+  text-decoration: none;
+  :hover {
+    background-color: slateblue;
+    color: white;
+  }
+}
+
+
+
+section.act {
+  margin: $size;
+}
+
+section.scene > h1 {
+  border: thin solid red;
+  padding: $size / 2;
+}
+
+div.speaker {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.stagedir {
+  font-style: italic;
+  color: gray;
+  ::before {
+    content: "(";  
+  }
+}
+
+.stagedir::after {
+  content: ")";
+}
+
+section.scene > div.stagedir {
+  text-align: center;
+}
+
+div.speech,
+section.scene > div.stagedir {
+  padding: $size;
+}
+
+div.speaker > span.stagedir {
+  text-transform: none;
+  font-weight: normal;
+}
+
+section.scene > div:nth-of-type(odd) {
+  background-color: aliceblue;
+  border-top: medium solid slateblue;
+}
+
+section.scene > div:nth-of-type(even) {
+  border-top: medium solid silver;
+}
+
+section.act {
+  counter-reset: line-counter;
+}
+
+div.speech > div.line::after {
+  content: counter(line-counter);
+  counter-increment: line-counter;
+  float: right;
+}
+
+div.line:hover,
+div.stagedir:hover {
+  background-color: lightcoral;
+  color: white;
+}
+/*# sourceMappingURL=hamlet.css.map */
