@@ -1,6 +1,43 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
+#include <math.h>
+
+static float angle = 0.0f;
+static glm::vec3 translation(0, 0, 0);
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	if (key == GLFW_KEY_W)
+	{
+		std::cout << "w\n";
+		translation.x += sin(angle) * 0.01f;
+		translation.y += cos(angle) * 0.01f;
+	}
+
+	if (key == GLFW_KEY_S )
+	{
+		std::cout << "s\n";
+		translation.x -= sin(angle) * 0.01f;
+		translation.y -= cos(angle) * 0.01f;
+	}
+
+	if (key == GLFW_KEY_D)
+	{
+		std::cout << "d\n";
+		angle -= 5.0f;
+	}
+
+	if (key == GLFW_KEY_A)
+	{
+		std::cout << "a\n";
+		angle += 5.0f;
+	}
+}
 
 static unsigned int compileShader(unsigned int type, const std::string& source)
 {
@@ -59,34 +96,48 @@ int main(void)
 		return -1;
 	}
 
+	glfwSetKeyCallback(window, key_callback);
+
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
 	if (glewInit() != GLEW_OK)
 		return -1;
 
-	float positions[6] = {
+	float positions[] = {
 		-0.5f, -0.5f,
-		 0.0f,  0.5f,
-		 0.5f, -0.5f
+		 0.5f,  -0.5f,
+		 0.5f, 0.5f,
+		 -0.5f, 0.5f,
 	};
-		
+
+	unsigned int indices[] = {
+		0, 1, 2, 2, 3, 0
+	};
+
 	unsigned int buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 6 * 2 *sizeof(float), positions, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
+	unsigned int ibo;
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6  * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+
 	std::string vertexShader =
 		"#version 330 core\n"
 		"\n"
-		"layout(location = 0) in vec4 position;"
+		"layout(location = 0) in vec4 position;\n"
+		"uniform mat4 u_MVP;\n"
 		"\n"
 		"void main()\n"
 		"{\n"
-		"	gl_Position = position;\n"
+		"	gl_Position = u_MVP * position;\n"
 		"}\n";
 
 	std::string fragmentShader =
@@ -107,7 +158,12 @@ int main(void)
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+		model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 mvp =  model;
+		glUniformMatrix4fv(glGetUniformLocation(shader, "u_MVP"), 1, GL_FALSE, &mvp[0][0]);
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
