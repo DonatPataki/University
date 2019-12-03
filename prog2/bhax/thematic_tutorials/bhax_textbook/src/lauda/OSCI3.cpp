@@ -4,10 +4,6 @@
 #include "../glm/glm.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 
-static float s = 1.0f;
-static double xpress, ypress, x, y, previous_x, previous_y;
-static glm::vec3 translation(0, 0, 0);
-static bool lbutton_down = false;
 
 static unsigned int compileShader(unsigned int type, const std::string& source)
 {
@@ -82,10 +78,10 @@ int main(void)
 		return -1;
 
 	float positions[] =
-#include"poPoints.txt"
+#include"epiccoord.txt"
 		;
-	unsigned int indexes[] = 
-#include"poIndexes.txt"
+	unsigned int indexes[] =
+#include"indexes2.txt"
 		;
 
 	std::string vertexShader =
@@ -126,8 +122,7 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glm::mat4 proj = glm::ortho(475308671.0f, 475998139.0f, 216029324.0f, 216602269.0f, -1.0f, 1.0f);
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-		glm::mat4 mvp = proj * view * model;
+		glm::mat4 mvp = proj;
 		glUniformMatrix4fv(glGetUniformLocation(shader, "u_MVP"), 1, GL_FALSE, &mvp[0][0]);
 
 		glLineWidth(3);
