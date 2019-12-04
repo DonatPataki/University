@@ -171,10 +171,7 @@ A fenti program pedig teszteli a bemenetet olyan módon, hogy létrehozunk egy e
 Leírás szerint maga a program annyi, hogy egy egyszrű opengl-es megjelenítő és egy kocsit lehet rajta irányítani. Viszont ez az opengl-es megjelenítés annyira nem volt kötelező legalábbis azokból, amit én hallotam és meg lehetet oldani unityben is. Viszont ha unityben csináltam volna akkor már régen kész lennék vele és nem lenne kihívás. Szóval én szeretem ha fáj és ezért én a leírásból indultam ki és a terv az, hogy egy 2d kocsit lehessen irányítani.
 </para>
 <para>
-Szóval még nincs kész a feladat, de elég erősen meg van kezdve és ezért leírnám az eddigi tapasztalatokat, mire jutottam, hogyan tovább és minél hamarabb befejezem, csak kaptam egy kisebb hibát és elkezdett érdekelni, hogy mi lehet a gondja mivel opengl-nél nem szokása szólni hogy van-e gond ha nem kéri le valaki hanem meghagy egy fekete képernyőt és azzal letudja.
-</para>
-<para>
-Magáról a hibáról gyorsan annyit, hogy elvileg az okozza, hogy a vertex shader helyett fragment shadert kap viszont ezt így nem sikerűlt este felfedeznem. Szóval majd átnézem rendesen meg kicsit szétbontom a kódot, hogy ne egy cpp fájl legyen.
+Még maga a feladat leírása előtt szeretném kifejezni, hogy mennyire hálás vagyok azért, hogy hogyan is működik az opengl. Szóval maga a grafikus driver implementlja a dolgokat és nyílván különboző gyártók között lesz eltérés. Már csak azért is mert maga az opengl nem köti ki mindennek, hogy hogyan is kéne pontosan működnie. Példáúl adott a lenti hiba. Amit csak akkor kap meg az ember, ha külön visszakéri a hibákat. De a lényeg, hogy van ott egy szép hosszú sor, ami vonza az ember tekintetét és úgy voltam vele, hogy hát megnézem mi lenne rá a megoldás. Amire megkaptam, hogy a vertex és fragment shadert felcseréltem. Amit hosszas nézegetés után sem értettem mert nem. Majd később egy másik eszköznél ugyanaz a program a hiba első sorát adta vissza, amiből egyértelmű, hogy csak pancser vagyok és elírtam egy változót. 
 </para>
 <figure>
 <title></title>
@@ -191,7 +188,7 @@ Magáról a hibáról gyorsan annyit, hogy elvileg az okozza, hogy a vertex shad
 Így egy rövid bevezető után végre elkezdhetünk beszélni magáról a programról.
 </para>
 <para>
-Szóval maga opengl segítségével kéne megjeleníteni bár objectet és jobb esetben még interaktálni is lehet velük. Én ehhez a feladathoz <link xlink:href="https://www.glfw.org/">GLFW</link> könyvtárat használtam, ami nem más mint ad egy crossplatform supportot az opengl-hez. Tehát ha nem csak windowson szeretném hogy fusson, akkor csak az adot platformra kell lefordítani. Érdemes még azt is megjegyzeni, hogy windows esetében opengl1.1 az utolsó kiadott verzió, ami kicsit régi. Valamint azt érdemes megjegyezni, hogy opengl használata során mi nem látjuk magát a forráskódokat csak függvényeket használunk és maga az utasítássorozat a grafikus kártya driverében van implementálva. Ezért igazából ha újabb verziót szeretnénk használni windowson mint opengl1.1 ezért szükségünk lesz még egy opengl extension libraryre, ahonnan megkapjuk a függvényeket. Ehhez én <link xlink:href="http://glew.sourceforge.net/">GLEW</link>-t használtam, ami szintén cross-platform.
+Szóval maga opengl segítségével kéne megjeleníteni pár objectet és jobb esetben még interaktálni is lehet velük. Én ehhez a feladathoz <link xlink:href="https://www.glfw.org/">GLFW</link> könyvtárat használtam, ami nem más mint ad egy crossplatform supportot az opengl-hez. Tehát ha nem csak windowson szeretném hogy fusson, akkor csak az adott platformra kell lefordítani. Érdemes még azt is megjegyzeni, hogy windows esetében opengl1.1 az utolsó kiadott verzió, ami kicsit régi. Valamint azt érdemes megjegyezni, hogy opengl használata során mi nem látjuk magát a forráskódokat csak függvényeket használunk és maga az utasítássorozat a grafikus kártya driverében van implementálva. Ezért igazából ha újabb verziót szeretnénk használni windowson mint opengl1.1 ezért szükségünk lesz még egy opengl extension libraryre, ahonnan megkapjuk a függvényeket. Ehhez én <link xlink:href="http://glew.sourceforge.net/">GLEW</link>-t használtam, ami szintén cross-platform.
 </para>
 <para>
 Szóval le vannak tudva a függvénykönyvtárak és mostmár elkezdhetjük magát a programot írni. Kiindulási alapnak GLFW oldalán meg lehet találni egy kódot ami készít egy adott felbontású ablakot.
@@ -250,7 +247,7 @@ Ezek után már tudunk is használni legacy opengl kódokat. Amik így visszagon
 ]]>
 </programlisting>
 <para>
-Modern opengl-ben ez kicsit bonyolúltabban néz ki. És mivel szeretem ha fáj ezért jól miért is ne próbálkoznék azzal. Szóval ehhez előbb includolni kell GLEW-t és máris tudunk modern opengl függvényeket használni. Azon kívűl ha statikusan szeretnénk linkelni, akkor definiálnunk kell GLEW_STATIC-ot. Includolásnál fontos, hogy még GLFW előtt includoljuk valamint akkor kell inicializálni mikor már van egy valid opengl context. 
+Modern opengl-ben ez kicsit bonyolúltabban néz ki. És mivel szeretem ha fáj ezért miért is ne próbálkoznék azzal. Szóval ehhez előbb includolni kell GLEW-t és máris tudunk modern opengl függvényeket használni. Ha statikusan szeretnénk linkelni, akkor viszont definiálnunk kell GLEW_STATIC-ot. Includolásnál fontos, hogy még GLFW előtt includoljuk valamint akkor kell inicializálni mikor már van egy valid opengl context. 
 </para>
 <para>
 Maga drawcall csak ennyi, ami egy kicsit megtévesztő mivel kell neki egy kis előkészítés.
@@ -259,7 +256,7 @@ Maga drawcall csak ennyi, ami egy kicsit megtévesztő mivel kell neki egy kis e
 <![CDATA[glDrawArrays(GL_TRIANGLES, 0, 3);]]>
 </programlisting>
 <para>
-Modern opengl esetében két féleképpen lehet előkészíteni a dolgokat. Előszor egy VBO kell és ha szerenénk, akkor már elementeket rajzolunk. Index buffereknek annyi szerepe van, hogy ne ismételjünk vertexet feleslegesen a memóriában, hanem adjuk meg magukt a pontokat és egy indexeket tartalmazó tömbben megtalálhtó, hogy hogyan rajzolja ki háromszögekből az adott objektumot.
+Modern opengl esetében két féleképpen lehet előkészíteni a dolgokat. Előszor egy VAO kell és ha szerenénk, akkor már elementeket rajzolunk. Index buffereknek annyi szerepe van, hogy ne ismételjünk vertexet feleslegesen a memóriában, hanem adjuk meg magukt a pontokat és egy indexeket tartalmazó tömbben megtalálhtó, hogy hogyan rajzolja ki háromszögekből az adott objektumot.
 </para>
 <programlisting language='c++'>
 <![CDATA[
@@ -272,22 +269,72 @@ Modern opengl esetében két féleképpen lehet előkészíteni a dolgokat. Elő
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);]]>
 </programlisting>
 <para>
-Szóval ha a fenti kódot beírtuk akkor még lehetséges, hogy csak egy fekete képet látunk, mivel nincs shaderünk és ezt a driverünk dönti el, hogy szeretne nekünk adni egy alap shadert vagy nem ad és csak egy fekete képet látunk.
+Szóval ha a fenti kódot beírtuk akkor még lehetséges, hogy csak egy fekete képet látunk, mivel nincs shaderünk és ezt a driverünk dönti el, hogy szeretne nekünk adni egy alap shadert vagy nem ad és csak egy fekete képet látunk. A fenti kód egyszerűen nem csinál mást mint, létrehoz egy buffert, ami positions tömb elemeit tartalmaza. Csak azért néz ki, így mivel meg is adjuk, hogy milyen bufferről van szó, mekkora a mérete, miből és statikusat szeretnénk-e vagy dinamikusat példáúl. Ezen kívűl előfordúlhat, hogy nem csak a vertex pozicíóit tároljuk a VAO-ban ezért azt is meg kell adni, hogy hogyan épül fel a vertexattribpointer segítségével. Ez olyanokat tartalmaz, mint hgoy milyen a típusa, normalizált-e hány vertex tartozik egy pontot, mennyi a pontok leírása közötti távolság. Ezután pedig a VRAM-ban lesz tárolva az adatunk.
 </para>
 <para>
-Nálam most úgy néz ki, hogy a vertex shader hibás, de a fragment shaderrel nincs baj szóval magát a háromszög színét tudom befolyásolni. De ezt és a több dolgot is akkor részletezném, ha teljesen kész a feladat.
-</para>
-<para>
-Nagyjából itt tartok most és mivel ezzel a hibával foglalkoztam, így csak meg lett kezdve a feladat. De hogy hogyan tovább arra is van ötlet. Maga a kocsi csak egy textúra lesz egy téglatesten így azzal nem gond. Az irányítást pedig lehet használni a GLFW nyújtotta lehetőségeket példáúl.
+Ez mind jó egy háromszög esetében, de bonyolúltabb alakzatok is háromszögekből lesznek felépítve és szeretnénk elkerűlni a pontok duplikálását. Erre pedig egy index buffert kell létrehozni, ahol megadjuk, hogy melyik indexű vertex következik.
 </para>
 <programlisting language='c++'>
-<![CDATA[void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+<![CDATA[	unsigned int ibo;
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6  * sizeof(unsigned int), indices, GL_STATIC_DRAW);]]>
+</programlisting>
+<para>
+Ezután már a gldrawelemnts-el szertnénk kirajzolni, mivel az index bufferrel dolgozik.
+</para>
+<programlisting language='c++'>
+<![CDATA[glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);]]>
+</programlisting>
+<para>
+Ezek után érdemes shadert írni. Már csak azért mert nincs megszabva, hogy ha nincs akkor kapunk egy alap shadert, ami azt következi, hogy nem fogunk semmit se látni abból, amit ki szeretnénk írni. Valamint ha a négyzetre rárakunk egy textúrát, ahhoz megint szükségünk van shaderre. 2 féle shader létezik vertex és fragment shader. Az előbbi a vertex pontoknál ényeges, míg az utóbbi a kitöltendő pixeleknél.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/shader.png" scale="150" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Maga a kocsi mozgása, billentyű letésre törtne, amihez csak le kell kérni az adott billentyű leütéseket és megnézni, mely gomb került leütésre. Viszont ezen még lenne mit javítani.
+</para>
+<programlisting language='c++'>
+<![CDATA[static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_E && action == GLFW_PRESS)
-        activate_airship();
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	if (key == GLFW_KEY_W)
+	{
+		std::cout << "w\n";
+		translation.x += sin(angle) * 0.01f;
+		translation.y += cos(angle) * 0.01f;
+	}
+
+	if (key == GLFW_KEY_S )
+	{
+		std::cout << "s\n";
+		translation.x -= sin(angle) * 0.01f;
+		translation.y -= cos(angle) * 0.01f;
+	}
+
+	if (key == GLFW_KEY_D)
+	{
+		std::cout << "d\n";
+		angle -= 5.0f;
+	}
+
+	if (key == GLFW_KEY_A)
+	{
+		std::cout << "a\n";
+		angle += 5.0f;
+	}
 }]]>
 </programlisting>
-
     </section>
 
     <section>
@@ -297,13 +344,13 @@ Nagyjából itt tartok most és mivel ezzel a hibával foglalkoztam, így csak m
             Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp</link>               
         </para>
 <para>
-Az OSCI-hez képest ez sincs teljesen befejezve, de ez is elég közel van a befejezett verzióhoz. Itt most nem sorolnám végig az opengl-ben mi mit csinál megint, bár OSCI-nél jelenleg csak egy nagyon kezdetleges leírás van. Szóval itt is hasonló eírás lesz, hogy most hol tartok, hogyan tovább.
+Maga a feladat leírása azt mondta, hogy rajzoljuk ki opengl-ben Debrecen utcáit. Vagyis pontosabban csak utakat jelenítsen meg és nekem valahogy ez csapódott hozzá alapból és ezt kezdtem el csinlálni.
 </para>
 <para>
-Szóval maga a feladat leírása azt mondta, hogy rajzoljuk ki opengl-ben Debrecen utcáit. Vagyis pontosabban csak utakat jelenítsen meg és nekem valahogy ez csapódott hozzá alapból és ezt kezdtem el csinlálni.
+Még maga a feladat leírása előtt annyit, megjegyeznék, hogy maga a program működik, de annyi limitációval rendelkezik, hogy magát az utcák pontjainak koordinátái és az indexek és, hogy mennyit rajzoljon az a stacken tárolódik. Ez alapvetően nem olyan nagy baj, de egy ilyen programnál, elég hamar túl lehet lépni azt a memóriahatárt, amit a stacken lehet tárolni. Ezért itt csak az első 16 út van kirajzolva, olyan sorrendben, ahogy az osm tárolta. De lényegében ez csak egy tanuló program, hogy hogyan is jutottam el addig, hogy kirajzolja.
 </para>
 <para>
-Szóval maga az alapelképzelés az volt, hogy Debrecen térképét meg lehet kapni xml formában OSM oldaláról és én onnan saját programot írva kiszedem a nekem hasznos információkat példáúl az utcák koordinátáit és már csak ki kell rajzolni opengl-ben. És ilyenkor jönnek azok a finomságok, hogy az OSM oldaláról nem lehet letölteni mert node limit van. Ekkor nem estem kétségbe és megnéztem hol van tükrözve az adat így pedig le tudom majd onnan tölteni a megfelelőt. Így kerültem a geofabrik oldalára, ahol le kicsit túl lőttem a célon és letöltöttem egész Magyarországra vonatkozó adatokat. Ami kicsomagolás után 3 gigát nyomott...  És volt vele egy kicsi gond...
+Szóval maga az alapelképzelés az volt, hogy Debrecen térképét meg lehet kapni xml formában OSM oldaláról és én onnan saját programot írva kiszedem a nekem hasznos információkat példáúl az utcák koordinátáit és már csak ki kell rajzolni opengl-ben. És ilyenkor jönnek azok a finomságok, hogy az OSM oldaláról nem lehet letölteni mert node limit van. Ekkor nem estem kétségbe és megnéztem hol van tükrözve az adat, hogy le tudjam majd onnan tölteni. Így kerültem a geofabrik oldalára, ahol le kicsit túl lőttem a célon és letöltöttem egész Magyarországra vonatkozó adatokat. Ami kicsomagolás után 3 gigát nyomott...  És volt vele egy kicsi gond...
 </para>
 <figure>
 <title></title>
@@ -317,10 +364,10 @@ Szóval maga az alapelképzelés az volt, hogy Debrecen térképét meg lehet ka
 </mediaobject>
 </figure>
 <para>
-Szóval hogy elérte a 2 GB-s limitet és ezért nem lehet ilyen módon megnyitni. De én nem esetem kétségbe és letöltöttem egy olyan programot, ami tud nagyobb fájlokat is kezelni és láttam 54534701 szép sort, amiből elég sokmindent ki tudtam szedni hasszas nézegetés után, de azért mégiscsak kicsit túlzás, hogy ezzel dolgozzak.
+Szóval hogy elérte a 2 GB-s limitet és ezért nem lehet ilyen módon megnyitni. De én nem esetem kétségbe, mivel nem az a fajta ember vagyok és letöltöttem egy olyan programot, ami tud nagyobb fájlokat is kezelni és láttam 54534701 szép sort, amiből elég sokmindent ki tudtam szedni hasszas nézegetés után, de azért mégiscsak kicsit túlzás, hogy ezzel dolgozzak.
 </para>
 <para>
-És ekkor láttam, hogy létezik egy overpass turbo nevezetű oldal, ami OSM adatokaktl dolgozik és lehet szűrni és a visszaadot xml-t le lehet tölteni. Ahol örömben az alőbbi querryvel ki is szedtem a az utakat. És így már csak egy kis csinás 6 megás fájllal kell dolgozni.
+Ekkor már mondhatni, kicsit visszaesett bátorsággal kezdtem el keresgélni, hogy hogyan is lehetne leszűrni az OSM adatait. És mint egy isteni sugallat hatására találtam meg az <link xlink:href="https://overpass-turbo.eu/">overpass turbo</link> nevezetű oldalt, ami OSM adatokkal dolgozik és lehet szűrni querry segítségével. Továbbá a visszaadot xml-t le lehet tölteni. Ahol örömben az alőbbi querryvel ki is szedtem a az utakat. És így már csak egy kis csinos 6 megás fájllal kell dolgozni.
 </para>
 <programlisting>
 <![CDATA[area[name="Debrecen"][type=boundary]->.a;
@@ -331,7 +378,7 @@ way(area.a)[highway]; -
 (._;>;);out;]]>
 </programlisting>
 <para>
-Az OSM formátum viszont olyan, hogy külön vannak a pontok és az utaknál csak referenciaként kezeli azokat. Szóval itt jön a saját módszerrel való kiszedés. Ezen lehetne javítani, nagy vonalakban abból áll, hogy kiszedem a hosszúsági és szélességi koordinátákat és magát az id-t amire hivatkoznak majd az utak. Valamint az utaknak az összes referenciáját külön.
+Az OSM formátum viszont olyan, hogy külön vannak a pontok és az utaknál csak referenciaként kezeli azokat. Szóval itt jön a saját módszerrel való kiszedés. Ezen lehetne javítani, mivel ennél a 6 megás fájlnál is eltartott egy darabig mire lefutott. Főleg az összepárosítgatós rész tartott sokáig. Nagy vonalakban abból áll, hogy kiszedem a hosszúsági és szélességi koordinátákat és magát az id-t amire hivatkoznak majd az utak. Valamint az utaknak az összes referenciáját külön. Itt még ha nagyon akarunk gyorsítani anélkül, hogy ezen változtatnánk előre foglalhatunk le üres helyeket a vektornak, de ez a része a programnak egyáltalán nem vészes teljesítmény terén.
 </para>
 <programlisting language='c++'>
 <![CDATA[
@@ -353,7 +400,7 @@ Az OSM formátum viszont olyan, hogy külön vannak a pontok és az utaknál csa
 	}]]>
 </programlisting>
 <para>
-Maga a függvény.
+Maga a függvény, amivel lekérem a hosszúságot és a szélességet, valamint. Ezt a függvényt lehtne úgy is meghívni, hogy rövidebb illesztést nézzen, de mivel nem volt hosszú a futása, így nem nagyon erőlködtem, hogy külön adjak még a kezdő pozicíóhoz számot, mert így a search.length() - 1 is jó lesz és borzasztó "megerőltető" lett volna az a + valamilyen nagyságú szám.
 </para>
 <programlisting language='c++'>
 <![CDATA[
@@ -369,7 +416,7 @@ std::string extract(const std::string& input, const std::string& search)
 }]]>
 </programlisting>
 <para>
-Ezután már csak össze kellet párostani a referenciákat a megfelelő koordinátákkal, ami elég sokáig tartott és valószínű erre van egy jobb megoldás. Mondjuk elég fapados megoldás majd lehet keresek rá egy jobbat.
+Ezután már csak össze kellet párostani a referenciákat a megfelelő koordinátákkal, ami elég sokáig tartott és igen valószínű van rá jobb megoldás. Itt igazából jó lett volna tudni, hogy rendezett vagy rendezetlen listáról van szó id szerint. Mivel így egy lineáris kereséssel oldottam meg, amit nyílván bináris kereséssel mondjuk fel lehetett volna oldani. Vagy maga az id beolvasákor kiosztani egy új id-t és pl egy map használatával letárolni a régit és az újat és az alapján megkapni a koordinátákat. De az legjobb az lett volna, ha sorba vannak és nincs is nincs is benne szakadás mert, akkor csak egy konstanst kellet volna kivonni, ahhoz, hogy megkapjam a megfelelő adatokat. Szóval igen nem a legjobb megoldás, lett volna számos jobb, de végülis működött csak időbe került.
 </para>
 <programlisting language='c++'>
 <![CDATA[
@@ -384,49 +431,50 @@ Ezután már csak össze kellet párostani a referenciákat a megfelelő koordin
 	}]]>
 </programlisting>
 <para>
-Itt még üres sorral választottam el az utakat és úgy írtam ki egy fájlba, de később rájöttem, hogy ez felesleges. És akkor át is térhetünk az opengl részére, hogy hogyan lesz befejezve a program.
+Itt még üres sorral választottam el az utakat és úgy írtam ki egy fájlba, de később rájöttem, hogy ez felesleges. Mivel amit én akarok az az, hogy egybe át lehessen küldenia GPU-nak és csak tömb egy indexétől számítva adott számú koordináták apalján rajzoljon ki egy vonalat.  És akkor át is térhetünk az opengl részére, hogy hogyan lesz befejezve a program.
 </para>
 <para>
-Ömlesztve megkapja a koordinátákat és egy másik indexben lesz tárolva, hogy hol kezdődik az utca és hány pont hosszú.
-</para>
-<programlisting language='c++'>
-<![CDATA[
-	float positions[] = {
-		-0.5f, -0.5f,
-		 0.5f,  0.5f,
-		 0.3f, 0.4f,
-		 1.0f, 1.0f,
-		 0.2f, -0.4f,
-		 -0.9f, -0.8f,
-		 -0.7f, 0.0f,
-		 0.2f, 0.0f
-	};
-
-	unsigned int indexes[] = {0, 2, 2, 2, 5, 4};]]>
-</programlisting>
-<para>
-Ez jelenleg ott tart, hogy ömlesztve megvannak a koordináták és hogy hol kezdődik és hol ér véget az út. Ezt átalakítani hogy olyan legyen, hogy hol kezdődik és hány pont hosszú pár percet fog igénybe venni maximum. És utána már csak includolni kell a {} helyére mivel az nem csinál mást mint bemásolja és akkor nem is kell fájlkezeléssel foglalkozni.
-</para>
-<para>
-Maga a kiíratás úgynézki, hogy átadjuk az összes koordinátát és megmondjuk index alapján, hogy mit szeretnénk mivel a glDrawArrays bekéri, hogy mit szeretnénk rajzolni, hol kezdődik és milyen hosszú. És ezt be lehet rakni egy for ciklusba és mondhatni készen is van.
+Itt egy eléggé nem ajánlott megoldást alkalmaztam az adatok "beolvasására". Az első tömb tartalmaza a koordinátákat, míg a második a kezdő indexet és a hosszúságát az útnak. Viszont ahelyett, hogy beolvastam volna a fájlokat hagytam, hogy a preprocesser kisegítsen, mivel lényegében itt nem fog más történni, mint a két txt tartalma bemásolódik az include helyére. És mivel ott {} között vesszővel vannak felsorolva, így valid kód lesz belőle, csak nem egyértelmű és maga a visual studio se szerette annyira. De itt érdemes rendesen fájlból beolvasni mert és akár ez történhet több threaden is és a végén bevárni, hogy mindegyik be legyen olvasva. Valamint érdemes ezeket az adatokat a heap-en tárolni, mivel ezek a fajta adatok elég hamar nagyok tudnak lenni.
 </para>
 <programlisting language='c++'>
 <![CDATA[
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, positions);
-			glDrawArrays(GL_LINE_STRIP, indexes[0], indexes[1]);
-			glDrawArrays(GL_LINE_STRIP, indexes[2], indexes[3]);
-			glDrawArrays(GL_LINE_STRIP, indexes[4], indexes[5]);
-		glDisableClientState(GL_VERTEX_ARRAY);]]>
+	float positions[] =
+#include"poPoints.txt"
+		;
+	unsigned int indexes[] = 
+#include"poIndexes.txt"
+		;]]>
 </programlisting>
 <para>
-A jelenlegi teszt koordinátákkal a következőt rajzolta csak, hogy bizonyítsa, hogy működőképes az elgondolás.
+Maga a kiíratás úgy néz ki, hogy átadjuk az összes koordinátát és megmondjuk index alapján, hogy mit szeretnénk a glDrawArrays paraméterei szeint, amik nem mások, mint, hogy mit szeretnénk rajzolni. Vonal, háromszög stb... Hanyas számú indextől kezdődik a rajzolás a megadott tömbben. Valmint, hogy hány elemét figyelje a tömbnek.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+		for (int i = 0; i < 32; i++)
+			glDrawArrays(GL_LINE_STRIP, indexes[i++], indexes[i]);]]>
+</programlisting>
+<para>
+Ez mind szép és jó, de ha ezt csak így simán futattnánk semmit se látnánk. Mivel alapértelmezetten opengl -1 és 1 között dolgozik. De persze erre is van megoldás glm könyvtár formájában vagy igazából akármilyen megoldás jó, csak kicsit szoroznunk kell.
+</para>
+<para>
+Tehát létrehozunk egy mátrixot, amiben megadjuk, hogy milyen pontokat szerenénk, majd azt a vertex shaderen belűl összeszorozzuk, így a koordináták is a megfelelő helyre fognak kerülni.
+</para>
+<programlisting language='c++'>
+<![CDATA[		glm::mat4 proj = glm::ortho(475308671.0f, 475998139.0f, 216029324.0f, 216602269.0f, -1.0f, 1.0f);
+		glm::mat4 mvp = proj;
+		glUniformMatrix4fv(glGetUniformLocation(shader, "u_MVP"), 1, GL_FALSE, &mvp[0][0]);]]>
+</programlisting>
+<para>
+Itt a fenti kódrészletben az ortho függvény adja meg, azt, hogy milyen tartományon belűl szeretnénk "látni". Leegyszerűsítve ott adjuk meg az x és y tengely kezdő és végértékeit. Ez úgy néz ki, hogy a vertex shaderben a vertex koordinátája össze lesz szorozva a projection mátrixxal és ezért a koordináták "jó" helyre fognak kerűlni. Ezt úgy érjük el, hogy a már említett projection mátrix bekerűl az mvp-be, aminek most a neve nem releváns. És ennek a mátrixnak a kezdő koordinátáját átadjuk az u_MVP nevű unoformnak, ami össze lesz szorozva vertex koordinátáival. Itt én a minimum és maximum értékeket a projection mátrixnál aszerint választottam, hogy mi volt a legnagyobb és legkisebb érték x és y tengelyre nézve, szóval kisebb torzulások előfordúlhatnak, mivel maga az ablak mérete 720p-s.
+</para>
+<para>
+És ezek után mostmár látnunk kéne az első 16 utat, ami a debreceni régión belűl található az OSM adatbázisában. De helyette egy ilye szépséget kaptam.
 </para>
 <figure>
 <title></title>
 <mediaobject>
 <imageobject>
-<imagedata fileref="img/OSCI3.png" scale="100" />
+<imagedata fileref="img/OSCI3_meh.png" scale="50" />
 </imageobject>
 <textobject>
 <phrase></phrase>
@@ -434,10 +482,21 @@ A jelenlegi teszt koordinátákkal a következőt rajzolta csak, hogy bizonyíts
 </mediaobject>
 </figure>
 <para>
-Viszont ehhez kellesz még egy transformation matrix, mivel az opengl alapértelmezetten -1-től 1-ig osztja be magának a helyet és itt 47 és 21 körüli pontokról van szó, de ennek az implementációja nem hiszem, hogy nagy probléma lesz.
+Ez nem annyira hasolít egy város utcáinak felűlnézeti rajzára. De valószínűleg a kezdő indexekkel lesza a baj az éles váltásokból következtetve. Mivel így egy ponttal később kezz el rajzolni egy ugyanolyan hosszú pontot és az utolsó koordináta már a következő úthoz tartozna. Szóval valahol a kinyert koordinátákat tartalmazó fájl módosításai közben elírtam valamit és rosszúl adtam vissza a kzedő koordinátát. Korigálás után pedig így néz ki.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/OSCI3_kinda.png" scale="50" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
 <para>
-Ha teljesen kész az OSCI és OSCI3 azok leírásai frissítve lesznek.
+Ez már elég közel áll ahhoz, amit elterveztem. Nyílván ehhez az kéne, hogy ne a stacken tároljam azt a pár adatot, de szerintem a feladat már ezzel is elkönyvelhető. És mivel érdemes lenne átírni, több fájlba, hogy átláthatóbb legyen ne egy nagy maszlag az egész kód, így az itt tapasztaltak alapján már a következő opengles programhoz ezzel a tudással állok neki.
 </para>
     </section>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

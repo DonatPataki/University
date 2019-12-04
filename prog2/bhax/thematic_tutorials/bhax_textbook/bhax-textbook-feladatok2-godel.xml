@@ -54,6 +54,12 @@ Params maga a paraméterlista.
 <para>
 Ret adja meg, hogy milyen legyen a viszsatérítési érétke, viszont ezt nem kötelező megandi. Ha nem adjuk meg és nem is téritünk vissza, akkor void lesz különben pedig a return alapján próbálja kitalálni.
 </para>
+<para>
+Maga a lambda kifejezés amúgy a funkcionális programozásból ered, ami csak azért lényeges, mert teljsen más szemléletekadhatnak újat egy létező dologhoz.
+</para>
+<para>
+Valamint érdemes azt is megjegyezni, hogy léteznek függvény pointerek és azokat használva is lehetlambdát használni. Példáúl ha egy függvény egy adott fajta függvényointert vár, akkor lambdával memg lehet hívni ha jól paraméterezük és így tudjuk változtatni a függvény működését.
+</para>
     </section>        
 
     <section>
@@ -269,7 +275,10 @@ Magát az összehasonlítást a comperable interface segítségével fogjuk megv
 	}]]>
 </programlisting>
 <para>
-A compareable comareto medódusát a fenti módon felülírva elérjük azt, hogy a legtöbb pontot elérő csapat kerüljön előre. Mivel ha nagyobb akkor 1-es értékkel tér vissza ha kisebb, akkor -1-es és 0 pedig akkor ah megegyezik a két csapat pontszáma. Így ezekből egyértelműen el lehet dönteni, hogy hogyan is viszonyúlnak egymáshoz a csapatok.
+A compareable compareto medódusát a fenti módon felülírva elérjük azt, hogy a legtöbb pontot elérő csapat kerüljön előre. Mivel ha nagyobb akkor 1-es értékkel tér vissza ha kisebb, akkor -1-es és 0 pedig akkor ha megegyezik a két csapat pontszáma. Így ezekből egyértelműen el lehet dönteni, hogy hogyan is viszonyúlnak egymáshoz a csapatok.
+</para>
+<para>
+A comperable segítségével, meg lehet adni a custom classok alpértelmezett rendezését hasonlón a comparator-hoz, de a comperable az ostályon belűl adja meg ezt a logikát.
 </para>
     </section>   
 

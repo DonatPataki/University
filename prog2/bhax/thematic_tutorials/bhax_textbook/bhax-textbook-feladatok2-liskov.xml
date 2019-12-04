@@ -176,8 +176,31 @@ A futási időt nagyban befolyásolja az is, hogy meilyen gépünk van és hogy 
 C# esetén 10^6 értéket 2.8031596 sec alatt futattja le visual studion belűl. Ha csak simán futatnám az exe fájlt ezen még lehetne javítani.
 </para>
 <para>
-C++ esetén még lehetőség van párhuzamosítani, aminek implementálása későbbre csúszik, majd a teljes táblázatokkal.
+Nyílván lehetőség van párhuzamosításra is, mivel a képlet jól elkülöníthető részekre esik és c++ esetén, akár lehet CUDA-t használni vagy az alap több szálon futattást használni.
 </para>
+<para>
+Végül pedig érdemes lehet megjegyezni, hogy a változók életartama itt fontos lehet. Ez alatt azt értem, ha létrehozunk egy osztályt, ami nem csinál mást mint a konstruktorban lementi a kezdeti időt és a destructorban pedig a végét, akkor kicsit elegánsabbn lehet ezt a mérést megoldani.
+</para>
+<programlisting language='c++'>
+<![CDATA[class Timer
+{
+private:
+	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+	std::chrono::time_point<std::chrono::high_resolution_clock> end;
+public:
+	Timer()
+	{
+		start = std::chrono::high_resolution_clock::now();
+	}
+	~Timer()
+	{
+		end = std::chrono::high_resolution_clock::now();
+
+		std::chrono::duration<double> elapsed_seconds = end - start;
+		std::cout << elapsed_seconds.count() << std::endl;
+	}
+};]]>
+</programlisting>
     </section>        
 
     <section>

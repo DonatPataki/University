@@ -429,7 +429,10 @@ A fenti kódban látszólag nincs semmi különleges sem. Van két változónk �
 }]]>
 </programlisting>
 <para>
-Itt érdemes megjegyezni, hogyha az Integer kulcszót int-re cseréljük, akkor a problémánk meg is oldódik. Ebből tehát az következik, hogy az Integer osztály a ludas a végtelen ciklusért. Ennek viszont még pontos magyarázatát később fogom frissíteni, de valami olyasmiről van szó, hogy arra jöttek rá, hogy 8 bites számokat elég gyakran használnak az emberek. Azaz -128 és 127 közöttieket és az Integer osztályban ezek lekreálódnak és iyenkor csak referenciát kapunk rájuk.
+Itt érdemes megjegyezni, hogyha az Integer kulcszót int-re cseréljük, akkor a problémánk meg is oldódik. Ebből tehát az következik, hogy az Integer osztály a ludas a végtelen ciklusért.
+</para>
+<para>
+Ez pedig azért történik mert az Integer osztály egy wrapper class a primitív int típús köré, amivel megkap pár funkciót stb.. És a lényeg az, hogy -128-tól 127-ig chace-eli az értékeket, mivel az az elképzelés, hogy azokat a számokat gyakran kell használni és próbál, gyorsítani a folyamatokon. Viszont ez a fent látható hibához vezet, mivel nem kapunk új instance-t az osztálynak csak egy referenciát.
 </para>
     </section>        
 

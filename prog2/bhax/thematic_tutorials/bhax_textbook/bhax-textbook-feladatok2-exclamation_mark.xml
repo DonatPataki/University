@@ -16,10 +16,10 @@
 Röviden a program célja annyi, hogy a felhasználók bejelölhetik rajta, hogy milyen tevékenységeket végeztek és ezeket az adtokat később valamilyen módon fel lehet használni.
 </para>
 <para>
-Az egyetelen probléma csak az, hogy előfordűlnak hibák a program futása során. Így ránézésre, ami bugnak tűnt, az az hogy mappákba is be lehet "írni" a tevékenységeket, amik amúgy nem mentődnek el. De valószínűleg nem is lenne szabad, hogy érték kerüljön oda. A másik feltűnőbb hiba az a setOnMouseClicked miatt jön létre, ami röviden annyi, hogy nem mindig tudja eldönteni, hogy most ki szeretnénk nyitni egy mappát vagy tevékenységet jelölünk ki.
+Az egyetelen probléma csak az, hogy előfordúlnak hibák a program futása során. Így ránézésre, ami bugnak tűnt, az az hogy mappákba is be lehet "írni" a tevékenységeket, amik amúgy nem mentődnek el. De valószínűleg nem is lenne szabad, hogy érték kerüljön oda. A másik feltűnőbb hiba az a setOnMouseClicked miatt jön létre, ami röviden annyi, hogy nem mindig tudja eldönteni, hogy most ki szeretnénk nyitni egy mappát vagy tevékenységet jelölünk ki.
 </para>
 <para>
-Ezt elsősorban úgy orvosoltam, hogy szétválasztottam, jobb és bal kattitásra a műveleteket. Vagy legalábbis ez volt a terv és működik is viszont nem tökéletes.
+Ezt elsősorban úgy "orvosoltam", hogy szétválasztottam, jobb és bal kattitásra a műveleteket. Vagy legalábbis ez volt a terv. Így nincs azzal baj, hogy a mappákat is kijelöli, addig, amíg a megfelelő egérgombot használja a felhasználó. Szóval ezzel igazából nem lett megoldva teljesen a probléma, de gyors megoldásként működik.
 </para>
 <programlisting language='Java'>
 <![CDATA[
@@ -27,21 +27,10 @@ Ezt elsősorban úgy orvosoltam, hogy szétválasztottam, jobb és bal kattitás
             		return;]]>
 </programlisting>
 <para>
-És ennek megfelelően a jobb kattintás is benne van. Viszont tovább nem tudtam haladni, mert a javafx telepítése valahogy nem akart sikerűlni linuxon.
+És ennek megfelelően a jobb kattintás pedig a másik mouse eventes függvényben található.
 </para>
-<figure>
-<title></title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="img/error.png" scale="85" />
-</imageobject>
-<textobject>
-<phrase></phrase>
-</textobject>
-</mediaobject>
-</figure>
 <para>
-Annyit még érdemes megjegyezni azzal a hibával kapcsolatban, hogy a dupla kattintáshoz elég gyorsan kell nyomkodni a gobmokat, hogy ezt valőszínűleg azt okozza, hogy magát setONMouseClicked-et használ a program. Az internet nekem azt mondta, hogy inkább mouseressed vagy mousereleased függvényekkel ezt jobban meg lehet oldani, mivel akkor nem fogunk ezzel a problémával találkozni, hogy úgy kell nyomkodni az egérgombot mint akivel valami baj van. Vagy egy másik megoldás lehetett volna az, hogy még az if statement előtt adni neki egy kis szünetet, hogy legyen idő kétszer kattintani és így ne folyon össze a két függvény.
+Annyit még érdemes megjegyezni azzal a hibával kapcsolatban, hogy a dupla kattintáshoz elég gyorsan kell nyomkodni a gobmokat, hogy ezt valőszínűleg azt okozza, hogy magát setONMouseClicked-et használ a program. Az internet nekem azt mondta, hogy inkább mouseressed vagy mousereleased függvényekkel ezt jobban meg lehet oldani, mivel akkor nem fogunk ezzel a problémával találkozni, hogy úgy kell nyomkodni az egérgombot mint akivel valami baj van. Vagy egy másik megoldás lehetett volna az, hogy még az if statement előtt adni neki egy kis szünetet vagy magát az eltelt időt is berakni és ha hamarabb nézné, akkor lépjen ki függvényből, hogy legyen idő kétszer kattintani és így ne folyon össze a két függvény.
 </para>
     </section>        
               

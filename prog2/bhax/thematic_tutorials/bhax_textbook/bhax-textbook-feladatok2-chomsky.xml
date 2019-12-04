@@ -99,7 +99,7 @@ Maga a konverzió az úgy néz ki, hogy végig megyünk minden karakteren egyess
 Persze ezen lehetne javítani, példáúl, hogy ha már felcseréltük a karaktereket, akkor megszakíthatjuk a belső ciklust és rögtön mehetünk a következőre. Vagy akár a karakter párosokat rendezhetjük előfordulási gyakoriság szerint, hogy az előbb említett breakel használva még hatékonyabb legyen.
 </para>
 <para>
-Még gondolkozom rajta, hogy javítsak rajta olyan szinten, hogy több féle leet írásmódot ismerjen. Illetve java nyelven is megírjam-e és esetleg a két nyelv közötti különbségekre is térjek ki.
+Még gondolkozom rajta, hogy javítsak rajta olyan szinten, hogy több féle leet írásmódot ismerjen. Illetve java nyelven is megírjam-e és esetleg a két nyelv közötti különbségekre is térjek ki. Vagy esetleg próbáljam meg gyorsaságra optimalizálni, azzal, hogy nem lineáris keresést használok vagy hogy egyáltalán nem így oldom meg, hanem megadom egy mapban a párokat és csak simán lekérem, de ezek idő hiányában mind elmaradtak. Viszont ha van rá igény utólag megcsinálhatom.
 </para>
     </section>
 
@@ -266,37 +266,6 @@ Szóval ezzel a csodával álltam elő és mondhatni elég színes lett. Bár ki
             Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/ml.hpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/ml.hpp</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/main.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/chomsky/main.cpp</link>               
         </para>
 <para>
-Először is szeretném tisztázni a feladat megoldása kapcsán, hogy alapvetően a lua-s forrással próbálkkoztam és többszöri nekifutásra sem sikerűlt úgy váltaottam erre, ami miatt végül nem sikerűlt ezt a programot mőködésre bírni, mert a png++ valamit nem szeretett telepítés közben úgyhogy csak a forrással és magyarázattal tudok szolgálni egyelőre.
-</para>
-<para>
-png++-os gyönyörűség vége.
-</para>
-<figure>
-<title></title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="img/png++.png" scale="90" />
-</imageobject>
-<textobject>
-<phrase></phrase>
-</textobject>
-</mediaobject>
-</figure>
-<para>
-Kicsit hosszú lua error log vége.
-</para>
-<figure>
-<title></title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="img/asdf.png" scale="100" />
-</imageobject>
-<textobject>
-<phrase></phrase>
-</textobject>
-</mediaobject>
-</figure>
-<para>
 A perceptron nem más mint egy algoritmus model, ami az emberi agy működését próbálja utánozni. Hasonló a neurális hálóhoz azonban van pár különbség. Számos vector alapján "egyenes következtetést" próbál levonni, viszont még a belső állomásoknak is van súlya, amit igazítani próbál és jobb esetben megfelelő mintavétel után helyes eredményt ad vissza. Az így kapott súlyokat összeadja és ha ez elér egy bizonyos szintet, akkor a program adott része aktiválódik, pont úgy mint egy idegsejt esetén. És egy a lineáris folyamat ismétlődik amíg el nem jut a
 válaszig.
 </para>
@@ -315,13 +284,13 @@ válaszig.
 Itt maga a header fájl a perceptron és a cpp fájlban használjuk a perceptron kimenetét.
 </para>
 <para>
-Kérünk egy perceptront a képünk méretével.
+Kérünk egy perceptront a képünk méretével. Itt a mérteit már előzőleg lekértük png++ segítségével.
 </para>
 <programlisting language="c++">
 <![CDATA[Perceptron* p = new Perceptron (3, size, 256, size);]]>
 </programlisting>
 <para>
-Készítünk egy másolatot.
+Készítünk egy másolatot. De csak a red channelről.
 </para>
 <programlisting language="c++">
 <![CDATA[
@@ -332,7 +301,7 @@ Készítünk egy másolatot.
             image[i*png_image.get_width() + j] = png_image[i][j].red;]]>
 </programlisting>
 <para>
-Majd a perceptron kimenetét is hozzáadjuk és lementjük a fájlt.
+Majd a perceptron kimenetét is hozzáadjuk és lementjük a fájlt. Itt is körbejárjük a mátrixot, csak most a red és green channeleket töltjük fel értékekkel.
 </para>
 <programlisting language="c++">
 <![CDATA[
@@ -346,7 +315,7 @@ Majd a perceptron kimenetét is hozzáadjuk és lementjük a fájlt.
     png_image.write("result.png");]]>
 </programlisting>
 <para>
-Képet jelenleg nem tudok mutatni az elején leírtak miatt, de ezt miahamarabb pótolom.
+Majd result.png néven mentésre kerül a csodánk.
 </para>
     </section>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

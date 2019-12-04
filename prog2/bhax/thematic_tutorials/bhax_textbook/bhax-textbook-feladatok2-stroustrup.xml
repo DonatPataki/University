@@ -248,7 +248,7 @@ Most hogy ezzel is megvagyunk most jön a megfeleltetés, ami annyiból áll, ho
 Ennek a módszernek csak annyi a hibája, hogy ha kettő vagy több karakter ugyanannyiszor fordúl elő, nem tudjuk a kulcs érték párokat csak úgy megfordítani.
 </para>
 <para>
-Valamint azt a problémát, hogy gyakoriság alapján ne lehessen megtörni úgy lehet orvosolni, hogy több e értéket adunk meg és hasonlóan a bevprogoshoz, sorba megyünk azon is át, így elég kulcs megadása után elég valószínűtlen, hogy ugyanaz a karakter mindenhol ugyanazt a titkosított értéket fogja felvenni.
+Valamint azt a problémát, hogy gyakoriság alapján ne lehessen megtörni úgy lehet orvosolni, hogy több e értéket adunk meg és hasonlóan a bevprogoshoz, sorba megyünk azokon az értékeken, így ha elég maga prím számokat választunk és annak előállítjuk az összes lehetséges e értékét elég valószínűtlenné válik, hogy gyakoriság alapján majd meg lehet törni a titkosított szöveget.
 </para>
     </section>  
 
@@ -258,9 +258,7 @@ Valamint azt a problémát, hogy gyakoriság alapján ne lehessen megtörni úgy
         <para>
             Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.hpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.hpp</link>            
         </para>
-<para>
-Még mielőtt elkezdek írni a stringekről és hogy én hogyan oldottam meg jelezném, hogy apróbb módosítások lesznek eszközölve a leíráson és a kódon is mert pl header fájlt nem így kéne használni, mint ahogy azt én csináltam...
-</para>
+
 <para>
 C++-ban több féle változótípus létzeik pl char, int stb. De mi van akkor, ha mi azt szeretnénk, hogy szövegeket reprezentáljunk. Erre a célra szoktunk stringeket használni, ami nem más mint egy karakterlánc. Pontosabban ha string literálokat használunk, akkor azok const char*-ként lesznek létrehozva. És igazából ez a C verziója a stringeknek.
 </para>
