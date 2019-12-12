@@ -27,8 +27,8 @@ template<typename T>
                     << n*sizeof(T)
                     << " bytes "
                     << typeid (T).name() << "=" << p
-                    << " in location "
-                    << &typeid(T) 
+                    << " in memory location "
+                    << &p 
                     << std::endl;
         free(p);
         return reinterpret_cast<T*>(new char[n * sizeof(T)]);
