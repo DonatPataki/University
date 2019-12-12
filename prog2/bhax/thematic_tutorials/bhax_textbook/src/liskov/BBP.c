@@ -74,7 +74,7 @@ d16Sj (int d, int j)
  * [BBP ALGORITMUS] David H. Bailey: The
  * BBP Algorithm for Pi. alapján.
  */
-main ()
+int main ()
 {
 
   double d16Pi = 0.0;
