@@ -25,8 +25,10 @@ template<typename T>
             std::cout << "Allocating "
                     << n << " objects of "
                     << n*sizeof(T)
-                    << " bytes"
+                    << " bytes "
                     << typeid (T).name() << "=" << p
+                    << " in location "
+                    << &typeid(T) 
                     << std::endl;
         free(p);
         return reinterpret_cast<T*>(new char[n * sizeof(T)]);
@@ -34,6 +36,6 @@ template<typename T>
         
     void deallocate (pointer p, size_type n){
         delete[] reinterpret_cast<char *>(p);
-        std::cout << "Deallocating" << std::endl;
+        std::cout << "Deallocating" << " at " << &p << std::endl;
     }
     };
