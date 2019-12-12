@@ -127,6 +127,6 @@ public class PiBBP {
     /** Példányosít egy BBP algoritmust implementáló obektumot.*/
     public static void main(String args[]) {
         int position = Integer.parseInt(args[0]);          
-        System.out.print(new PiBBP(position));
+        System.out.println(new PiBBP(position));
     }
 }
