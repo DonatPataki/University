@@ -12,7 +12,6 @@ public:
 	MyEpicStringClass(const char* string);
 	MyEpicStringClass(const MyEpicStringClass& old);
 	~MyEpicStringClass();
-	unsigned int length(const char* string);
 	unsigned int length();
 	void insert(const char* string, const unsigned int position);
 	void append(const char* string);
@@ -22,4 +21,6 @@ public:
 	MyEpicStringClass& operator+(const MyEpicStringClass& string);
 	MyEpicStringClass& operator+(const char* string);
 	friend std::ostream& operator<<(std::ostream& stream, const MyEpicStringClass& string);
+private:
+	unsigned int length(const char* string);
 };
