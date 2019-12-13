@@ -18,29 +18,29 @@ public:
 		delete ptr;
 	}
 
-	example(example &other)
+	example(example& other)
 	{
 		std::cout << "cpy ctr\n";
 		ptr = new int;
-		ptr = other.ptr;
+		*ptr = *other.ptr;
 	}
 
-	example(example &&other)
+	example(example&& other)
 	{
 		std::cout << "mv ctr\n";
 		ptr = other.ptr;
 		other.ptr = nullptr;
 	}
 
-	example& operator=(const example &other)
+	example& operator=(const example& other)
 	{
 		std::cout << "cpy assign\n";
 		ptr = new int;
-		ptr = other.ptr;
+		*ptr = *other.ptr;
 		return *this;
 	}
 
-	example& operator=(example &&other)
+	example& operator=(example&& other)
 	{
 		std::cout << "mv assign\n";
 		ptr = other.ptr;
@@ -52,9 +52,12 @@ public:
 	{
 		std::cout << "Value of ptr: " << *ptr << std::endl;
 	}
-};
+}; 
 
 int main()
 {
-	
+	std::vector<example> vec;
+	example var1 = 10;
+	example var2 = var1;
+	vec.push_back(std::move(var2));
 }
