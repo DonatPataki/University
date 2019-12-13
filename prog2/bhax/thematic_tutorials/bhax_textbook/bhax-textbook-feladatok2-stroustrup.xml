@@ -71,6 +71,31 @@ Ha valóban mappa, akkor rekurzívan bejárjuk és ha a fájlkiterjesztés megeg
 <para>
 Ez még nem a legszebb megoldás, de mivel elérési útvonalakat ad vissza, így ezeket később fel lehet használni a program futása során. Példáúl akár arra is, hogy egy esztétikusabb megjelenítéshez felhasználjuk. De ezt valószínűleg akkor csinálom meg, ha lesz elég időm.
 </para>
+<para>
+Csak hogy egyszerűbb legyen ellenőrizni, hogy jól működik-e az alábbi teszt mappára lett ráeresztve, de persze ugyanúgy működik akármilyen fájl kiterjesztéssel és mappával.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_1_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_1_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>        
 
     <section>
@@ -139,8 +164,19 @@ Mozgató értékadás és mozgató constructor esetén, amiből mozgattunk nullp
 	}]]>
 </programlisting>
 <para>
-Mozgatás vectorok esetén lehet előidézni egyszerűen push_back során vagy pedig a move()-al külön hívhatjuk a move constructort.
+Mozgatás vectorok esetén lehet előidézni egyszerűen push_back explicit módon megmondjuk a move()-al, hogy a mozgató konstructort kéne használnia a porgramnak.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_2_1.png" scale="80" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>  
 
     <section>
@@ -250,13 +286,49 @@ Ennek a módszernek csak annyi a hibája, hogy ha kettő vagy több karakter ugy
 <para>
 Valamint azt a problémát, hogy gyakoriság alapján ne lehessen megtörni úgy lehet orvosolni, hogy több e értéket adunk meg és hasonlóan a bevprogoshoz, sorba megyünk azokon az értékeken, így ha elég maga prím számokat választunk és annak előállítjuk az összes lehetséges e értékét elég valószínűtlenné válik, hogy gyakoriság alapján majd meg lehet törni a titkosított szöveget.
 </para>
+<para>
+A program annyi szépséghibája lehet, hogy a titkosítás során nem foglakozik az új sorokkal, mivel a getline nem fogja belerakni a sor vége jelet a stringbe. De ha azt szeretnénk, hogy a ugyanazt kapjuk vissza csak bele kell rakni a stringbe manuálisan a az új sor jelet és onnantól tökéletes.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_3_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_3_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_3_3.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>  
 
     <section>
         <title>Saját string osztály</title>
 
         <para>
-            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.hpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.hpp</link>            
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.h">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.h</link>, <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/stroustrup/MyEpicStringClass.cpp</link>            
         </para>
 
 <para>
@@ -265,6 +337,17 @@ C++-ban több féle változótípus létzeik pl char, int stb. De mi van akkor, 
 <para>
 De mivel ezt megemlítettem felmerülhet a kérdés, hogy ha a stringek nem mások mint egy char pointer, akkor hogyan lehetséges az, hogy a többi karaktert is el tudjuk vele értni, hiszen a pointer csak egy adott memóriacímre kéne mutasson nem pedig az összes stringben szereplő karakterre. Ami igaz is, mivel a pointer az első karakterre mutat, de azt is tudni kell, hogy minden string null értékre végződik. Tehát az első karaktertől kezdve addig megy, aamíg el nem éri a null karaktert és azokat fogja kiírni. Ebből adódik, ha akár a string osztálynak vagy akár a const char*-nak a közepébe rakunk egy null karaktert, akkor nem kapjuk vissza a tejes karakterláncot.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_4_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
 <para>
 Ennek tudatában elkezdhetjük írni a saját string osztályunkat. Ahol nyílván szeretnénk magát a szövegeet tárolni és mondjuk azt is, hogy milyen hosszú. Bár ez utóbbi felesleges, mivel van függvényünk, ami visszaadja a string hosszát
 </para>
@@ -462,6 +545,17 @@ Valamint ha szeretnénk, a + operátort túrterhelni, ami nyílván a végéhez 
 		return *this;
 	}]]>
 </programlisting>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/16_4_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>  
 
 

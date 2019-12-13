@@ -32,6 +32,17 @@ Ezt elsősorban úgy "orvosoltam", hogy szétválasztottam, jobb és bal kattit�
 <para>
 Annyit még érdemes megjegyezni azzal a hibával kapcsolatban, hogy a dupla kattintáshoz elég gyorsan kell nyomkodni a gobmokat, hogy ezt valőszínűleg azt okozza, hogy magát setONMouseClicked-et használ a program. Az internet nekem azt mondta, hogy inkább mouseressed vagy mousereleased függvényekkel ezt jobban meg lehet oldani, mivel akkor nem fogunk ezzel a problémával találkozni, hogy úgy kell nyomkodni az egérgombot mint akivel valami baj van. Vagy egy másik megoldás lehetett volna az, hogy még az if statement előtt adni neki egy kis szünetet vagy magát az eltelt időt is berakni és ha hamarabb nézné, akkor lépjen ki függvényből, hogy legyen idő kétszer kattintani és így ne folyon össze a két függvény.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/18_1_1.png" scale="60" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>        
               
     <section>

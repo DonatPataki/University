@@ -24,6 +24,17 @@ Majd ezután vagy megmondja a compiler, hogy valamit nagyon erősen elcsesztünk
 <programlisting>
 <![CDATA[java MandelbrotHalmaz.class]]>
 </programlisting>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/15_1_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
 <para>
 Ez egy egyszerű világban legalábbis így működne. De szerencsére létezik egy olyan dolog, hogy karakter kódolás, ami kicsit megbonyolítja a dolgokat.
 </para>
@@ -48,6 +59,28 @@ De először a karakterkódolásról röviden. Annyit kell róla tudni, hogy má
 <para>
 Persze el lehet ezzel is szórakozni, hogy direkt rossz kódolást adunk meg és megnézzük milyen karaktereket fog visszadobni.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/15_1_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/15_1_3.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
 <para>
 És csak úgy hasznos információ ként windows esetén a konzol karakterkódolását a chcp paranccsal lehet megváltoztatni.
 </para>
@@ -101,6 +134,17 @@ Persze ezen lehetne javítani, példáúl, hogy ha már felcseréltük a karakte
 <para>
 Még gondolkozom rajta, hogy javítsak rajta olyan szinten, hogy több féle leet írásmódot ismerjen. Illetve java nyelven is megírjam-e és esetleg a két nyelv közötti különbségekre is térjek ki. Vagy esetleg próbáljam meg gyorsaságra optimalizálni, azzal, hogy nem lineáris keresést használok vagy hogy egyáltalán nem így oldom meg, hanem megadom egy mapban a párokat és csak simán lekérem, de ezek idő hiányában mind elmaradtak. Viszont ha van rá igény utólag megcsinálhatom.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/15_2_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>
 
     <section>
@@ -168,6 +212,17 @@ Most hogy van egy teljes képernyős képünk jó lenne ha valahogy egyszerűen 
       }
     })]]>
 </programlisting>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/15_3_1.png" scale="40" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>
 
     <section>

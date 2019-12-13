@@ -93,6 +93,28 @@ A c++-os forrás esetén érdemes kitérni, hogy random szám generálása az ki
 			std::srand (std::time(NULL));
 }; ]]>
 </programlisting>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/12_1_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/12_1_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>        
 
     <section>
@@ -431,8 +453,107 @@ A fenti kódban látszólag nincs semmi különleges sem. Van két változónk �
 <para>
 Itt érdemes megjegyezni, hogyha az Integer kulcszót int-re cseréljük, akkor a problémánk meg is oldódik. Ebből tehát az következik, hogy az Integer osztály a ludas a végtelen ciklusért.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/12_3_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+a képen az lenne a lényeg, hogy nem kapjuk vissza a konzolt, tehát valóban végtelen ciklus van.
+</para>
 <para>
 Ez pedig azért történik mert az Integer osztály egy wrapper class a primitív int típús köré, amivel megkap pár funkciót stb.. És a lényeg az, hogy -128-tól 127-ig chace-eli az értékeket, mivel az az elképzelés, hogy azokat a számokat gyakran kell használni és próbál, gyorsítani a folyamatokon. Viszont ez a fent látható hibához vezet, mivel nem kapunk új instance-t az osztálynak csak egy referenciát.
+</para>
+<para>
+Viszont ez az információ egy gyors google keresés után mégis csak stack overflow-ról származik és mi van ha ott át akarnak minket verni? Ilyenkor lehet az oracle hivatalos dokumentációjához fordulni. Vagy magát a forráskódot nézni.
+</para>
+<programlisting language='java'>
+<![CDATA[public final class Integer extends Number
+        implements Comparable<Integer>, Constable, ConstantDesc {
+    /**
+     * A constant holding the minimum value an {@code int} can
+     * have, -2<sup>31</sup>.
+     */
+    @Native public static final int   MIN_VALUE = 0x80000000;
+
+    /**
+     * A constant holding the maximum value an {@code int} can
+     * have, 2<sup>31</sup>-1.
+     */
+    @Native public static final int   MAX_VALUE = 0x7fffffff;]]>
+</programlisting>
+<para>
+Itt kiderűl, hogy azért ez mégis csak valami wrapper szerűség lesz, illetve, hogy maga a forrás tartalmaza a dokumentációt is. Ez azt jelenti, hogy a dokumentációban könnyen lehet keresgélni és utána, ha szeretnénk a forrásban már könnyebb dolgunk lesz keresni. Szóval a dokumentácinál rákeresve a 128-as számra rögtön meg is van, hogy a valueOf metódus kell majd nekünk.
+</para>
+<programlisting language='java'>
+<![CDATA[/**
+     * Cache to support the object identity semantics of autoboxing for values between
+     * -128 and 127 (inclusive) as required by JLS.
+     *
+     * The cache is initialized on first usage.  The size of the cache
+     * may be controlled by the {@code -XX:AutoBoxCacheMax=<size>} option.
+     * During VM initialization, java.lang.Integer.IntegerCache.high property
+     * may be set and saved in the private system properties in the
+     * jdk.internal.misc.VM class.
+     *
+     * WARNING: The cache is archived with CDS and reloaded from the shared
+     * archive at runtime. The archived cache (Integer[]) and Integer objects
+     * reside in the closed archive heap regions. Care should be taken when
+     * changing the implementation and the cache array should not be assigned
+     * with new Integer object(s) after initialization.
+     */
+
+    private static class IntegerCache {
+        static final int low = -128;
+        static final int high;
+        static final Integer[] cache;
+        static Integer[] archivedCache;
+
+        static {
+            // high value may be configured by property
+            int h = 127;
+            String integerCacheHighPropValue =
+                VM.getSavedProperty("java.lang.Integer.IntegerCache.high");
+            if (integerCacheHighPropValue != null) {
+                try {
+                    h = Math.max(parseInt(integerCacheHighPropValue), 127);
+                    // Maximum array size is Integer.MAX_VALUE
+                    h = Math.min(h, Integer.MAX_VALUE - (-low) -1);
+                } catch( NumberFormatException nfe) {
+                    // If the property cannot be parsed into an int, ignore it.
+                }
+            }
+            high = h;
+
+            // Load IntegerCache.archivedCache from archive, if possible
+            VM.initializeFromArchive(IntegerCache.class);
+            int size = (high - low) + 1;
+
+            // Use the archived cache if it exists and is large enough
+            if (archivedCache == null || size > archivedCache.length) {
+                Integer[] c = new Integer[size];
+                int j = low;
+                for(int i = 0; i < c.length; i++) {
+                    c[i] = new Integer(j++);
+                }
+                archivedCache = c;
+            }
+            cache = archivedCache;
+            // range [-128, 127] must be interned (JLS7 5.1.7)
+            assert IntegerCache.high >= 127;
+        }
+
+        private IntegerCache() {}
+    }]]>
+</programlisting>
+<para>
+Szóval igen a kódban is látszik, hogy -128-tól 127-ig cache-eli az értétkeket és amikor mi -129-es értékkel hoztunk létre egy két változót, akkor ott az már nem cache-ből lett olvasva, hanem külön objectek lettek és ezért viselkedett úgy a while ciklus ahogy.
 </para>
     </section>        
 
@@ -457,11 +578,11 @@ public class yoda {
 		Scanner input = new Scanner(System.in);
 		String answer = input.nextLine();
 		if(answer.equals("yes") || answer.equals("Yes")) {
-		System.out.println("Yes, hmmm.");
 		} else {
 			Boolean myBoolean = true;
 			if (myBoolean = null) { /* ... */ }
 		}
+		System.out.println("Yes, hmmm.");
 	}
 }]]>
 </programlisting>
@@ -469,8 +590,30 @@ public class yoda {
 Ahogy fent látható ez egy igazán egyszerű program. yoda beszédstílusban megkérdezzükű, hogy szeretné-e követni a kondicíókat és ha nem akkor a wikipédiánál megadott példa kerül futásra az if else ágánál, ami megadja nekünk a kívánt hibát. Talán egy prompt jel hiányzik, vagy az, hogy milyen lehetőségei vannak a felhasználónak és egyértelműbb lenne a válasz.
 </para>
 <para>
-Maga a yoda kondicíió onnan származik amúgy, hogy a stars wars nevezetű filmben szereplő Yoda is a nem megszokott sorrendben beszél. És ehhez a fajta beszédhez amúgy létezik is generétor, ami a normális szöveget "yoda beszéddé" alakítja.
+Maga a yoda kondíció onnan származik amúgy, hogy a stars wars nevezetű filmben szereplő Yoda is a nem megszokott sorrendben beszél. És ehhez a fajta beszédhez amúgy létezik is generétor, ami a normális szöveget "yoda beszéddé" alakítja.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/12_4_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/12_4_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>        
 
     <section>
@@ -547,6 +690,19 @@ Az így kapott 4 részértéket már csak vissza kell helyettesíteni, ahol még
 <para>
 Most ha kipróbáljuk, akkor kicsit eltérő eredményeket kapunk mint a dokumentációban megadott, ez azért lehetséges, mert a szummás rész másik fele nincs implementálva. Szóval egy későbbi időpontban mégiscsak befejezem a saját implementációmat majd.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/12_5_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+
+
     </section>        
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

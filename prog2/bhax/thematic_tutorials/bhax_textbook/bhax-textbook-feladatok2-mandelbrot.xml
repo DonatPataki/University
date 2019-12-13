@@ -107,6 +107,34 @@ public:
 	void doNothingDuringLesson();
 };]]>
 </programlisting>
+<para>
+Még ennél a feladatnál talán érdemes annyit megemlíteni, hogy a visual studio alapértelmezetten tud kreálni függvényekhez implementációt. Illetve van extension, amivel akár egybe egy osztály összes függvényének header fájlból való implementálását is tudja.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/14_2_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Valamint az alábbi kis kézenfekvő módon is megleshetjük egy függvény/metódus implementációját vagy akár meg is változtathatjuk azt.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/14_2_2.png" scale="55" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>        
         
     <section>
@@ -150,6 +178,17 @@ Majd az alábbi csodát kaptam....
 <para>
 Ami annyira nem volt vészes hiba, mert csak nem találja a strlen és strncpy függvényeket. Amiket a string.h tartalmazza, amit még ekkor nem is includoltam, csak mivel az iostream-nek része azt hittem így is működni fog, de nem. Szóval még egy include és már működik is.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/14_3_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
 <para>
 Na de, amit érdekesnek találtam a program során az az alábbi.
 </para>
@@ -158,6 +197,109 @@ Na de, amit érdekesnek találtam a program során az az alábbi.
 </programlisting>
 <para>
 Virtual az csak annyit tesz, hogy az implementációt az örökölt osztály felülírhatja. = 0-el viszont pure virtual function, ami annyit tesz, hogy ha nem implementáljuk később, akkor nem is használhatjuk.
+</para>
+<para>
+És ha már vitruális funkciókról van szó. Hogyha valaki elkezdi nézegetni a header fájlokat, akkor azzal szembesól, hogy bizonyos esetekben a destructor is virtuális funkcióként van feltüntetve. És ennek elsőre nincs túl sok értelme, mert eddig nem nagyon használtunk downcastolást. De Liskov kitalálta, hogy a gyerek osztály a szülővel helyetesíthetőnek kell lennie, ha a gyerek csak azt a funkcionalitását használja mint a szülő, ami logikus. És ilyenkor jön be a képbe az, hogy ha nem virtuális funkcióként hozzuk létre a szülő destructorját, akkor az memory leakhez vezet/vezethet. Példáúl a lenti példa esetében.
+</para>
+<programlisting language='c++'>
+<![CDATA[#include <iostream>
+
+class Base
+{
+public:
+  ~Base()
+  {
+    std::cout << "Destroying base" << std::endl;
+  }
+};
+
+class Derived : public Base
+{
+public:
+  Derived(int number)
+  {
+    some_resource_ = new int(number);
+  }
+
+  ~Derived()
+  {
+    std::cout << "Destroying derived" << std::endl;
+    delete some_resource_;
+  }
+
+private:
+  int* some_resource_;
+};
+
+int main()
+{
+  Base* p = new Derived(5);
+  delete p;
+}
+]]>
+</programlisting>
+<para>
+Ha a fenti kódot lefutattjuk, akkor csak a szülő osztály destructora hívódik meg és így ez memory leakhez vezet. Ennek az egyszerű megoldása pedig csak annyi, hogy az alap osztály destructorát a virtual kulcsszóval kiegészítjük. És így már érthető, hogy itt mondjuk a product headerben miért virtual a destructor.
+</para>
+<para>
+Virtual funkciók esetén, amúgy létrejön egy vtable, ami nyílván valamennyi helyet foglal, illetve annyiban lassítja a programot, hogy ott ki kell keresni, hogy akkor most honnan hívódott meg és a függvény melyik verzióját hívja meg, de ez a mai modern készülékeken nem egy olyan dolog, amin aggódnunk kéne.
+</para>
+<para>
+Ami még esetleg érdekes lehet, az az alábbi kis megoldás, ahogy a header fájlokat becsomagoljuk egy "if" statmentbe.
+</para>
+<programlisting language='c++'>
+<![CDATA[#ifndef PRODUCTINVENTORY_H
+#define PRODUCTINVENTORY_H
+
+#include <iostream>
+#include <vector>
+#include "Product.h"
+
+class ProductInventory 
+{
+    void emptyProdcuts();
+protected:
+    std::vector<Product*> products;
+public:
+    virtual ~ProductInventory();
+    void readInventory(std::istream& is);
+    void writeInventory(std::ostream& os) const;
+    void printProducts(std::ostream& os) const;
+    void addProduct(Product* product);
+};
+#endif /* PRODUCTINVENTORY_H */]]>
+</programlisting>
+<para>
+Azt tudjuk, hogy a # jelölésű kulcsszavak a preprocessor-nak szólnak, tehát a compiler már nem ilyen formában fog foglalkozni a forráskóddal. Amit ez csinál az nem más mint, hogy ha nincs egy adott dolog definiálva, akkor definiálja és magának a header tartalma és bekerűl. Ez csak annyi célt szolgál, hogy elkreüljük a metódusok többszöri definicíóját. Mert előfordúlhat, hogy több fájl esetén valahogy úgy includoljuk a header fájlokat, hogy többször szerepelne a projectben. Az include esetén a preprocessor amúgy csak bemásolja a fájl tartalmát. De a lényeg az, hogy így egy osztály jelen esetben többször is definiálva lenne, ami hibához vezetne. De mivel körbevettük ezzel a define blokkal, így legfeljebb egyszer fog szerepelni a projectünkben, függetlenül attól, hogy hányszor include-oltuk az adott header-t. 
+</para>
+<para>
+Ennek amúgy egy modernebb változata, legalábbis visual studio esetén ennyi lenne.
+</para>
+<programlisting language='c++'>
+<![CDATA[#pragma once
+
+#include <iostream>
+#include <vector>
+#include "Product.h"
+
+class ProductInventory 
+{
+    void emptyProdcuts();
+protected:
+    std::vector<Product*> products;
+public:
+    virtual ~ProductInventory();
+    void readInventory(std::istream& is);
+    void writeInventory(std::ostream& os) const;
+    void printProducts(std::ostream& os) const;
+    void addProduct(Product* product);
+};]]>
+</programlisting>
+<para>
+Szóval a #pragma once az újabb fajta include guard, de ezt régebbi compilerek nem ismerik és ezért vagy valaki megszokásból a régit használja vagy legacy kód miatt rákényszerűlt.
+</para>
+<para>
+Tehát összegezve polimorfizmus esetén a destructornak virtual-nak kell lennie. És c++ létezhet header fájlok nélkül, de ha használjuk könyebbé tehetjük az életünket, mivel beszédes nevek esetén könynen ki lehet találni, hogy mit is csinál a függvény, valamint deklaráció duplikálás elkerülése esetén is jól jönnek.
 </para>
     </section>        
 

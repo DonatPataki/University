@@ -126,6 +126,18 @@ test1->baseMethod();]]>
 <para>
 Csak úgy mejegyzésképp java esetén az upcasting az automatikus ezért ott nem kell még külön arra se figyelni, hogy jól legyen zárójelezve.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/13_2_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+
     </section>        
         
     <section>
@@ -201,6 +213,48 @@ public:
 	}
 };]]>
 </programlisting>
+<para>
+C++
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/13_3_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+C#
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/13_3_2.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Java
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/13_3_3.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>        
 
     <section>
@@ -343,6 +397,20 @@ Ebből pedig már könnyen megkapható a képletbe behelyetessítve, hogy a komp
 <para>
 Egy másik módszer ami ennél is egyszerűbb az pedig az, hogy a kezdő csomópontot és az utolsó csomópontot összekötjük és megszámoljuk a programbam gráfjában a lyukakat. Ami nem meglepő módon szintén 3-at fog adni.
 </para>
+<para>
+És mindez egy ilyen kis egyszerű program bonyolúltsága
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/13_5_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>        
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                

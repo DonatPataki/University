@@ -150,6 +150,17 @@ Maga a custom allocatornak egy tamplete-ben kell lennie. És néhány alap dolog
 <para>
 Ez a cpp fájl magában nem fog lefutni, mivel nincs main funkciója csak azon okból, hogy külön legyen az allocator és így akárhova be lehet includolni.
 </para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/17_2_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>   
 
     <section>
@@ -204,6 +215,17 @@ Ezzel kész is van a rendezés még ha szeretnénk kiíratni akkor, azt így teh
 <![CDATA[  for (std::pair<std::string, int> element : setOfWords)
     std::cout << element.first << " :: " << element.second << std::endl;]]>
 </programlisting>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/17_3_1.png" scale="100" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
     </section>   
 
     <section>

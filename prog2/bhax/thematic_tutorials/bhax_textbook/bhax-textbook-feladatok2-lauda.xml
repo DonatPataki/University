@@ -5,7 +5,7 @@
             <keyword/>
         </keywordset>
     </info>
-
+<!--
     <section>
         <title>Port scan</title>
 
@@ -85,11 +85,11 @@ Ezután megadjuk, hogy mit szeretnénk csinálni. Mi most a poncut után. Azaz a
         {
             ++depth;
             for (int i = 0; i < depth; ++i)
-                p.print("---");
+                p.print("");
             p.print(n.getValue () + "(" + depth + ")\n");
             inOrder (n.getLeftChild (), p);
             inOrder (n.getRightChild (), p);
-            --depth;
+            depth;
         }
     }
     public void postOrder(LZWBinaryTree.Node n, PrintWriter p)
@@ -100,9 +100,9 @@ Ezután megadjuk, hogy mit szeretnénk csinálni. Mi most a poncut után. Azaz a
             postOrder (n.getLeftChild (), p);
             postOrder (n.getRightChild (), p);
             for (int i = 0; i < depth; ++i)
-                p.print("---");
+                p.print("");
             p.print(n.getValue () + "(" + depth + ")\n");
-            --depth;
+            depth;
         }
     }]]>
 </programlisting>
@@ -336,12 +336,16 @@ Maga a kocsi mozgása, billentyű letésre törtne, amihez csak le kell kérni a
 }]]>
 </programlisting>
     </section>
-
+-->
+<section>
+<title></title>
+<para>Az OSCI3 passzolása ide is jönne. mivel a többi feladat kidolgozását gyengének ítéltem meg és nem lett idő javítani azokat, ezért az xml-ben kikommentelve megtalálható.</para>
+</section>
     <section>
         <title>OSCI3</title>
 
         <para>
-            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp</link>               
+            Megoldás forrása: <link xlink:href="https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp">https://github.com/DonatPataki/University/blob/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/OSCI3.cpp</link>, <link xlink:href="https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/opengl">https://github.com/DonatPataki/University/tree/master/prog2/bhax/thematic_tutorials/bhax_textbook/src/lauda/openglp</link>               
         </para>
 <para>
 Maga a feladat leírása azt mondta, hogy rajzoljuk ki opengl-ben Debrecen utcáit. Vagyis pontosabban csak utakat jelenítsen meg és nekem valahogy ez csapódott hozzá alapból és ezt kezdtem el csinlálni.
@@ -497,6 +501,373 @@ Ez nem annyira hasolít egy város utcáinak felűlnézeti rajzára. De valósz�
 </figure>
 <para>
 Ez már elég közel áll ahhoz, amit elterveztem. Nyílván ehhez az kéne, hogy ne a stacken tároljam azt a pár adatot, de szerintem a feladat már ezzel is elkönyvelhető. És mivel érdemes lenne átírni, több fájlba, hogy átláthatóbb legyen ne egy nagy maszlag az egész kód, így az itt tapasztaltak alapján már a következő opengles programhoz ezzel a tudással állok neki.
+</para>
+<para>
+Na még egyszer "előlről" és mostmár tényleg az utakat fogja kirajzolni.
+</para>
+<para>
+Szóval a program írása során többféleképpen oldottam meg magát a drawcallt. A drawcall nem csinál más mint kirajzolja azt, amit mondunk neki. Ez alapvetően egy CPU -> GPU kommunikáció majd a GPU elvégzi a rajzolást és mindenki boldog. Ez attól függően, hogy legacy opengl-t vagy modern opengl-t használunk máshogy néz ki, illetve, hogy modern opengl esetén milyen előkészületeket tettünk különböző módokon tudjuk majd kirajzolni, amit szeretnénk.
+</para>
+<para>
+Maga a rajzolás az OSCI3.cpp-ben a legrosszabb, mivel ott a while ciklusban elég lenne csak a drawcall, ha normálisan előkészítettem volna a dolgokat.
+</para>
+<para>
+Egy jobb megoldás, ha előre létrehozunk egy vertex object array-t vagy VAO rövide. Ez igazából nem más mint azon pontok halmaza, amit ki szeretnénk rajzolni. Viszont ennek a megoldásanak az a hátránya, hogy maga a VAO nem csak koordinátákat tartalmazhat, azzal kapcsolatban, hogy hol helyezkedik el a kirajzolandó dolgunk a világban, hanem tartalmazhat mondjuk textura koordinátákat vagy egyéb információkat, mint példáúl olyan értékek, hogy hogyan is viselkedjen a különböző szögből beeső fénnyel. Ez alapvetően nem gond, de ha arra gondolunk, hogy példáúl, ha egy 3d modelt szeretnénk megjeleníteni és igazából 2d esetén is háromszögekből fogja azt felépíteni. Ebből az következik, hogy ha mondjuk egy négyzetet szeretnénk rajzolni, akkor az két háromszögből lesz megoldva 2d esetén. Ami azt eredményezi, hogy ebben az esetben a 2 pontot úgy mégegyszer meg kell adnunk pluszba. Vagy fogalmazhatnék úgy is, hogy minden háromszög él találkozásakor 2 pontot meg kell adnunk amik ismételve lesznek, teljesen ugyanazokkal az értékekkel és az előbb említett pluszinformációkkal, ha tartalmaz olyat. Ez egy bonyolúltabb 3d model esetén elég hamar elég nagy méreteket fog ölteni feleslegesen.
+</para>
+<para>
+De mit is lehet tenni ez ellen? Először is létre kell hozni egy vertex buffert, ami nem más mint lényegénben egy VAO annyi eltéréssel, hogy minden koordinátapont egyszer szerepel, azaz nem lesz duplikáció és memória terén sokkal jobban kijövünk. Mivel példáúl egy 3d model 3 térbeli koordinátája és és mondjuk 3 textúra koordinátája minden egyes ponthoz nem fog többször megjelenni. Szóval így a helyen spóroltunk, de hogyan fogjuk kirajzolni, mivel mostmár nem lehet sorba menni rajtuk. Itt jön képbe az index buffer, ami a koordinátákból képzet pontoknak az indexe. Ez alatt azt értem, hogy nyílván a valamilyen módon tároljuk az információkat. Nálam ez annyiból állt, hogy ömlesztve x y koordináta párok voltak, mivel csak erre volt szükségem, majd beolvasás után megmondtam az openglnek magának a VAO-nak a layout-ját, hány koordináta az, ami a koordinátákhoz tartozik, normalizált-e, milyen típúsúban van tárolva, és mennyi a koordináták közötti távolság. Mivel a textúrák koordinátájával nem foglalkozi, az a mi feladatunk a shaderben. És ebből ő magának összerakja a pontokat, amiknek megvan annyi koordinátája ahány dimenziós térben dolgozunk. Bár ez 2-től 4-ig terjedhet csak és a pluszinfo, amivel majd mi mondjuk meg máshol a program során, hogy mit kezdjen. Szóval ezeknek a pontoknak az indexeit kell meganunk ha takarékosan szeretnénk kirajzolni a modeleket. Az index során fontos a sorrend, de ez csak egy értékből áll, szóval itt nem gond, ha duplikákódik vagy több lesz belőle. Legalábbis sokkal jobb mint, ha maga a koordinátákból lenne több.
+</para>
+<para>
+Szóval mostmár takarékosan tudunk rajzolni mert az előbb leírt módon elemenet-eket tudunk létrehozni, ahol figyelünk a memóriára is. De mi történik akkor ha több dolgot szeretnénk kirajzolni és nem csak egy modelt? Persze csinálhatjuk azt, hogy több elementet csinálunk és egy for ciklusban mindig egy új drawcall-al kirajzoljuk. De létezik egy olyan csodás fogalom, hogy batch rendering. És ez igazából az aminek hangzik. Külön csökrokban tudunk több dölgot kirajzolni. És mivel c++-t használok ez csak azt jelentheti, hogy érdekel a teljesítmény. Szóval mostmár, a memóriánál megtettük, amit lehetett ideje, hogy a CPU -> GPU kommunikációt is felgyorsítjuk egy kicsit.
+</para>
+<para>
+Ehhez nem kell más mint maaga egy vertex buffer, vagy ahogy az előbb hívtam a pontok. Ez már pipa. Kell még egy index buffer, ami szintén pipa. Ezen kívűl még két tömbre van szükségünk. Egy ami megmondja, hogy az index bufferben honnan kezdve legyen rajzolva. Ez theát a "kezdőpontok" tömbje vagy offset. Valamint kell még egy tömb, ami megadja, hogy hány pontot szeretnénk kirajzolni majd. tehát egyszerűen egy tömbben megvan hanyadik indextől kezdve hány indexet szeretnénk rajzolni és az indexnek megfelelő vertex kerűl kirajzolásra és mindezt úgy, hogy egy drawcallal több modelt is ki tudjuk rajzolni.
+</para>
+<programlisting language='c++'>
+<![CDATA[glMultiDrawElements(GL_LINE_STRIP, countArray, GL_UNSIGNED_INT, (const void**)offset, 8854);]]>
+</programlisting>
+<para>
+És igen az a fenti egy sorral megoldjuk, hogy 8854 különálló vonalat tudja ki rajzolni, ami nem más mint Debrecen összes fajta útjának összege. Legalábbis, ami az OSM szerint létezik. Ebből adódik, hogy mostmár a heapen vannak tárolva az adatok és nem fog szólni 1kb után, hogy helló szia elfogyott a stack.
+</para>
+<para>
+De nézzük a program többi részét is mert, több helyen is változtak a dolgok. Az elején lévő előkészítjük a környezetet kihagynám és csak a lényegre koncetrálnék.
+</para>
+<para>
+Szóval mivel 4 tömbre van szükdésgünk miért ne tárolnánk külön fájlban őket és így párhuzamosítanni lehet a beolvasást.
+</para>
+<programlisting language='c++'>
+<![CDATA[	float* vertexArray = new float[119072];
+	std::thread rVertex(readData<float>,"src/point.txt", vertexArray, "float");
+	
+	unsigned int* indexArray = new unsigned int[119072];
+	std::thread rIndex(readData<unsigned int>, "src/index.txt", indexArray, "unsigned");
+	
+	GLsizei* countArray = new GLsizei[8854];
+	std::thread rCount(readData<int>, "src/count.txt", countArray, "int");
+	
+	char** offset = new char*[8854];
+	std::thread rOffset(readOffset, "src/offset.txt", offset);]]>
+</programlisting>
+<para>
+Itt igazából van egy kis hiba, illetve kettő. Egy az, hogy jelenleg manuálisan van megadva, hogy mennyi szeretnék allocálni. Kettő pedig, hogy az indexArray-nak igazából csak az első felét használom, mivel 119072 sor volt az x y koordináták száma, hogy még nem lett VAO. Tehát igazából csak az első 59536 index van haszálva.
+</para>
+<para>
+Ez után a threadeket bevárjuk, aminek a sorrendjén lehetne változtanti, mivel a rVertex thread olvasa a legtöbb adatot jelen esetben így az kerülhetne legutoljára.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+	rVertex.join();
+	rIndex.join();
+	rCount.join();
+	rOffset.join();]]>
+</programlisting>
+<para>
+Ez után létrehozuk a vertex buffert, ami a constructorban rögtön bindolásra is kerűl, tahát egyből lehet használni. Valamint magát az adatunk kiosztását is megadjuk, amit az elején leírtam.
+</para>
+<programlisting language='c++'>
+<![CDATA[vertexBuffer vb(vertexArray, 119072 * 2 * sizeof(float));
+
+
+vertexBuffer::vertexBuffer(const void* data, unsigned int size)
+{
+	glGenBuffers(1, &id);
+	glBindBuffer(GL_ARRAY_BUFFER, id);
+	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+}
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);}]]>
+</programlisting>
+<para>
+Ezután a mondhatni ugyanezt megcsináljuk még az index bufferrel is, csak ott a glBindBuffer és glBufferData hajszálnyit van máshogy paraméterezve, illteve az index buffernek nem kell megadni a layout-ját.
+</para>
+<para>
+Ezután pedig kérünk egy shadert is, ami nem kötelező olyan szempontból, hogy ha nem hozunk mi létre egyet, talán megszán minket a grafikus driver, ha ott úgy van implementálva, hogy ha nincs, akkor adjon egy alap shadert. De akkor nem tudnánk mozgatni a képet illetve a színeket se tudnánk uniformon keresztűl variálni.
+</para>
+<para>
+A shader két részből áll. Vertex és fragment shader. Az előbbi a geometria alakzat pontjaival kapcsolatos, míg az utóbbi majd a pontokkal közrezárt pixeleket tölti ki megfelelően. Maga az opengl szereti ezeket külön kezelni, ami ahhoz vezet, hogy két külön fájlban tároljuk. De ha megtudjuk különböztetni a vertex és fragment shadert, akkor igazából egy fájlba is rakhatjuk.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/shader.png" scale="200" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<programlisting language='c++'>
+<![CDATA[S_BEGIN VERTEX
+#version 330 core
+
+layout(location = 0) in vec4 position;
+
+uniform mat4 u_MVP;
+
+void main()
+{
+	gl_Position = u_MVP * position;
+};
+
+S_BEGIN FRAGMENT
+#version 330 core
+
+layout(location = 0) out vec4 color;
+
+uniform vec4 u_Color;
+
+void main()
+{
+	color = u_Color;
+};]]>
+</programlisting>
+<para>
+Ezek mondhatni kis programok, amiket majd a GPU hajt végre. És ha nincs shaderünk akkor igazából nem is fogunk semmit se látni abból, amit eddig ki akartunk rajzolni. A uniformokról annyit, hogy azokon keresztűl később tudjuk majd manipulálni a geometriai alakzatot. Jelen esetben a helyét tudjuk változtatni panning esetén, illetve a színét az utkat reprezentáló vonalaknak.
+</para>
+
+<para>
+Maga a shader beolvasáskor az S_BEGIN VERTEX/FRAGMENT során lesz eldöntve, hogy most hova tartozik és a függvényhívás során külön adja vissza csak a vertex és fragment shadert, úgy ahogy az opengl elvárja. Majd ezután lefordítjuk és futattjuk azt.
+</para>
+<programlisting language='c++'>
+<![CDATA[
+shader::shader(const std::string& filepath)
+	:id(0)
+{
+	readShader(filepath, vertexShader, fragmentShader);
+	id = createShader(vertexShader, fragmentShader);
+}
+
+unsigned int shader::createShader(const std::string& vertexShader, const std::string& fragmentShader)
+{
+	unsigned int program = glCreateProgram();
+	unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
+	unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+	glAttachShader(program, vs);
+	glAttachShader(program, fs);
+	glLinkProgram(program);
+	glValidateProgram(program);
+	glDeleteShader(vs);
+	glDeleteShader(fs);
+
+		return program;
+}
+
+unsigned int shader::compileShader(unsigned int type, const std::string& source)
+{
+	unsigned int id = glCreateShader(type);
+	const char* src = &source[0];
+	glShaderSource(id, 1, &src, nullptr);
+	glCompileShader(id);
+
+	int result;
+	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE)
+	{
+		int length;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+		char* message = (char*)alloca(length * sizeof(char));
+		glGetShaderInfoLog(id, length, &length, message);
+		std::cout << "error" << (type == GL_VERTEX_SHADER ? " vertex" : " fragment") << std::endl;
+		std::cout << message << std::endl;
+		glDeleteShader(id);
+		return 0;
+	}
+
+	return id;
+}]]>
+</programlisting>
+<para>
+Maga a uniformokon keresztűl való manipulálás úgy néz ki, hogy megkérdezük, hogy az adott nevű uniform hol található. Amire az opengl visszaadja a helyét és updatelhetjük a uniform értékeit. Ezen annyit lehetne javítani, hogy cache-be rakjuk a már lekért uniformok helyét. Mondjuk egy map segítségével, de jelenleg csak kettő van, szóval ezt elhagytam.
+</para>
+<programlisting language='c++'>
+<![CDATA[void shader::setUniform(const std::string& name, float v0, float v1, float v2, float v3)
+{
+	glUniform4f(getUniformLocation(name), v0, v1, v2, v3);
+}
+
+int shader::getUniformLocation(const std::string& name)
+{
+	int location = glGetUniformLocation(id, name.c_str());
+	return location;
+}]]>
+</programlisting>
+<para>
+És ezután már csak a drawcall hiányzik és már mindenki boldog is.
+</para>
+<programlisting language='c++'>
+<![CDATA[glMultiDrawElements(GL_LINE_STRIP, countArray, GL_UNSIGNED_INT, (const void**)offset, 8854);]]>
+</programlisting>
+<para>
+Ezután pedig egy ilyen gyönörűség fogad minket, ami szerintem eléggé hasonlít egy bizonyos városhoz.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/19_5_1.png" scale="60" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+És ahogy látható a képen azt a közel 10000 különböző hösszúságú vonalat 60 fps-el tudja rajzolgatni. Debugger módban, ami nem tartalmaz a compiler álltal megadható optimalizációkat. Sőt ellenkezőleg még plusz dolog is a debugging segítéséhez kerűl be. Úgy hogy ez integrált videókkártyát használt egy laptopon és mellesleg a visual studio-n belűl lett futatva, ami még monitoroz is. Ja és még van mellete 4x mintavételezés is, csak, hogy szebb éleket kapjunk. És így tartotta sziklaszilárdan a 60 fps-t. Ami lehetne több is, de igazából az fps a monitor refresh rate-jehez lett állítva.
+</para>
+<programlisting language='c++'>
+<![CDATA[glfwSwapInterval(1);]]>
+</programlisting>
+<para>
+Maga a többszöri mintavételezést meg lehet oldani shaderen belűl is. De én most a könyebb megoldást választottam és rábíztam magára a grafikus driveremre, hogy meg tud-e szánni egy előre létrehozttal-e. Szóval ez nem feltétlen fog működni így minden eszközön.
+</para>
+<programlisting language='c++'>
+<![CDATA[glfwWindowHint(GLFW_SAMPLES, 4);
+glEnable(GL_MULTISAMPLE);]]>
+</programlisting>
+<para>
+Magának a WindowHint-nek az előtt kell lennie, hogy létrehozzuk az ablakot. A glEnable-el pedig be lehet kapcsolni, hogy igen szeretnénk több mintát. És nyílván a glDisable paranccsal pedig ki lehet kapcsolni. Maga a többszöri mintevételezés pedig csak annyit jelent, hogy egy pixelnek nem csak a közepét nézzük, hanem több pontját.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/aa1.png" scale="60" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/aa2.png" scale="60" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/aa3.png" scale="60" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/aa4.png" scale="60" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+És ha már a debugger módot említettem van nekem egy ilyenem is.
+</para>
+<figure>
+<title></title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="img/19_5_2.png" scale="65" />
+</imageobject>
+<textobject>
+<phrase></phrase>
+</textobject>
+</mediaobject>
+</figure>
+<para>
+Ezek az üzenetek csak akkor jelennek meg, ha debugger módban fordítom a programot anélkül, hogy bármi mást változtatnék, mivel a visual studio prepocessorának meg lett mondva hogy csak debugger mód esetén definiálja a DEBUG_M-et.
+</para>
+<programlisting language='c++'>
+<![CDATA[#ifdef DEBUG_M
+#define LOG(x) std::cout << "DEBUG | "  << x << std::endl;
+#else
+#define LOG(X)
+#endif]]>
+</programlisting>
+<para>
+Így pedig az alábbi kódot nem kell kivenni a kódból mivel a prepocessor majd kiszedi alapból, ha nincs definiálva a DEBUG_M. Tehát amikor majd kell ez nem fogja befolyásolni a teljesítményt.
+</para>
+<programlisting language='c++'>
+<![CDATA[LOG("Cursor Pressed at " << previous_x  << " : " << previous_y);]]>
+</programlisting>
+<para>
+Amit még érdemes megjegyezni, az az, hogy a jelenleg kirajzolt kép kicsit torz. Ez azért van mert maga az ablak az egy 16:9-es arányt használ.
+</para>
+<programlisting language='c++'>
+<![CDATA[window = glfwCreateWindow(1280, 720, "...", NULL, NULL);]]>
+</programlisting>
+<para>
+Az opengl viszont nem ebben az arányban rajzol. Ezt más értékek megadásával viszont könnyen lehet orvosolni.
+</para>
+<programlisting language='c++'>
+<![CDATA[glm::mat4 proj = glm::ortho(474198409.0f, 476454687.0f, 213569142.0f, 218833644.0f, -1.0f, 1.0f);]]>
+</programlisting>
+<para>
+A program imgui-t használ GUI megjelenítőként, ahol lehet vonalvastagságot, vonalszínt, "háttérszínt" állítani. Illetve visszajelzést ad, hogy éppen le van-e nyomva a bal egérgomb és fps-t számol pluszba.
+</para>
+<programlisting language='c++'>
+<![CDATA[		ImGui::Checkbox("lbutton_down", &lbutton_down);
+		ImGui::SliderInt("line width", &width, 1, 10);
+		ImGui::ColorEdit3("clear color", (float*)&clear_color);
+		ImGui::ColorEdit3("line color", (float*)&line_color);
+ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);]]>
+</programlisting>
+<para>
+Jelenleg a kamera mozgatás kicsit lassú, mert screenspacebeli értékek alapján mozgat és a screenspace és worldspace aránya most nem 1:1. Ezt érdmees lenne wordspcare konvertálni a tökéletes élmény miatt vagy legalább még beszorozni egy kicsit.
+</para>
+<programlisting language='c++'>
+<![CDATA[static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (lbutton_down)
+	{
+		LOG("X moved: " << (previous_x - xpos) << " Y moved: " << (previous_y - ypos));
+		offsetX = previous_x - xpos;
+		offsetY = previous_y - ypos;
+		translation.x -= offsetX;
+		translation.y += offsetY;
+		previous_x = xpos;
+		previous_y = ypos;
+	}
+}
+
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		glfwGetCursorPos(window, &previous_x, &previous_y);
+		lbutton_down = true;
+		LOG("Cursor Pressed at " << previous_x  << " : " << previous_y);
+	}
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+	{
+		lbutton_down = false;
+		glfwGetCursorPos(window, &x, &y);
+		LOG("Cursor Released at " << x << " : " << y);
+	}
+}]]>
+</programlisting>
+<para>
+Zoomolási funkció is van, de ott meggyűlt a bajom az orthograpic kamerával, így inkább kikommenteltem, mert hiába működött majdnem jól én mégsem voltam megelégedve vele.
+</para>
+<para>
+Nagyjából ennyit tud a program, de ezen már könnyen lehet dolgozni. Jelenleg a batch rendererrel eléggé hasonlít ahhoz, ahogy a game enginek material szerint egybe kitolják a geometriai alakokat magukból. És ehhez már könnyű pluszt hozzáadni. Példáúl ha azt szeretném, hogy ne csak az utakat jelenítse meg hanem a házak körvonalát is. Akkor csak annyit kell tennem, hogy magát a VAO-t frissítem, a házak pontjait is tartalmazza adott az utak index buffere és a másik két tömb. Ezután létrehozok egy másik index buffert ami a házakat tartalmaza és hasonlóan a másik két tömböt. majd egy másik alőször kirejzolom az utakat bindolom a házak indexe bufferét majd a drawcallba megadom a neki megfelelő tömböt. És akár már szinet is állíthatok neki még előtte.
+</para>
+<para>
+Szóval igen elég pofás lett így a végére és még annyi lemarad, hogy magát a koordinátákat ugye saját magam írt program segítségével szedem ki az xml-ből, ami lehetne gyorsítani, mert jelenleg az a program fájó pontja. És akár a két programot össze is lehetne vonni, hogy ne kelljen külön másik programot használni csak ahhoz, hogy meglegyen egy olyan adatunk, amit már tud használni.
 </para>
     </section>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
